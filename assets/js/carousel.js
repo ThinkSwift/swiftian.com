@@ -14,6 +14,7 @@
   let index = 0;
   let startX = 0;
 
+  dotsHost.innerHTML = "";
   const dots = videos.map((_, i) => {
     const d = document.createElement("span");
     if (i === 0) d.classList.add("is-active");
@@ -30,8 +31,16 @@
     });
   }
 
+  function setHintListening() {
+    if (audioToggle) audioToggle.textContent = "Tap to listen";
+  }
+
+  function setHintMute() {
+    if (audioToggle) audioToggle.textContent = "Tap to mute";
+  }
+
   function show(i) {
-    index = (i + videos.length) % videos.length;
+    index = ((i % videos.length) + videos.length) % videos.length;
 
     stopAll();
 
@@ -39,6 +48,7 @@
     v.classList.add("is-active");
     dots.forEach((d, di) => d.classList.toggle("is-active", di === index));
 
+    setHintListening();
     v.play().catch(() => {});
   }
 
@@ -49,47 +59,56 @@
   prev?.addEventListener("click", () => step(-1));
   next?.addEventListener("click", () => step(1));
 
-  // Tap video: toggle mute
+  // Tap active video: toggle mute
   videos.forEach(v => {
     v.addEventListener("click", () => {
-      const isActive = v.classList.contains("is-active");
-      if (!isActive) return;
+      if (!v.classList.contains("is-active")) return;
 
       v.muted = !v.muted;
       if (!v.muted) {
         v.currentTime = 0;
         v.play().catch(() => {});
-        audioToggle.textContent = "Tap to mute";
+        setHintMute();
       } else {
-        audioToggle.textContent = "Tap to listen";
+        setHintListening();
       }
     });
   });
 
-  // Optional button (same behavior as tapping video)
+  // Optional button: same as toggling audio for the active clip
   audioToggle?.addEventListener("click", () => {
     const v = videos[index];
     v.muted = !v.muted;
+
     if (!v.muted) {
       v.currentTime = 0;
       v.play().catch(() => {});
-      audioToggle.textContent = "Tap to mute";
+      setHintMute();
     } else {
-      audioToggle.textContent = "Tap to listen";
+      setHintListening();
     }
   });
 
   // Swipe (mobile)
-  frame.addEventListener("touchstart", e => {
-    startX = e.touches[0].clientX;
-  }, { passive: true });
+  frame.addEventListener(
+    "touchstart",
+    e => {
+      startX = e.touches[0].clientX;
+    },
+    { passive: true }
+  );
 
-  frame.addEventListener("touchend", e => {
-    const dx = e.changedTouches[0].clientX - startX;
-    if (Math.abs(dx) < 40) return;
-    step(dx < 0 ? 1 : -1);
-    audioToggle.textContent = "Tap to listen";
-  }, { passive: true });
+  frame.addEventListener(
+    "touchend",
+    e => {
+      const dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) < 40) return;
+
+      step(dx < 0 ? 1 : -1);
+      setHintListening();
+    },
+    { passive: true }
+  );
 
   show(0);
 })();
