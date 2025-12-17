@@ -1,50 +1,95 @@
-const viewport = document.querySelector(".viewport");
-if (!viewport) {
-  // Not on the landing page.
-  return;
-}
+(() => {
+  const root = document.querySelector("[data-carousel]");
+  if (!root) return;
 
-const videos = Array.from(viewport.querySelectorAll("video"));
-if (videos.length === 0) {
-  return;
-}
+  const frame = root.querySelector("[data-frame]");
+  const videos = Array.from(root.querySelectorAll("video.clip"));
+  const prev = root.querySelector(".nav-prev");
+  const next = root.querySelector(".nav-next");
+  const dotsHost = document.querySelector("[data-dots]");
+  const audioToggle = root.querySelector("[data-audio-toggle]");
 
-let current = 0;
-let startX = 0;
+  if (!frame || videos.length === 0 || !dotsHost) return;
 
-function show(index) {
-  const safeIndex = ((index % videos.length) + videos.length) % videos.length;
-  current = safeIndex;
+  let index = 0;
+  let startX = 0;
 
-  videos.forEach((v, i) => {
-    v.classList.toggle("active", i === current);
-    v.pause();
-    v.muted = true;
-    v.currentTime = 0;
+  const dots = videos.map((_, i) => {
+    const d = document.createElement("span");
+    if (i === 0) d.classList.add("is-active");
+    dotsHost.appendChild(d);
+    return d;
   });
 
-  videos[current].play().catch(() => {});
-}
+  function stopAll() {
+    videos.forEach(v => {
+      v.pause();
+      v.muted = true;
+      v.currentTime = 0;
+      v.classList.remove("is-active");
+    });
+  }
 
-videos.forEach(video => {
-  video.addEventListener("click", () => {
-    video.muted = !video.muted;
-    if (!video.muted) {
-      video.currentTime = 0;
-      video.play().catch(() => {});
+  function show(i) {
+    index = (i + videos.length) % videos.length;
+
+    stopAll();
+
+    const v = videos[index];
+    v.classList.add("is-active");
+    dots.forEach((d, di) => d.classList.toggle("is-active", di === index));
+
+    v.play().catch(() => {});
+  }
+
+  function step(dir) {
+    show(index + dir);
+  }
+
+  prev?.addEventListener("click", () => step(-1));
+  next?.addEventListener("click", () => step(1));
+
+  // Tap video: toggle mute
+  videos.forEach(v => {
+    v.addEventListener("click", () => {
+      const isActive = v.classList.contains("is-active");
+      if (!isActive) return;
+
+      v.muted = !v.muted;
+      if (!v.muted) {
+        v.currentTime = 0;
+        v.play().catch(() => {});
+        audioToggle.textContent = "Tap to mute";
+      } else {
+        audioToggle.textContent = "Tap to listen";
+      }
+    });
+  });
+
+  // Optional button (same behavior as tapping video)
+  audioToggle?.addEventListener("click", () => {
+    const v = videos[index];
+    v.muted = !v.muted;
+    if (!v.muted) {
+      v.currentTime = 0;
+      v.play().catch(() => {});
+      audioToggle.textContent = "Tap to mute";
+    } else {
+      audioToggle.textContent = "Tap to listen";
     }
   });
-});
 
-viewport.addEventListener("touchstart", e => {
-  startX = e.touches[0].clientX;
-}, { passive: true });
+  // Swipe (mobile)
+  frame.addEventListener("touchstart", e => {
+    startX = e.touches[0].clientX;
+  }, { passive: true });
 
-viewport.addEventListener("touchend", e => {
-  const deltaX = e.changedTouches[0].clientX - startX;
-  if (Math.abs(deltaX) < 40) return;
+  frame.addEventListener("touchend", e => {
+    const dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) < 40) return;
+    step(dx < 0 ? 1 : -1);
+    audioToggle.textContent = "Tap to listen";
+  }, { passive: true });
 
-  show(deltaX < 0 ? current + 1 : current - 1);
-}, { passive: true });
-
-show(0);
+  show(0);
+})();
