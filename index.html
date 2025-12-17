@@ -9,40 +9,43 @@
   <link rel="stylesheet" href="./assets/css/main.css" />
 </head>
 <body>
-  <main class="container">
+  <main class="page">
     <header class="hero">
+      <p class="brand">English Accents</p>
       <h1>Practice your voice,<br />one line at a time.</h1>
-      <p class="subtitle">
-        Short, natural English conversations across different accents.
-      </p>
+      <p class="subtitle">Short, natural English conversations across different accents.</p>
     </header>
 
-    <section class="carousel">
-      <div class="viewport">
-        <video muted loop playsinline preload="metadata" src="./assets/videos/Chillfriends_E01.mp4"></video>
-        <video muted loop playsinline preload="metadata" src="./assets/videos/Chillfriends_E02.mp4"></video>
-        <video muted loop playsinline preload="metadata" src="./assets/videos/Chillfriends_E03.mp4"></video>
-        <video muted loop playsinline preload="metadata" src="./assets/videos/Chillfriends_E04.mp4"></video>
-        <video muted loop playsinline preload="metadata" src="./assets/videos/Chillfriends_E05.mp4"></video>
-        <video muted loop playsinline preload="metadata" src="./assets/videos/Chillfriends_E06.mp4"></video>
-        <video muted loop playsinline preload="metadata" src="./assets/videos/Chillfriends_E07.mp4"></video>
-        <video muted loop playsinline preload="metadata" src="./assets/videos/Chillfriends_E08.mp4"></video>
+    <section class="stage" aria-label="Conversation clips">
+      <div class="carousel" data-carousel>
+        <button class="nav nav-prev" type="button" aria-label="Previous clip">←</button>
+
+        <div class="frame" data-frame>
+          <video class="clip" muted loop playsinline preload="metadata" src="./assets/videos/Chillfriends_E01.mp4"></video>
+          <video class="clip" muted loop playsinline preload="metadata" src="./assets/videos/Chillfriends_E02.mp4"></video>
+          <video class="clip" muted loop playsinline preload="metadata" src="./assets/videos/Chillfriends_E03.mp4"></video>
+          <video class="clip" muted loop playsinline preload="metadata" src="./assets/videos/Chillfriends_E04.mp4"></video>
+          <video class="clip" muted loop playsinline preload="metadata" src="./assets/videos/Chillfriends_E05.mp4"></video>
+          <video class="clip" muted loop playsinline preload="metadata" src="./assets/videos/Chillfriends_E06.mp4"></video>
+          <video class="clip" muted loop playsinline preload="metadata" src="./assets/videos/Chillfriends_E07.mp4"></video>
+          <video class="clip" muted loop playsinline preload="metadata" src="./assets/videos/Chillfriends_E08.mp4"></video>
+
+          <button class="audioHint" type="button" data-audio-toggle aria-label="Toggle audio">
+            Tap to listen
+          </button>
+        </div>
+
+        <button class="nav nav-next" type="button" aria-label="Next clip">→</button>
       </div>
+
+      <div class="dots" data-dots aria-hidden="true"></div>
     </section>
 
     <section class="cta">
-      <a
-        class="button"
-        href="https://apps.apple.com/app/english-accents/id1281312028"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
+      <a class="button" href="https://apps.apple.com/app/english-accents/id1281312028" target="_blank" rel="noopener noreferrer">
         Download on the App Store
       </a>
-
-      <p class="quiet">
-        Quiet practice. Real progress.
-      </p>
+      <p class="quiet">Quiet practice. Real progress.</p>
     </section>
 
     <footer class="footer">
