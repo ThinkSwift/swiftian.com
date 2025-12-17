@@ -67,11 +67,11 @@ h1{
   width:100%;
   height:100%;
   object-fit:cover;
-  display:none;            /* ✅ 핵심: 기본은 숨김 */
+  display:none;
 }
 
 .clip.is-active{
-  display:block;           /* ✅ 활성 clip만 보임 */
+  display:block;
 }
 
 .nav{
@@ -83,7 +83,7 @@ h1{
   height:38px;
   border-radius:12px;
   cursor:pointer;
-  display:none;            /* 모바일에선 숨김 */
+  display:none; /* mobile hidden */
 }
 
 .audioHint{
@@ -159,7 +159,7 @@ h1{
 
 .footer a:hover{ text-decoration:underline; }
 
-/* 데스크톱에서만 화살표 표시 + 여백 확대 */
+/* desktop */
 @media (min-width: 860px){
   .page{ padding-top:44px; }
   h1{ font-size:2.15rem; }
