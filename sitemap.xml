@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://swiftian.com/</loc><priority>1.0</priority></url>
+  <url><loc>https://swiftian.com/ea/</loc></url>
+  <url><loc>https://swiftian.com/cp/</loc></url>
+  <url><loc>https://swiftian.com/race/</loc></url>
   <url><loc>https://swiftian.com/ko/</loc></url>
   <url><loc>https://swiftian.com/ja/</loc></url>
   <url><loc>https://swiftian.com/zh-hans/</loc></url>

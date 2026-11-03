@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chinese Pronunciation · Swiftian</title>
+  <meta name="description" content="妈 麻 马 骂: one syllable, four words. Hear the four Mandarin tones, pick them by ear, and hear one word in Beijing, Taipei and Hong Kong.">
+  <meta name="theme-color" content="#0b0f1a">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png?v=20261103">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=20261103">
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png?v=20261103">
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png?v=20261103">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20261103">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Chinese Pronunciation · Swiftian">
+  <meta property="og:description" content="妈 麻 马 骂: one syllable, four words. Hear the four Mandarin tones, pick them by ear, and hear one word in Beijing, Taipei and Hong Kong.">
+  <link rel="canonical" href="https://swiftian.com/cp/">
+  <meta property="og:url" content="https://swiftian.com/cp/">
+  <meta property="og:image" content="https://swiftian.com/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b0f1a; --bg-2:#0e1422; --ink:#eef2ff; --muted:#9aa6c4; --line:rgba(255,255,255,.10);
+      --c1:#6ee7f9; --c2:#818cf8;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0}
+    body{
+      font-family:"Inter",-apple-system,system-ui,sans-serif;color:var(--ink);
+      background:
+        radial-gradient(1200px 700px at 82% -12%, rgba(129,140,248,.20), transparent 60%),
+        radial-gradient(1000px 640px at 0% 8%, rgba(110,231,249,.14), transparent 55%),
+        linear-gradient(180deg,var(--bg-2),var(--bg));
+      min-height:100vh;-webkit-font-smoothing:antialiased
+    }
+    .wrap{position:relative;z-index:1;width:100%;max-width:880px;margin:0 auto;padding:0 22px}
+    footer{position:relative;z-index:1;text-align:center;font-size:13px;padding:44px 22px 34px;color:var(--muted)}
+    footer a{color:var(--c1);text-decoration:none}
+    footer a:hover{text-decoration:underline;text-underline-offset:3px}
+    footer a.mail{display:inline-flex;vertical-align:-3px}
+    footer a.mail:hover{text-decoration:none;opacity:.75}
+    footer a.mail svg{width:16px;height:16px}
+    footer .sep{margin:0 8px;opacity:.5}
+    @media (max-width:640px){.wrap{padding:0 16px}}
+    /* swiftian.com's three pages: top tabs on the header line (RDM-swiftian-three-pages) */
+    nav.tabs-bar{display:flex;align-items:flex-end;justify-content:flex-start;gap:11px;padding:22px 0 0;min-height:0;border-bottom:1px solid rgba(255,255,255,.22)}
+    .tabs{display:flex;gap:8px}
+    .tab{box-sizing:border-box;width:168px;min-height:44px;display:flex;align-items:center;gap:9px;padding:6px 10px 6px 8px;margin-bottom:-1px;
+      color:var(--muted);text-decoration:none;font-size:13.5px;line-height:1.15;background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.16);border-bottom:none;border-radius:10px 10px 0 0}
+    .tab img,.site img{display:block;flex:none;width:32px;height:32px;image-rendering:pixelated}
+    .tab:hover{border-color:rgba(238,242,255,.75);color:var(--ink)}
+    .tab[aria-current]{border-color:var(--ink);border-top-width:3px;padding-top:4px;color:var(--ink)}
+    nav.tabs-bar .lang-toggle{margin:0 0 8px auto}
+    /* other sites: light round-rect buttons */
+    .sites{display:flex;flex-wrap:wrap;gap:8px;margin:46px 0 0;padding-top:22px;border-top:1px solid var(--line)}
+    .site{box-sizing:border-box;width:168px;min-height:42px;display:flex;align-items:center;gap:8px;padding:3px 10px 3px 3px;
+      color:#0b0f1a;text-decoration:none;font-size:13.5px;font-weight:500;background:#eef1f7;border:2px solid #eef1f7;border-radius:10px}
+    .site img{border-radius:6px}
+    .site:hover{border-color:#0b0f1a}
+    @media (max-width:540px){
+      .tabs{flex:1 1 100%;gap:6px}
+      .tab{width:auto;flex:1;flex-direction:column;text-align:center;gap:5px;padding:8px 4px;font-size:12px}
+      .tab[aria-current]{padding-top:6px}
+      nav.tabs-bar{flex-wrap:wrap}
+      nav.tabs-bar .lang-toggle{order:-1;margin:0 0 10px auto}
+      .site{flex:1;width:auto}
+    }
+
+    @font-face{font-family:"CP Kai";src:url("/cp/font/CPKai.ttf") format("truetype");font-display:swap}
+    .cp-hero{margin:34px 0 0;display:flex;align-items:center;gap:18px}
+    .seal{flex:none;width:58px;height:58px;border-radius:10px;background:#c8352b;color:#fbe9d7;display:grid;place-items:center;
+      font:400 34px/1 "CP Kai",serif;box-shadow:inset 0 0 0 3px #c8352b,inset 0 0 0 5px rgba(251,233,215,.65)}
+    .cp-hero h1{margin:0;font:700 clamp(26px,4.4vw,38px)/1.05 "Space Grotesk",system-ui}
+    .cp-hero p{margin:6px 0 0;color:var(--muted);font-size:15px}
+    .cp-hero p b{font:400 1.25em/1 "CP Kai",serif;color:var(--ink);letter-spacing:.06em}
+    /* paper cards: the app's 字帖 look */
+    .paper{margin:22px 0 0;border-radius:18px;padding:22px 22px 24px;background:#f7f1e3;color:#2a2420;
+      box-shadow:0 1px 0 rgba(255,255,255,.4) inset,0 18px 40px -24px rgba(0,0,0,.6)}
+    .paper h2{margin:0;font:700 19px/1.2 "Space Grotesk",system-ui;color:#2a2420}
+    .paper .sub{margin:4px 0 0;color:#7a6c60;font-size:14px;line-height:1.45}
+    .chips{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 0}
+    .chips button{height:34px;min-width:44px;padding:0 12px;border-radius:999px;border:1.5px solid #d9cbb5;background:#fffaf0;color:#2a2420;cursor:pointer;
+      font:400 18px/1 "CP Kai",serif}
+    .chips button[aria-pressed="true"]{border-color:#c8352b;background:#c8352b;color:#fff8ee}
+    .grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0 0}
+    .cell{position:relative;cursor:pointer;border:0;padding:0;background:none;text-align:center;color:inherit;font:inherit;display:flex;flex-direction:column;justify-content:flex-start}
+    .tzg{position:relative;aspect-ratio:1;border:2px solid #c8352b;border-radius:6px;background:#fffaf0;display:grid;place-items:center;overflow:hidden}
+    .tzg::before,.tzg::after{content:"";position:absolute;inset:0;pointer-events:none;
+      background:linear-gradient(#0000 calc(50% - .5px),rgba(200,53,43,.35) calc(50% - .5px) calc(50% + .5px),#0000 0),
+                 linear-gradient(90deg,#0000 calc(50% - .5px),rgba(200,53,43,.35) calc(50% - .5px) calc(50% + .5px),#0000 0)}
+    .tzg::after{background:linear-gradient(45deg,#0000 calc(50% - .5px),rgba(200,53,43,.18) calc(50% - .5px) calc(50% + .5px),#0000 0),
+                 linear-gradient(-45deg,#0000 calc(50% - .5px),rgba(200,53,43,.18) calc(50% - .5px) calc(50% + .5px),#0000 0)}
+    .tzg b{position:relative;z-index:1;font:400 clamp(40px,9vw,72px)/1 "CP Kai",serif;color:#2a2420}
+    .tzg svg{position:absolute;z-index:2;left:9%;top:7%;width:82%;height:42%;overflow:visible}
+    .tzg svg path{fill:none;stroke:#c8352b;stroke-width:4;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:120;stroke-dashoffset:0}
+    .cell.playing svg path{animation:draw .7s ease-out}
+    @keyframes draw{from{stroke-dashoffset:120}to{stroke-dashoffset:0}}
+    .cell .py{display:block;margin-top:8px;font:600 17px/1.1 "Inter",system-ui}
+    .cell .en{display:block;margin-top:2px;font-size:12.5px;color:#7a6c60}
+    .cell:hover .tzg,.cell.playing .tzg{box-shadow:0 0 0 3px rgba(200,53,43,.18)}
+    /* listen and pick */
+    .quiz{display:flex;align-items:center;gap:18px;margin:16px 0 0;flex-wrap:wrap}
+    .listen{flex:none;width:76px;height:76px;border-radius:50%;border:0;background:#c8352b;color:#fff8ee;cursor:pointer;display:grid;place-items:center;
+      box-shadow:0 4px 0 #8f2119}
+    .listen:active{transform:translateY(2px);box-shadow:0 2px 0 #8f2119}
+    .listen svg{width:30px;height:30px}
+    .picks{display:grid;grid-template-columns:repeat(4,64px);gap:8px}
+    .picks button{height:64px;border-radius:12px;border:2px solid #d9cbb5;background:#fffaf0;cursor:pointer;padding:6px}
+    .picks button svg{width:100%;height:100%}
+    .picks button svg path{fill:none;stroke:#2a2420;stroke-width:3;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+    .picks button.right{border-color:#2f8f5b;background:#e6f4ea}
+    .picks button.wrong{border-color:#c8352b;background:#fbe6e3}
+    .picks button:disabled{cursor:default}
+    .reveal{min-width:150px;font-size:14px;color:#7a6c60;line-height:1.5}
+    .reveal b{display:block;font:400 34px/1.1 "CP Kai",serif;color:#2a2420}
+    .dots{display:flex;gap:6px;margin:14px 0 0}
+    .dots i{width:10px;height:10px;border-radius:50%;background:#e4d8c4}
+    .dots i.r{background:#2f8f5b}.dots i.w{background:#c8352b}
+    /* one word, three places */
+    .places{display:grid;gap:10px;margin:16px 0 0}
+    .prow{display:grid;grid-template-columns:120px repeat(3,minmax(0,1fr));gap:8px;align-items:stretch}
+    .prow .what{align-self:center;font-weight:600;font-size:14px;color:#7a6c60}
+    .say{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 12px;border-radius:12px;border:1.5px solid #e4d8c4;background:#fffaf0;
+      cursor:pointer;text-align:left;color:inherit;font:inherit}
+    .say:hover,.say.playing{border-color:#c8352b}
+    .say small{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#a3907e}
+    .say b{font:400 24px/1.15 "CP Kai",serif}
+    .say span{font-size:13px;color:#5d5047}
+    .phead{display:grid;grid-template-columns:120px repeat(3,minmax(0,1fr));gap:8px;font-size:12px;color:#a3907e;letter-spacing:.06em;text-transform:uppercase}
+    @media (max-width:640px){
+      .paper{padding:18px 16px 20px}
+      .grid4{gap:8px}
+      .prow,.phead{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .prow .what{grid-column:1/-1}
+      .phead span:first-child{display:none}
+      .say b{font-size:20px}
+      .picks{grid-template-columns:repeat(4,56px)}.picks button{height:56px}
+    }
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="tabs-bar" aria-label="Swiftian">
+      <div class="tabs"><a class="tab" href="/"><img src="/assets/tabs/cf-32.png" srcset="/assets/tabs/cf-32.png 1x, /assets/tabs/cf-64.png 2x, /assets/tabs/cf-96.png 3x" width="32" height="32" alt=""><span>Chillfriends</span></a><a class="tab" href="/ea/"><img src="/assets/tabs/ea-32.png" srcset="/assets/tabs/ea-32.png 1x, /assets/tabs/ea-64.png 2x, /assets/tabs/ea-96.png 3x" width="32" height="32" alt=""><span>English Accents</span></a><a class="tab" href="/cp/" aria-current="page"><img src="/assets/tabs/cp-32.png" srcset="/assets/tabs/cp-32.png 1x, /assets/tabs/cp-64.png 2x, /assets/tabs/cp-96.png 3x" width="32" height="32" alt=""><span>Chinese<br>Pronunciation</span></a></div>
+    </nav>
+
+    <header class="cp-hero">
+      <div class="seal" aria-hidden="true">声</div>
+      <div>
+        <h1>Chinese Pronunciation</h1>
+        <p><b>妈 麻 马 骂</b> &nbsp;one syllable, four words.</p>
+      </div>
+    </header>
+
+    <section class="paper" aria-labelledby="h-tones">
+      <h2 id="h-tones">Four tones</h2>
+      <p class="sub">The way your voice moves changes the word. Tap a square to hear it.</p>
+      <div class="chips" id="sets"></div>
+      <div class="grid4" id="tones"></div>
+    </section>
+
+    <section class="paper" aria-labelledby="h-pick">
+      <h2 id="h-pick">Listen and pick</h2>
+      <p class="sub">Play a word, then pick the line its voice draws.</p>
+      <div class="quiz">
+        <button class="listen" id="listen" type="button" aria-label="Play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+        <div class="picks" id="picks"></div>
+        <div class="reveal" id="reveal">Press play.</div>
+      </div>
+      <div class="dots" id="dots"></div>
+    </section>
+
+    <section class="paper" aria-labelledby="h-places">
+      <h2 id="h-places">One word, three places</h2>
+      <p class="sub">Beijing, Taipei, Hong Kong: the same thing, said three ways.</p>
+      <div class="places" id="places"></div>
+    </section>
+
+    <section class="sites" aria-label="Also from Swiftian"><a class="site" href="https://pythoneer.io/?ct=web-sw-py"><img src="/assets/tabs/site-pythoneer-32.png" srcset="/assets/tabs/site-pythoneer-32.png 1x, /assets/tabs/site-pythoneer-64.png 2x, /assets/tabs/site-pythoneer-96.png 3x" width="32" height="32" alt=""><span>pythoneer.io</span></a><a class="site" href="https://iflipbook.com/?ct=web-sw-if"><img src="/assets/tabs/site-iflipbook-32.png" srcset="/assets/tabs/site-iflipbook-32.png 1x, /assets/tabs/site-iflipbook-64.png 2x, /assets/tabs/site-iflipbook-96.png 3x" width="32" height="32" alt=""><span>iflipbook.com</span></a></section>
+  </div>
+
+  <footer>
+    <span>&copy; 2026 Swiftian Inc.</span>
+    <span class="sep">&middot;</span>
+    <a href="/privacy/" data-t="privacy">Privacy Policy</a>
+    <span class="sep">&middot;</span>
+    <a class="mail email" data-u="hello" data-d="swiftian.com" href="#" aria-label="Email us" title="Email us">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/>
+      </svg>
+    </a>
+  </footer>
+
+<script>
+  var SW_EV = function (name, props) {
+    try {
+      var sid = "anon"; try { sid = sessionStorage.getItem("sw_sid") || (sessionStorage.setItem("sw_sid", String(Math.random()).slice(2)), sessionStorage.getItem("sw_sid")); } catch (_) {}
+      fetch("https://claude-proxy-web.ilbulyori.workers.dev/events", { method: "POST", keepalive: true,
+        headers: { "content-type": "application/json", "x-device-id": sid },
+        body: JSON.stringify({ meta: { app: "swiftian.com", build: "web", os: "web", locale: (navigator.language || "").slice(0, 8) },
+          events: [{ name: name, ts: Date.now() / 1000, props: Object.assign({ site: "swiftian.com", path: location.pathname.slice(0, 64) }, props || {}) }] }) }).catch(function () {});
+    } catch (_) {}
+  };
+  document.querySelectorAll('a.email').forEach(function(a){ a.href = 'mailto:' + a.dataset.u + String.fromCharCode(64) + a.dataset.d; });
+</script>
+<script>window.CP_DATA = {"sets":[[{"k":"ma1","hans":"妈","hant":"媽","py":"mā","en":"mother","tone":1,"voices":["tw-m","tw-f"]},{"k":"ma2","hans":"麻","hant":"麻","py":"má","en":"hemp; numb","tone":2,"voices":["cn-f","tw-m","cn-m","tw-f"]},{"k":"ma3","hans":"马","hant":"馬","py":"mǎ","en":"horse","tone":3,"voices":["cn-f","tw-m","cn-m","tw-f"]},{"k":"ma4","hans":"骂","hant":"罵","py":"mà","en":"to scold","tone":4,"voices":["cn-f","tw-m","cn-m","tw-f"]}],[{"k":"shi1","hans":"诗","hant":"詩","py":"shī","en":"poem","tone":1,"voices":["cn-f","tw-m","cn-m","tw-f"]},{"k":"shi2","hans":"十","hant":"十","py":"shí","en":"ten","tone":2,"voices":["tw-m","cn-m","tw-f"]},{"k":"shi3","hans":"史","hant":"史","py":"shǐ","en":"history","tone":3,"voices":["cn-f","tw-m","cn-m","tw-f"]},{"k":"shi4","hans":"是","hant":"是","py":"shì","en":"to be; yes","tone":4,"voices":["cn-f","tw-m","cn-m","tw-f"]}],[{"k":"tang1","hans":"汤","hant":"湯","py":"tāng","en":"soup","tone":1,"voices":["cn-f","tw-m","tw-f"]},{"k":"tang2","hans":"糖","hant":"糖","py":"táng","en":"sugar","tone":2,"voices":["cn-f","tw-m","cn-m","tw-f"]},{"k":"tang3","hans":"躺","hant":"躺","py":"tǎng","en":"to lie down","tone":3,"voices":["cn-f","tw-m","cn-m","tw-f"]},{"k":"tang4","hans":"烫","hant":"燙","py":"tàng","en":"hot to the touch","tone":4,"voices":["cn-f","tw-m","cn-m","tw-f"]}],[{"k":"tu1","hans":"秃","hant":"禿","py":"tū","en":"bald","tone":1,"voices":["cn-f","tw-m","cn-m","tw-f"]},{"k":"tu2","hans":"图","hant":"圖","py":"tú","en":"picture","tone":2,"voices":["cn-f","tw-m","cn-m","tw-f"]},{"k":"tu3","hans":"土","hant":"土","py":"tǔ","en":"earth","tone":3,"voices":["cn-f","tw-m","cn-m","tw-f"]},{"k":"tu4","hans":"兔","hant":"兔","py":"tù","en":"rabbit","tone":4,"voices":["cn-f","tw-m","cn-m","tw-f"]}],[{"k":"wen1","hans":"温","hant":"溫","py":"wēn","en":"warm","tone":1,"voices":["cn-f","tw-m","tw-f"]},{"k":"wen2","hans":"文","hant":"文","py":"wén","en":"writing","tone":2,"voices":["tw-m","cn-m","tw-f"]},{"k":"wen3","hans":"吻","hant":"吻","py":"wěn","en":"kiss","tone":3,"voices":["cn-f","tw-m","cn-m","tw-f"]},{"k":"wen4","hans":"问","hant":"問","py":"wèn","en":"to ask","tone":4,"voices":["cn-f","tw-m","cn-m","tw-f"]}],[{"k":"yi1","hans":"衣","hant":"衣","py":"yī","en":"clothes","tone":1,"voices":["tw-m","cn-m","tw-f"]},{"k":"yi2","hans":"姨","hant":"姨","py":"yí","en":"aunt","tone":2,"voices":["cn-f","tw-m","cn-m","tw-f"]},{"k":"yi3","hans":"椅","hant":"椅","py":"yǐ","en":"chair","tone":3,"voices":["cn-f","tw-m","cn-m","tw-f"]},{"k":"yi4","hans":"意","hant":"意","py":"yì","en":"meaning","tone":4,"voices":["cn-f","tw-m","cn-m","tw-f"]}]],"places":[{"en":"hello, thank you","row":[{"k":"nihao_xiexie","v":"cn-f","place":"Mainland","text":"你好，谢谢","py":"nǐ hǎo, xièxie"},{"k":"nihao_xiexie","v":"tw-f","place":"Taiwan","text":"你好，謝謝","py":"nǐ hǎo, xièxie"},{"k":"nihao_doze","v":"hk-f","place":"Cantonese","text":"你好，多謝","py":"nei5 hou2, do1 ze6"}]},{"en":"bicycle","row":[{"k":"bike_cn","v":"cn-f","place":"Mainland","text":"自行车","py":"zìxíngchē"},{"k":"bike_tw","v":"tw-f","place":"Taiwan","text":"腳踏車","py":"jiǎotàchē"},{"k":"bike_hk","v":"hk-f","place":"Cantonese","text":"單車","py":"daan1 ce1"}]},{"en":"taxi","row":[{"k":"taxi_cn","v":"cn-f","place":"Mainland","text":"出租车","py":"chūzūchē"},{"k":"taxi_tw","v":"tw-f","place":"Taiwan","text":"計程車","py":"jìchéngchē"},{"k":"taxi_hk","v":"hk-f","place":"Cantonese","text":"的士","py":"dik1 si2"}]}]};</script>
+<script>
+  (function () {
+    var D = window.CP_DATA, audio = new Audio();
+    // tone shapes on a 5-level scale (level 5 = top): 1 = 55 high flat, 2 = 35 rising, 3 = 21 low, 4 = 51 falling
+    var Y = function (l) { return 5 + (5 - l) * 10; };
+    var SHAPE = { 1: "M6 " + Y(5) + " L94 " + Y(5), 2: "M6 " + Y(3) + " L94 " + Y(5),
+                  3: "M6 " + Y(2) + " Q38 " + (Y(1) + 2) + " 94 " + Y(1), 4: "M6 " + Y(5) + " L94 " + Y(1) };
+    var svg = function (t) { return '<svg viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true"><path d="' + SHAPE[t] + '"/></svg>'; };
+    function play(file, el) {
+      audio.pause(); audio = new Audio("/cp/audio/" + file + ".mp3");
+      if (el) { el.classList.remove("playing"); void el.offsetWidth; el.classList.add("playing");
+                audio.addEventListener("ended", function () { el.classList.remove("playing"); }); }
+      audio.play().catch(function () {});
+    }
+    // four tones
+    var setIx = 0, chips = document.getElementById("sets"), grid = document.getElementById("tones");
+    function drawSet() {
+      chips.innerHTML = D.sets.map(function (s, i) { return '<button type="button" aria-pressed="' + (i === setIx) + '" data-i="' + i + '">' + s.map(function (c) { return c.hans; }).join("") + '</button>'; }).join("");
+      grid.innerHTML = D.sets[setIx].map(function (c) {
+        return '<button type="button" class="cell" data-k="' + c.k + '"><span class="tzg">' + svg(c.tone) + '<b>' + c.hans + '</b></span>' +
+               '<span class="py">' + c.py + '</span><span class="en">' + c.en + '</span></button>';
+      }).join("");
+    }
+    chips.addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; setIx = +b.dataset.i; drawSet(); });
+    grid.addEventListener("click", function (e) { var b = e.target.closest(".cell"); if (!b) return; play(b.dataset.k + "_tw-f", b); SW_EV("cp_tone_play", { k: b.dataset.k }); });
+    drawSet();
+    // listen and pick: five rounds, every drill voice the app uses (clips the app skips are left out)
+    var pool = [].concat.apply([], D.sets), cur = null, round = 0, marks = [];
+    var picks = document.getElementById("picks"), reveal = document.getElementById("reveal"), dots = document.getElementById("dots");
+    picks.innerHTML = [1, 2, 3, 4].map(function (t) { return '<button type="button" data-t="' + t + '" aria-label="Tone ' + t + '">' + svg(t) + '</button>'; }).join("");
+    function drawDots() { dots.innerHTML = [0, 1, 2, 3, 4].map(function (i) { return '<i class="' + (marks[i] || "") + '"></i>'; }).join(""); }
+    function next() {
+      if (round >= 5) { round = 0; marks = []; }
+      var c = pool[Math.floor(Math.random() * pool.length)], v = c.voices[Math.floor(Math.random() * c.voices.length)];
+      cur = { c: c, file: c.k + "_" + v, answered: false };
+      [].forEach.call(picks.children, function (b) { b.className = ""; b.disabled = false; });
+      reveal.innerHTML = "Which tone?"; drawDots(); play(cur.file);
+    }
+    document.getElementById("listen").addEventListener("click", function () { if (!cur || cur.answered) next(); else play(cur.file); });
+    picks.addEventListener("click", function (e) {
+      var b = e.target.closest("button"); if (!b || !cur || cur.answered) return;
+      cur.answered = true; var ok = +b.dataset.t === cur.c.tone;
+      b.classList.add(ok ? "right" : "wrong"); picks.children[cur.c.tone - 1].classList.add("right");
+      [].forEach.call(picks.children, function (x) { x.disabled = true; });
+      marks[round++] = ok ? "r" : "w"; drawDots();
+      reveal.innerHTML = "<b>" + cur.c.hans + "</b>" + cur.c.py + " · " + cur.c.en +
+        (round >= 5 ? "<br><strong>" + marks.filter(function (m) { return m === "r"; }).length + " / 5</strong> · press play for five more" : "");
+      SW_EV("cp_pick", { ok: ok ? 1 : 0 });
+    });
+    drawDots();
+    // one word, three places
+    document.getElementById("places").innerHTML = D.places.map(function (p) {
+      return '<div class="prow"><span class="what">' + p.en + '</span>' + p.row.map(function (r) {
+        return '<button type="button" class="say" data-f="' + r.k + "_" + r.v + '"><small>' + r.place + '</small><b>' + r.text + '</b><span>' + r.py + '</span></button>';
+      }).join("") + '</div>';
+    }).join("");
+    document.getElementById("places").addEventListener("click", function (e) { var b = e.target.closest(".say"); if (!b) return; play(b.dataset.f, b); SW_EV("cp_place_play", { f: b.dataset.f }); });
+  })();
+</script>
+<!-- Cloudflare Web Analytics — 프록시 없이 도는 비콘. 쿠키도, 개인 식별도 없다. --><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "3be86aab8cf24999be8e5d44456fee80"}'></script>
+<!-- 앱스토어 클릭 계측 — ct= 는 설치를 가르지만 클릭은 못 센다. 둘을 같이 봐야 이탈이 보인다.
+     식별자는 세션마다 새로 만드는 난수다. 쿠키도, IP 저장도, 개인 식별도 없다. -->
+<script>
+(function () {
+  var SITE = "swiftian.com";
+  function sid() {
+    try {
+      var k = "sw_sid", v = sessionStorage.getItem(k);
+      if (!v) { v = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2)); sessionStorage.setItem(k, v); }
+      return v;
+    } catch (_) { return "anon"; }
+  }
+  document.addEventListener("click", function (e) {
+    var a = e.target && e.target.closest && e.target.closest('a[href*="apps.apple.com"]');
+    if (!a) return;
+    var m = a.href.match(/id(\d+)/);
+    try {
+      fetch("https://claude-proxy-web.ilbulyori.workers.dev/events", {
+        method: "POST",
+        keepalive: true,
+        headers: { "content-type": "application/json", "x-device-id": sid() },
+        body: JSON.stringify({
+          meta: { app: SITE, build: "web", os: "web", locale: (navigator.language || "").slice(0, 8) },
+          events: [{
+            name: "appstore_click",
+            ts: Date.now() / 1000,
+            props: { site: SITE, app: m ? m[1] : "", path: location.pathname.slice(0, 64) }
+          }]
+        })
+      }).catch(function () {});
+    } catch (_) {}
+  }, true);
+})();
+</script>
+</body>
+</html>

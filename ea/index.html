@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>English Accents · Swiftian</title>
+  <meta name="description" content="Twenty-four songs in three albums, each with a short animated film.">
+  <meta name="theme-color" content="#0b0f1a">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png?v=20261103">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=20261103">
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png?v=20261103">
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png?v=20261103">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20261103">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Swiftian">
+  <meta property="og:description" content="Twenty-four songs in three albums, each with a short animated film.">
+  <link rel="canonical" href="https://swiftian.com/ea/">
+  <meta property="og:url" content="https://swiftian.com/ea/">
+  <meta property="og:image" content="https://media.coordigo.com/chillfriends/posters/Chillfriends_E01.jpg?v=2">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#0b0f1a; --bg-2:#0e1422; --ink:#eef2ff; --muted:#9aa6c4; --line:rgba(255,255,255,.10);
+      --c1:#6ee7f9; --c2:#818cf8;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0}
+    body{
+      font-family:"Inter",-apple-system,system-ui,sans-serif;color:var(--ink);
+      background:
+        radial-gradient(1200px 700px at 82% -12%, rgba(129,140,248,.20), transparent 60%),
+        radial-gradient(1000px 640px at 0% 8%, rgba(110,231,249,.14), transparent 55%),
+        linear-gradient(180deg,var(--bg-2),var(--bg));
+      min-height:100vh;-webkit-font-smoothing:antialiased
+    }
+    .wrap{position:relative;z-index:1;width:100%;max-width:880px;margin:0 auto;padding:0 22px}
+
+    nav{display:flex;align-items:center;justify-content:flex-end;gap:11px;padding:26px 0 8px;min-height:34px}
+    nav img{width:34px;height:34px;display:block;image-rendering:pixelated}
+    nav .name{font-family:"Space Grotesk";font-weight:700;font-size:19px;letter-spacing:.2px;flex:1}
+    .lang-toggle{font-size:13px;font-weight:600;color:var(--muted);border:1px solid var(--line);
+      background:none;border-radius:999px;padding:7px 14px;cursor:pointer;font-family:inherit;
+      transition:color .14s ease,border-color .14s ease}
+    .lang-toggle:hover{color:var(--c1);border-color:rgba(110,231,249,.4)}
+    .lang-toggle.hide{display:none}
+
+    .kicker{font-family:"Space Grotesk";font-weight:600;font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+      color:var(--muted);margin:34px 0 10px}
+    h1{font-family:"Space Grotesk";font-weight:700;font-size:clamp(32px,6vw,50px);line-height:1.05;margin:0;letter-spacing:-1.2px;
+      background:linear-gradient(100deg,#fff 30%,var(--c1) 75%,var(--c2));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .intro{color:var(--muted);font-size:clamp(15px,2.3vw,17px);line-height:1.65;margin:14px 0 0;max-width:600px}
+
+    /* ── 플레이어 ── */
+    .stage{margin:28px 0 0;border:1px solid var(--line);border-radius:22px;overflow:hidden;
+      background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02))}
+    .video-box{background:#000;display:flex;justify-content:center}
+    .video-box video{display:block;width:100%;max-height:min(66vh,560px);object-fit:contain;background:#000}
+    /* Listen 은 그 회차의 그림 위에서 듣는다 — 앱 아이콘을 재생면에 두면 연재물이 광고로 읽힌다
+       (founder 2026-09-15: "red panda 를 넣으면 chillfriends app 과 혼동된다") */
+    .audio-box{position:relative;width:100%;display:flex;flex-direction:column;justify-content:flex-end;
+      gap:14px;padding:22px;background:#000;overflow:hidden}
+    .audio-box #aposter{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+    .audio-box .a-veil{position:absolute;inset:0;                       /* 컨트롤이 앉을 자리만 어둡게 */
+      background:linear-gradient(180deg,rgba(6,9,16,0) 55%,rgba(6,9,16,.78))}
+    .audio-box audio{position:relative;width:100%}
+    .modes{display:flex;gap:4px;padding:3px;border:1px solid var(--line);border-radius:999px}
+    .mode{font:inherit;font-size:12.5px;font-weight:600;color:var(--muted);background:none;border:0;
+      padding:5px 13px;border-radius:999px;cursor:pointer}
+    .mode.on{background:var(--c1);color:#0b0f1a}
+
+    /* ── 다른 사이트 통로 ── */
+    .more{margin:52px 0 0;padding-top:24px;border-top:1px solid var(--line)}
+    .more h2{font-family:"Space Grotesk";font-weight:600;font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+      color:var(--muted);margin:0 0 12px}
+    .site-row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding:7px 0;font-size:14.5px}
+    .site-row a{color:var(--c1);text-decoration:none;font-weight:600;font-family:"Space Grotesk"}
+    .site-row a:hover{text-decoration:underline;text-underline-offset:3px}
+    .site-row .d{color:var(--muted)}
+    .site-row .soon{font-size:11.5px;color:var(--muted);border:1px dashed var(--line);border-radius:999px;padding:2px 9px;opacity:.8}
+
+    /* ── 엽서 한 자리 + 두 갈래 문 (PLAN-2026-09-15-landing §4-2) ──
+       엽서는 여기서 목적지가 아니라 갈림길의 미끼다. 한 장만 보여 주고 문 두 개를 연다. */
+    .also{display:flex;gap:26px;margin:46px 0 0;padding-top:22px;border-top:1px solid var(--line)}
+    .also a{display:flex;flex-direction:column;align-items:center;gap:7px;color:var(--muted);text-decoration:none;font-size:13px}
+    .also a:hover{color:var(--ink)}
+    .also img{width:52px;height:52px;border-radius:12px}
+    .pc{margin:52px 0 0;padding-top:24px;border-top:1px solid var(--line)}
+    .pc h2{font-family:"Space Grotesk";font-weight:600;font-size:13px;letter-spacing:.14em;
+      text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+    .pc-box{display:grid;grid-template-columns:minmax(0,1.35fr) 1fr;gap:20px;align-items:start}
+    .pc-box video{width:100%;aspect-ratio:16/9;display:block;border-radius:14px;border:1px solid var(--line);background:#000}
+    .pc-side{display:flex;flex-direction:column;gap:5px;padding-top:2px}
+    .pc-n{font-size:11.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--c1)}
+    .pc-t{font-family:"Space Grotesk";font-weight:600;font-size:18px;line-height:1.3}
+    .pc-v{margin:4px 0 0;color:var(--muted);font-size:14px;line-height:1.6;white-space:pre-line}
+    .pc-more{align-self:flex-start;margin-top:10px;font:inherit;font-size:12.5px;font-weight:600;
+      color:var(--muted);background:none;border:1px solid var(--line);border-radius:999px;
+      padding:6px 14px;cursor:pointer;transition:color .14s ease,border-color .14s ease}
+    .pc-more:hover{color:var(--c1);border-color:rgba(110,231,249,.4)}
+    .pc-note{margin:12px 0 0;font-size:12px;line-height:1.5;color:var(--muted);opacity:.75}
+
+    .doors{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0 0}
+    .door{display:flex;align-items:center;gap:13px;flex-wrap:wrap;text-decoration:none;color:inherit;
+      border:1px solid var(--line);border-radius:16px;padding:15px 17px;
+      background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
+      transition:border-color .13s ease,transform .13s ease}
+    .door:hover{transform:translateY(-2px);border-color:rgba(110,231,249,.35)}
+    .door img{width:46px;height:46px;border-radius:11px;border:1px solid rgba(255,255,255,.10);
+      box-shadow:0 4px 12px rgba(0,0,0,.35);flex:none}
+    .door .d-name{font-family:"Space Grotesk";font-weight:600;font-size:15.5px;color:var(--c1)}
+    .door .d-line{flex:1 1 100%;color:var(--muted);font-size:13.5px;line-height:1.45}
+
+    @media (max-width:640px){
+      .pc-box{grid-template-columns:1fr}
+      .doors{grid-template-columns:1fr}
+    }
+
+    footer{position:relative;z-index:1;text-align:center;font-size:13px;padding:44px 22px 34px;color:var(--muted)}
+    footer a{color:var(--c1);text-decoration:none}
+    footer a:hover{text-decoration:underline;text-underline-offset:3px}
+    footer a.mail{display:inline-flex;vertical-align:-3px}
+    footer a.mail:hover{text-decoration:none;opacity:.75}
+    footer a.mail svg{width:16px;height:16px}
+    footer .sep{opacity:.35;margin:0 9px}
+
+    /* ── 개편 2026-09-15 ─────────────────────────────────────────────
+       1. `hidden` 을 존중한다. `.audio-box{display:flex}` 와 `video{display:block}` 가
+          UA 의 `[hidden]{display:none}` 을 이겨서, Watch 에서도 빈 오디오 플레이어가,
+          Listen 에서도 영상이 그대로 남아 있었다 (founder 2026-09-15).
+       2. 영상이 1:1(1080×1080)이다. 880px 폭에 꽉 채우면 화면 하나를 통째로 먹고
+          양옆이 검은 띠가 된다. 정사각은 정사각 자리에 두고, 남는 폭을 정보에 준다. */
+    .video-box video[hidden],
+    .audio-box[hidden]{display:none}
+
+    .stage{display:grid;grid-template-columns:minmax(0,420px) 1fr;align-items:start}
+    .video-box{aspect-ratio:1/1}
+    .video-box video{width:100%;height:100%;max-height:none}
+    .audio-box{height:100%}
+
+    /* ── 트랙리스트 (2026-10-14): 버튼 카드 24장 대신, 정사각 옆 빈 칸에 한 앨범씩 제목만 ──
+       번호·회차 표기는 없다 (founder 10/14). 지금 곡은 밝게, 재생 중이면 막대 셋이 움직인다. */
+    .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+    .side{display:flex;flex-direction:column;min-height:100%;padding:22px 24px 18px;border-left:1px solid var(--line)}
+    .album{display:flex;align-items:center;gap:8px;margin:0 0 8px}
+    .a-name{flex:1;min-width:0;font-family:"Space Grotesk";font-weight:600;font-size:12px;letter-spacing:.14em;
+      text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .arrow{flex:none;width:28px;height:28px;display:grid;place-items:center;padding:0 0 2px;font:500 18px/1 Inter,system-ui;
+      color:var(--muted);background:none;border:1px solid var(--line);border-radius:50%;cursor:pointer;
+      transition:color .14s ease,border-color .14s ease,opacity .14s ease}
+    .arrow:hover{color:var(--ink);border-color:rgba(255,255,255,.3)}
+    .arrow:disabled{opacity:.25;cursor:default;color:var(--muted);border-color:var(--line)}
+    .tracks{list-style:none;margin:0;padding:0}
+    .tracks li+li .tr{border-top:1px solid rgba(255,255,255,.06)}
+    .tr{width:100%;display:flex;align-items:center;gap:12px;padding:9px 2px;text-align:left;cursor:pointer;
+      font:500 14.5px/1.35 Inter,system-ui,sans-serif;color:var(--muted);background:none;border:0;
+      transition:color .14s ease}
+    .tr:hover{color:var(--ink)}
+    .tr .t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .tr.on{color:var(--ink)}
+    .eq{flex:none;width:12px;height:11px;display:flex;align-items:flex-end;gap:2px;opacity:0}
+    .eq i{flex:1;height:30%;background:var(--c1);border-radius:1px}
+    .tr.on .eq{opacity:1}
+    .playing .tr.on .eq i{animation:eq .9s ease-in-out infinite alternate}
+    .playing .tr.on .eq i:nth-child(2){animation-delay:-.45s}
+    .playing .tr.on .eq i:nth-child(3){animation-delay:-.2s}
+    @keyframes eq{from{height:20%}to{height:100%}}
+    @media (prefers-reduced-motion:reduce){.playing .tr.on .eq i{animation:none;height:70%}}
+    .foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding-top:16px}
+    .full-link{font-size:12px;font-weight:600;color:var(--muted);text-decoration:none;
+      border-bottom:1px solid transparent;transition:color .13s ease,border-color .13s ease}
+    .full-link:hover{color:var(--c1);border-bottom-color:currentColor}
+
+    @media (max-width:820px){
+      .stage{grid-template-columns:1fr}
+      .side{border-left:0;border-top:1px solid var(--line);padding:16px 18px 16px}
+    }
+      /* swiftian.com's three pages: top tabs on the header line (RDM-swiftian-three-pages) */
+    nav.tabs-bar{display:flex;align-items:flex-end;justify-content:flex-start;gap:11px;padding:22px 0 0;min-height:0;border-bottom:1px solid rgba(255,255,255,.22)}
+    .tabs{display:flex;gap:8px}
+    .tab{box-sizing:border-box;width:168px;min-height:44px;display:flex;align-items:center;gap:9px;padding:6px 10px 6px 8px;margin-bottom:-1px;
+      color:var(--muted);text-decoration:none;font-size:13.5px;line-height:1.15;background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.16);border-bottom:none;border-radius:10px 10px 0 0}
+    .tab img,.site img{display:block;flex:none;width:32px;height:32px;image-rendering:pixelated}
+    .tab:hover{border-color:rgba(238,242,255,.75);color:var(--ink)}
+    .tab[aria-current]{border-color:var(--ink);border-top-width:3px;padding-top:4px;color:var(--ink)}
+    nav.tabs-bar .lang-toggle{margin:0 0 8px auto}
+    /* other sites: light round-rect buttons */
+    .sites{display:flex;flex-wrap:wrap;gap:8px;margin:46px 0 0;padding-top:22px;border-top:1px solid var(--line)}
+    .site{box-sizing:border-box;width:168px;min-height:42px;display:flex;align-items:center;gap:8px;padding:3px 10px 3px 3px;
+      color:#0b0f1a;text-decoration:none;font-size:13.5px;font-weight:500;background:#eef1f7;border:2px solid #eef1f7;border-radius:10px}
+    .site img{border-radius:6px}
+    .site:hover{border-color:#0b0f1a}
+    @media (max-width:540px){
+      .tabs{flex:1 1 100%;gap:6px}
+      .tab{width:auto;flex:1;flex-direction:column;text-align:center;gap:5px;padding:8px 4px;font-size:12px}
+      .tab[aria-current]{padding-top:6px}
+      nav.tabs-bar{flex-wrap:wrap}
+      nav.tabs-bar .lang-toggle{order:-1;margin:0 0 10px auto}
+      .site{flex:1;width:auto}
+    }
+</style>
+  <!-- family-ld:start -->
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "@id": "https://swiftian.com/#org", "name": "Swiftian Inc.", "url": "https://swiftian.com/", "logo": "https://swiftian.com/apple-touch-icon.png", "sameAs": ["https://pythoneer.io/", "https://spriteer.com/", "https://iflipbook.com/", "https://coordigo.com/"]}</script>
+  <!-- family-ld:end -->
+  <!-- hreflang:start -->
+  <link rel="alternate" hreflang="en" href="https://swiftian.com/ea/">
+  <link rel="alternate" hreflang="ko" href="https://swiftian.com/ko/">
+  <link rel="alternate" hreflang="ja" href="https://swiftian.com/ja/">
+  <link rel="alternate" hreflang="zh-Hans" href="https://swiftian.com/zh-hans/">
+  <link rel="alternate" hreflang="zh-Hant" href="https://swiftian.com/zh-hant/">
+  <link rel="alternate" hreflang="es" href="https://swiftian.com/es/">
+  <link rel="alternate" hreflang="fr" href="https://swiftian.com/fr/">
+  <link rel="alternate" hreflang="de" href="https://swiftian.com/de/">
+  <link rel="alternate" hreflang="it" href="https://swiftian.com/it/">
+  <link rel="alternate" hreflang="pt-BR" href="https://swiftian.com/pt-br/">
+  <link rel="alternate" hreflang="ru" href="https://swiftian.com/ru/">
+  <link rel="alternate" hreflang="tr" href="https://swiftian.com/tr/">
+  <link rel="alternate" hreflang="id" href="https://swiftian.com/id/">
+  <link rel="alternate" hreflang="vi" href="https://swiftian.com/vi/">
+  <link rel="alternate" hreflang="th" href="https://swiftian.com/th/">
+  <link rel="alternate" hreflang="hi" href="https://swiftian.com/hi/">
+  <link rel="alternate" hreflang="ar" href="https://swiftian.com/ar/">
+  <link rel="alternate" hreflang="x-default" href="https://swiftian.com/ea/">
+  <!-- hreflang:end -->
+</head>
+<body>
+  <div class="wrap">
+    <nav class="tabs-bar" aria-label="Swiftian">
+      <div class="tabs"><a class="tab" href="/"><img src="/assets/tabs/cf-32.png" srcset="/assets/tabs/cf-32.png 1x, /assets/tabs/cf-64.png 2x, /assets/tabs/cf-96.png 3x" width="32" height="32" alt=""><span>Chillfriends</span></a><a class="tab" href="/ea/" aria-current="page"><img src="/assets/tabs/ea-32.png" srcset="/assets/tabs/ea-32.png 1x, /assets/tabs/ea-64.png 2x, /assets/tabs/ea-96.png 3x" width="32" height="32" alt=""><span>English Accents</span></a><a class="tab" href="/cp/"><img src="/assets/tabs/cp-32.png" srcset="/assets/tabs/cp-32.png 1x, /assets/tabs/cp-64.png 2x, /assets/tabs/cp-96.png 3x" width="32" height="32" alt=""><span>Chinese<br>Pronunciation</span></a></div>
+      <button class="lang-toggle hide" id="langToggle" type="button"></button>
+    </nav>
+
+
+    <div class="stage">
+      <div class="video-box">
+        <video id="player" controls playsinline preload="metadata"></video>
+        <div class="audio-box" id="audioBox" hidden>
+          <img id="aposter" alt="">
+          <div class="a-veil"></div>
+          <audio id="aplayer" controls preload="none"></audio>
+        </div>
+      </div>
+      <div class="side">
+        <h1 class="sr" id="nowTitle">Slow Replies, Heavy Days</h1>
+        <div class="album">
+          <button type="button" class="arrow" id="albPrev">&lsaquo;</button>
+          <div class="a-name" id="nowEp">Quiet Things We Share</div>
+          <button type="button" class="arrow" id="albNext">&rsaquo;</button>
+        </div>
+        <ol class="tracks" id="tracks"></ol>
+        <div class="foot">
+          <div class="modes">
+            <button type="button" class="mode on" id="mWatch" data-t="watch">Watch</button>
+            <button type="button" class="mode" id="mListen" data-t="listen">Listen</button>
+          </div>
+          <a class="full-link" id="fullLink" href="#" target="_blank" rel="noopener" data-t="fullEp">Full version</a>
+        </div>
+      </div>
+    </div>
+
+
+    <section class="sites" aria-label="Also from Swiftian"><a class="site" href="https://pythoneer.io/?ct=web-sw-py"><img src="/assets/tabs/site-pythoneer-32.png" srcset="/assets/tabs/site-pythoneer-32.png 1x, /assets/tabs/site-pythoneer-64.png 2x, /assets/tabs/site-pythoneer-96.png 3x" width="32" height="32" alt=""><span>pythoneer.io</span></a><a class="site" href="https://iflipbook.com/?ct=web-sw-if"><img src="/assets/tabs/site-iflipbook-32.png" srcset="/assets/tabs/site-iflipbook-32.png 1x, /assets/tabs/site-iflipbook-64.png 2x, /assets/tabs/site-iflipbook-96.png 3x" width="32" height="32" alt=""><span>iflipbook.com</span></a></section>
+
+
+
+
+  </div>
+
+  <footer>
+    <span>&copy; 2026 Swiftian Inc.</span>
+    <span class="sep">&middot;</span>
+    <a href="/privacy/" data-t="privacy">Privacy Policy</a>
+    <span class="sep">&middot;</span>
+    <a class="mail email" data-u="hello" data-d="swiftian.com" href="#" aria-label="Email us" title="Email us">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/>
+      </svg>
+    </a>
+  </footer>
+
+  <script src="/postcards/book.js"></script>
+  <script>
+  // ── 에피소드 목록 — EA 앱과 같은 원본 (english-accents-media 워커에서 스트리밍) ──
+  var MEDIA  = "https://media.coordigo.com/chillfriends/teasers/";
+  var FULL   = "https://media.coordigo.com/chillfriends/full/";
+  var POSTER = "https://media.coordigo.com/chillfriends/posters/";
+  // The media is cached immutable at the edge, which is only safe while the URL
+  // changes with the file. Bump this whenever the episodes are re-rendered.
+  var MV = "?v=2";
+  var ALBUMS = {1:"Quiet Things We Share", 2:"Things We Never Had to Explain", 3:"Soft Launch Season"};
+  var EPISODES = [
+    {n:1,v:1,t:"Slow Replies, Heavy Days"},{n:2,v:1,t:"The Day That Wouldn’t End"},
+    {n:3,v:1,t:"Reliable Until It Hurts"},{n:4,v:1,t:"Almost Saying It"},
+    {n:5,v:1,t:"What We Outgrow, What We Keep"},{n:6,v:1,t:"Apologies We Forget to Say"},
+    {n:7,v:1,t:"Different Mornings"},{n:8,v:1,t:"The Last Slice of Quiet"},
+    {n:9,v:2,t:"Small Places, Big Opinions"},{n:10,v:2,t:"Sleep Is a Fact-Checker"},
+    {n:11,v:2,t:"Menus We Pretend to Read"},{n:12,v:2,t:"Hope Has Bad UX"},
+    {n:13,v:2,t:"Carry-On Personality"},{n:14,v:2,t:"Calendar Noise"},
+    {n:15,v:2,t:"Care First, Analysis Later"},{n:16,v:2,t:"No Performance Required"},
+    {n:17,v:3,t:"Soft Launch"},{n:18,v:3,t:"Track Three"},
+    {n:19,v:3,t:"Three Percent Honest"},{n:20,v:3,t:"Borrowed Weather"},
+    {n:21,v:3,t:"VIP Anxiety"},{n:22,v:3,t:"Parking Lot Cinema"},
+    {n:23,v:3,t:"Designer Cup"},{n:24,v:3,t:"No Label Yet"}
+  ];
+
+  // ── 2개 언어 토글: 사용자 언어 ⇄ English ──
+  var I18N = {
+    "ko":      {name:"한국어", desc:"세 장의 앨범, 스물네 곡. 곡마다 짧은 애니메이션이 있습니다.", watch:"보기", listen:"듣기", coLine:"같은 스물네 곡이 Coordigo에서도 흐릅니다 — 손끝에서 풍경이 떠오르는 동안.", fullEp:"전체 영상", vol:"", moreTitle:"우리가 만드는 것들", ifDesc:"손으로 그리는 프레임 애니메이션",
+                pyDesc:"38개의 게임을 파내고, 나만의 게임을 만들기", cpDesc:"베이징, 타이베이, 홍콩 — 한 문장씩", coDesc:"손끝에서 풍경이 떠오른다",
+                privacy:"개인정보 처리방침",
+                pcTitle:"엽서 한 장, 아무거나", pcAnother:"다른 장 \u21bb",
+                pcNote:"아직 어느 앱의 기능도 아니다 — 스튜디오의 습작이다.",
+                doorIf:"이들을 그린 손", doorCo:"이들이 걷는 땅"},
+    "ja":      {name:"日本語", desc:"3枚のアルバム、24曲。どの曲にも短いアニメーションがあります。", watch:"見る", listen:"聴く", coLine:"同じ二十四曲が Coordigo でも流れます — 指の先から風景が現れるあいだ。", fullEp:"フルバージョン", moreTitle:"私たちの作品", ifDesc:"手描きのコマ送りアニメ",
+                pyDesc:"38のゲームを掘り出し、自分のゲームを作る", cpDesc:"北京、台北、香港 — 一文ずつ", coDesc:"指の先から風景が現れる",
+                privacy:"プライバシーポリシー"},
+    "zh-Hans": {name:"简体中文", desc:"三张专辑，二十四首歌，每首都配有一段短动画。", watch:"观看", listen:"收听", coLine:"同样这二十四首也在 Coordigo 里播放——风景在指尖浮现的时候。", fullEp:"完整版", moreTitle:"我们的作品", ifDesc:"手绘逐帧动画",
+                pyDesc:"挖出 38 个游戏，再做一个你自己的", cpDesc:"北京、台北、香港，一句一句", coDesc:"风景在指尖浮现",
+                privacy:"隐私政策"},
+    "zh-Hant": {name:"繁體中文", desc:"三張專輯，二十四首歌，每首都配有一段短動畫。", watch:"觀看", listen:"收聽", coLine:"同樣這二十四首也在 Coordigo 裡播放——風景在指尖浮現的時候。", fullEp:"完整版", moreTitle:"我們的作品", ifDesc:"手繪逐格動畫",
+                pyDesc:"挖出 38 個遊戲，再做一個你自己的", cpDesc:"北京、台北、香港，一句一句", coDesc:"風景在指尖浮現",
+                privacy:"隱私權政策"},
+    "es":      {name:"Español", desc:"Veinticuatro canciones en tres álbumes, cada una con un breve corto animado.", watch:"Ver", listen:"Escuchar", coLine:"Las mismas veinticuatro canciones suenan en Coordigo, mientras un paisaje aparece bajo tu dedo.", fullEp:"Versión completa", moreTitle:"Más de nosotros", ifDesc:"animación dibujada a mano, cuadro a cuadro",
+                pyDesc:"desentierra 38 juegos y luego crea el tuyo", cpDesc:"Pekín, Taipéi, Hong Kong — frase a frase", coDesc:"un paisaje aparece bajo tu dedo",
+                privacy:"Política de privacidad"},
+    "fr":      {name:"Français", desc:"Vingt-quatre chansons en trois albums, chacune avec un court film d’animation.", watch:"Regarder", listen:"Écouter", coLine:"Les mêmes vingt-quatre chansons passent dans Coordigo, pendant qu’un paysage apparaît sous le doigt.", fullEp:"Version complète", moreTitle:"Nos créations", ifDesc:"animation dessinée à la main, image par image",
+                pyDesc:"déterrez 38 jeux, puis créez le vôtre", cpDesc:"Pékin, Taipei, Hong Kong — phrase par phrase", coDesc:"un paysage apparaît sous le doigt",
+                privacy:"Politique de confidentialité"},
+    "de":      {name:"Deutsch", desc:"Vierundzwanzig Songs auf drei Alben, jeder mit einem kurzen Animationsfilm.", watch:"Ansehen", listen:"Anhören", coLine:"Dieselben vierundzwanzig Lieder laufen in Coordigo, während eine Landschaft unter dem Finger hervorkommt.", fullEp:"Ganze Version", moreTitle:"Mehr von uns", ifDesc:"handgezeichnete Animation, Bild für Bild",
+                pyDesc:"grab 38 Spiele aus, dann bau dein eigenes", cpDesc:"Peking, Taipeh, Hongkong — Satz für Satz", coDesc:"eine Landschaft kommt unter dem Finger hervor",
+                privacy:"Datenschutz"},
+    "it":      {name:"Italiano", desc:"Ventiquattro canzoni in tre album, ognuna con un breve film d’animazione.", watch:"Guarda", listen:"Ascolta", coLine:"Le stesse ventiquattro canzoni suonano in Coordigo, mentre un paesaggio affiora sotto il dito.", fullEp:"Versione completa", moreTitle:"Altro da noi", ifDesc:"animazione disegnata a mano, fotogramma per fotogramma",
+                pyDesc:"scava 38 giochi, poi crea il tuo", cpDesc:"Pechino, Taipei, Hong Kong — frase per frase", coDesc:"un paesaggio affiora sotto il dito",
+                privacy:"Privacy"},
+    "pt":      {name:"Português", desc:"Vinte e quatro músicas em três álbuns, cada uma com um curta animado.", watch:"Ver", listen:"Ouvir", coLine:"As mesmas vinte e quatro canções tocam no Coordigo, enquanto uma paisagem aparece sob o dedo.", fullEp:"Versão completa", moreTitle:"Mais do estúdio", ifDesc:"animação desenhada à mão, quadro a quadro",
+                pyDesc:"desenterre 38 jogos e depois crie o seu", cpDesc:"Pequim, Taipé, Hong Kong — frase a frase", coDesc:"uma paisagem aparece sob o dedo",
+                privacy:"Privacidade"},
+    "ru":      {name:"Русский", desc:"Двадцать четыре песни в трёх альбомах, у каждой — короткий анимационный фильм.", watch:"Смотреть", listen:"Слушать", coLine:"Те же двадцать четыре песни звучат в Coordigo, пока пейзаж проступает под пальцем.", fullEp:"Полная версия", moreTitle:"Ещё от нас", ifDesc:"рисованная анимация, кадр за кадром",
+                pyDesc:"откопайте 38 игр, а потом сделайте свою", cpDesc:"Пекин, Тайбэй, Гонконг — фраза за фразой", coDesc:"пейзаж проступает под пальцем",
+                privacy:"Конфиденциальность"},
+    "tr":      {name:"Türkçe", desc:"Üç albümde yirmi dört şarkı; her birinin kısa bir animasyon filmi var.", watch:"İzle", listen:"Dinle", coLine:"Aynı yirmi dört şarkı Coordigo’da da çalar — parmağının altında bir manzara belirirken.", fullEp:"Tam sürüm", moreTitle:"Bizden daha fazlası", ifDesc:"kare kare el çizimi animasyon",
+                pyDesc:"38 oyunu kaz çıkar, sonra kendininkini yap", cpDesc:"Pekin, Taipei, Hong Kong — cümle cümle", coDesc:"parmağının altında bir manzara beliriyor",
+                privacy:"Gizlilik"},
+    "id":      {name:"Bahasa Indonesia", desc:"Dua puluh empat lagu dalam tiga album, masing-masing dengan film animasi pendek.", watch:"Tonton", listen:"Dengarkan", coLine:"Dua puluh empat lagu yang sama juga diputar di Coordigo, saat pemandangan muncul di bawah jarimu.", fullEp:"Versi lengkap", moreTitle:"Karya kami lainnya", ifDesc:"animasi gambar tangan, bingkai demi bingkai",
+                pyDesc:"gali 38 gim, lalu buat gimmu sendiri", cpDesc:"Beijing, Taipei, Hong Kong — kalimat demi kalimat", coDesc:"pemandangan muncul di bawah jarimu",
+                privacy:"Privasi"},
+    "vi":      {name:"Tiếng Việt", desc:"Hai mươi bốn bài hát trong ba album, mỗi bài kèm một đoạn phim hoạt hình ngắn.", watch:"Xem", listen:"Nghe", coLine:"Cũng hai mươi bốn bài hát ấy vang lên trong Coordigo, khi phong cảnh hiện lên dưới ngón tay.", fullEp:"Bản đầy đủ", moreTitle:"Sản phẩm khác", ifDesc:"hoạt hình vẽ tay, từng khung hình",
+                pyDesc:"đào lên 38 trò chơi, rồi tự làm trò của bạn", cpDesc:"Bắc Kinh, Đài Bắc, Hồng Kông — từng câu một", coDesc:"phong cảnh hiện lên dưới ngón tay",
+                privacy:"Quyền riêng tư"},
+    "th":      {name:"ไทย", desc:"ยี่สิบสี่เพลงในสามอัลบั้ม แต่ละเพลงมีแอนิเมชันสั้นหนึ่งเรื่อง", watch:"ดู", listen:"ฟัง", coLine:"ยี่สิบสี่เพลงเดียวกันนี้เล่นอยู่ใน Coordigo ขณะที่ภูมิทัศน์ปรากฏใต้ปลายนิ้ว", fullEp:"ฉบับเต็ม", moreTitle:"ผลงานอื่นของเรา", ifDesc:"แอนิเมชันวาดมือ ทีละเฟรม",
+                pyDesc:"ขุดเกม 38 เกมขึ้นมา แล้วสร้างเกมของคุณเอง", cpDesc:"ปักกิ่ง ไทเป ฮ่องกง — ทีละประโยค", coDesc:"ภูมิทัศน์ปรากฏใต้ปลายนิ้ว",
+                privacy:"ความเป็นส่วนตัว"},
+    "hi":      {name:"हिन्दी", desc:"तीन एल्बमों में चौबीस गाने, हर गाने के साथ एक छोटी एनिमेटेड फ़िल्म।", watch:"देखें", listen:"सुनें", coLine:"यही चौबीस गाने Coordigo में भी बजते हैं — जब उँगली के नीचे एक दृश्य उभरता है।", fullEp:"पूरा संस्करण", moreTitle:"हमारी और चीज़ें", ifDesc:"हाथ से बनी फ़्रेम-दर-फ़्रेम एनिमेशन",
+                pyDesc:"38 गेम खोद निकालिए, फिर अपना बनाइए", cpDesc:"बीजिंग, ताइपे, हांगकांग — एक-एक वाक्य", coDesc:"उँगली के नीचे एक दृश्य उभरता है",
+                privacy:"गोपनीयता नीति"},
+    "ar":      {name:"العربية", desc:"أربع وعشرون أغنية في ثلاثة ألبومات، لكل منها فيلم رسوم متحركة قصير.", watch:"مشاهدة", listen:"استماع", coLine:"الأغاني الأربع والعشرون نفسها تُشغَّل في Coordigo، بينما يظهر منظر تحت إصبعك.", fullEp:"النسخة الكاملة", rtl:true, moreTitle:"المزيد منّا", ifDesc:"رسوم متحركة مرسومة يدويًا، إطارًا بإطار",
+                pyDesc:"انبش 38 لعبة ثم اصنع لعبتك", cpDesc:"بكين، تايبيه، هونغ كونغ — جملةً جملة", coDesc:"منظر يظهر تحت إصبعك",
+                privacy:"سياسة الخصوصية"}
+  };
+  var EN = {desc:"Twenty-four songs in three albums, each with a short animated film.", watch:"Watch", listen:"Listen", coLine:"The same twenty-four songs play in Coordigo, while a landscape comes up under your finger.", fullEp:"Full version", moreTitle:"More from us", ifDesc:"hand-drawn animation, frame by frame",
+    pyDesc:"dig up 38 games, then make your own", cpDesc:"Beijing, Taipei, Hong Kong — one sentence at a time", coDesc:"a landscape comes up under your finger",
+    privacy:"Privacy Policy",
+    pcTitle:"A postcard, at random", pcAnother:"another one \u21bb",
+    pcNote:"Not a feature in either app — a study from the studio.",
+    doorIf:"the hands that drew them", doorCo:"the places they walk"};
+
+  function detect(){
+    var langs = navigator.languages || [navigator.language || "en"];
+    for (var i=0;i<langs.length;i++){
+      var l = langs[i], two = l.slice(0,2).toLowerCase();
+      if (two === "en") return "en";   // 영어가 목록에서 먼저 나오면 영어 — 뒤쪽의 다른 언어를 잡지 않는다
+      if (/^zh\b/.test(l)) return /tw|hk|mo|hant/i.test(l) ? "zh-Hant" : "zh-Hans";
+      if (I18N[two]) return two;
+    }
+    return "en";
+  }
+  // ── 언어 상태는 단 두 값: cur(지금 보는 언어)와 alt(이 방문자의 '자기 언어', 항상 en 이 아님) ──
+  // alt 는 ①?lang= 전달 ②과거 선택(저장) ③브라우저 감지 순으로 정해지고, 토글은 en ⇄ alt 만 오간다.
+  var alt = null, cur = "en", saved = null, savedAlt = null;
+  try { saved = localStorage.getItem("sw_lang"); savedAlt = localStorage.getItem("sw_lang_alt"); } catch(_){}
+  if (I18N[savedAlt]) alt = savedAlt;
+  var det = detect();
+  if (!alt && det !== "en" && I18N[det]) alt = det;
+  cur = (saved === "en") ? "en" : (I18N[saved] ? saved : (alt || "en"));
+  try {
+    var q = new URLSearchParams(location.search).get("lang");
+    if (q === "en") cur = "en";
+    else if (I18N[q]) { alt = q; cur = q; }
+  } catch(_){}
+  // A language page (/ja/, /ko/ …, written by ops web/locale-pages.py) names its language; it wins over saved and detected.
+  var PAGE = document.documentElement.getAttribute("data-lang");
+  if (PAGE && I18N[PAGE]) { alt = PAGE; cur = PAGE; }
+  if (cur !== "en" && cur !== alt) alt = cur;   // 불변식: cur 은 en 아니면 alt 다
+
+  var FAMILY = /^(swiftian\.com|iflipbook\.com|pythoneer\.io|coordigo\.com|spriteer\.com)$/;
+  function carryLang(){
+    document.querySelectorAll('a[href^="https://"]').forEach(function(a){
+      if (!FAMILY.test(a.hostname)) return;
+      try {
+        var u = new URL(a.href);
+        if (cur === "en" && !alt) u.searchParams.delete("lang");
+        else u.searchParams.set("lang", cur);
+        a.href = u.toString();
+      } catch(_){}
+    });
+  }
+
+  function apply(lang){
+    cur = (lang === "en" || !I18N[lang]) ? "en" : lang;
+    if (cur !== "en") alt = cur;
+    try {
+      localStorage.setItem("sw_lang", cur);
+      if (alt) localStorage.setItem("sw_lang_alt", alt);
+    } catch(_){}
+    var d = (cur === "en") ? EN : I18N[cur];
+    document.querySelectorAll("[data-t]").forEach(function(el){
+      var k = el.getAttribute("data-t");
+      if (d[k]) el.textContent = d[k];
+    });
+    document.documentElement.lang = cur;
+    document.documentElement.dir = (cur !== "en" && I18N[cur].rtl) ? "rtl" : "ltr";
+    var btn = document.getElementById("langToggle");
+    if (!alt){ btn.classList.add("hide"); }
+    else {
+      btn.classList.remove("hide");
+      btn.textContent = (cur === "en") ? I18N[alt].name : "English";
+    }
+    carryLang();
+  }
+  document.getElementById("langToggle").addEventListener("click", function(){
+    apply(cur === "en" ? alt : "en");
+  });
+
+  // ── 플레이어 + 권별 레일 ──
+  var player = document.getElementById("player");
+  var aplayer = document.getElementById("aplayer");
+  var audioBox = document.getElementById("audioBox");
+  var SONGS = "https://media.coordigo.com/chillfriends/songs/";   // 원곡만 — 티저보다 길고 영상보다 가볍다
+  var mode = "watch";
+  var curEp = EPISODES[0];
+  function pad(n){ return String(n).padStart(2, "0"); }
+  function setMode(m){
+    if (m === mode) return;
+    mode = m;
+    document.getElementById("mWatch").classList.toggle("on", m === "watch");
+    document.getElementById("mListen").classList.toggle("on", m === "listen");
+    player.hidden = (m !== "watch"); audioBox.hidden = (m !== "listen");
+    (m === "watch" ? aplayer : player).pause();
+    select(curEp, false);
+  }
+  var shown = 1;                                   // the album the list shows (the arrows), not always the one playing
+  var stage = document.querySelector(".stage");
+  function showAlbum(v){
+    shown = v;
+    document.getElementById("nowEp").textContent = ALBUMS[v];
+    var prev = document.getElementById("albPrev"), next = document.getElementById("albNext");
+    prev.disabled = !ALBUMS[v - 1]; prev.setAttribute("aria-label", ALBUMS[v - 1] || "");
+    next.disabled = !ALBUMS[v + 1]; next.setAttribute("aria-label", ALBUMS[v + 1] || "");
+    var list = document.getElementById("tracks");
+    list.innerHTML = "";
+    EPISODES.filter(function(e){ return e.v === v; }).forEach(function(e){
+      var li = document.createElement("li");
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "tr" + (e.n === curEp.n ? " on" : ""); b.dataset.n = e.n;
+      b.innerHTML = '<span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span class="t"></span>';
+      b.querySelector(".t").textContent = e.t;
+      if (e.n === curEp.n) b.setAttribute("aria-current", "true");
+      b.addEventListener("click", function(){ select(e, true); });
+      li.appendChild(b); list.appendChild(li);
+    });
+  }
+  function select(ep, play){
+    curEp = ep;
+    if (mode === "listen"){
+      aplayer.src = SONGS + pad(ep.n) + ".mp3";
+    } else {
+      player.src = MEDIA + "Chillfriends_E" + pad(ep.n) + ".mp4" + MV;
+      player.poster = POSTER + "Chillfriends_E" + pad(ep.n) + ".jpg" + MV;
+    }
+    document.getElementById("aposter").src = POSTER + "Chillfriends_E" + pad(ep.n) + ".jpg" + MV;
+    document.getElementById("fullLink").href = FULL + "Chillfriends_E" + pad(ep.n) + ".mp4" + MV;
+    document.getElementById("nowTitle").textContent = ep.t;
+    showAlbum(ep.v);
+    if (play) (mode === "listen" ? aplayer : player).play().catch(function(){});
+  }
+  document.getElementById("albPrev").addEventListener("click", function(){ if (ALBUMS[shown - 1]) showAlbum(shown - 1); });
+  document.getElementById("albNext").addEventListener("click", function(){ if (ALBUMS[shown + 1]) showAlbum(shown + 1); });
+  [player, aplayer].forEach(function(m){
+    m.addEventListener("play", function(){ stage.classList.add("playing"); });
+    m.addEventListener("pause", function(){ stage.classList.remove("playing"); });
+    m.addEventListener("ended", function(){ stage.classList.remove("playing"); });
+  });
+  document.getElementById("mWatch").addEventListener("click", function(){ setMode("watch"); });
+  document.getElementById("mListen").addEventListener("click", function(){ setMode("listen"); });
+  // 듣기는 곡이 끝나면 다음 곡으로 — 틀어 두는 쪽이니까
+  aplayer.addEventListener("ended", function(){
+    var i = EPISODES.findIndex(function(e){ return e.n === curEp.n; });
+    if (i > -1 && i + 1 < EPISODES.length) select(EPISODES[i + 1], true);
+  });
+  select(EPISODES[0], false);
+  apply(cur);
+
+  // ── 엽서 한 자리 — 여섯 중 하나를 무작위로 (PLAN-2026-09-15-landing §4-2) ──
+  // book.js 는 이 리포에 둔다. R2 는 CORS 헤더를 안 보내므로 fetch 로는 못 읽는다(실측 09-15).
+  (function(){
+    var PC = "https://media.coordigo.com/postcards/v2/";
+    var box = document.querySelector(".pc");
+    if (!box || typeof BOOK === "undefined" || !BOOK.length){ if (box) box.remove(); return; }
+    var v = document.getElementById("pcVideo"), last = -1;
+    function draw(){
+      var i = Math.floor(Math.random() * BOOK.length);
+      if (BOOK.length > 1 && i === last) i = (i + 1) % BOOK.length;
+      last = i;
+      var ep = BOOK[i];
+      v.pause();
+      v.src = PC + ep.file;                       // preload="none" — 홈이 무거워지면 안 된다
+      v.poster = PC + ep.file.replace(".mp4", ".jpg");
+      document.getElementById("pcN").textContent = "No. " + ep.n + " · " + ep.look;
+      document.getElementById("pcT").textContent = ep.title;
+      document.getElementById("pcV").textContent = ep.verse || "";
+    }
+    document.getElementById("pcAnother").addEventListener("click", draw);
+    draw();                                       // 자동재생은 하지 않는다 — 위 무대와 소리가 겹친다
+  })();
+
+  document.querySelectorAll('a.email').forEach(function(a){
+    a.href = 'mailto:' + a.dataset.u + String.fromCharCode(64) + a.dataset.d;
+  });
+  </script>
+<!-- Cloudflare Web Analytics — 프록시 없이 도는 비콘. 쿠키도, 개인 식별도 없다. --><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "3be86aab8cf24999be8e5d44456fee80"}'></script>
+<!-- 앱스토어 클릭 계측 — ct= 는 설치를 가르지만 클릭은 못 센다. 둘을 같이 봐야 이탈이 보인다.
+     식별자는 세션마다 새로 만드는 난수다. 쿠키도, IP 저장도, 개인 식별도 없다. -->
+<script>
+(function () {
+  var SITE = "swiftian.com";
+  function sid() {
+    try {
+      var k = "sw_sid", v = sessionStorage.getItem(k);
+      if (!v) { v = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2)); sessionStorage.setItem(k, v); }
+      return v;
+    } catch (_) { return "anon"; }
+  }
+  document.addEventListener("click", function (e) {
+    var a = e.target && e.target.closest && e.target.closest('a[href*="apps.apple.com"]');
+    if (!a) return;
+    var m = a.href.match(/id(\d+)/);
+    try {
+      fetch("https://claude-proxy-web.ilbulyori.workers.dev/events", {
+        method: "POST",
+        keepalive: true,
+        headers: { "content-type": "application/json", "x-device-id": sid() },
+        body: JSON.stringify({
+          meta: { app: SITE, build: "web", os: "web", locale: (navigator.language || "").slice(0, 8) },
+          events: [{
+            name: "appstore_click",
+            ts: Date.now() / 1000,
+            props: { site: SITE, app: m ? m[1] : "", path: location.pathname.slice(0, 64) }
+          }]
+        })
+      }).catch(function () {});
+    } catch (_) {}
+  }, true);
+})();
+</script>
+<!-- events:start -->
+<script>
+(function () {
+  var SITE = "swiftian.com";
+  function ev(name, props) {
+    try {
+      var sid = "anon"; try { sid = sessionStorage.getItem("sw_sid") || (sessionStorage.setItem("sw_sid", String(Math.random()).slice(2)), sessionStorage.getItem("sw_sid")); } catch (_) {}
+      fetch("https://claude-proxy-web.ilbulyori.workers.dev/events", { method: "POST", keepalive: true,
+        headers: { "content-type": "application/json", "x-device-id": sid },
+        body: JSON.stringify({ meta: { app: SITE, build: "web", os: "web", locale: (navigator.language || "").slice(0, 8) },
+          events: [{ name: name, ts: Date.now() / 1000, props: Object.assign({ site: SITE, path: location.pathname.slice(0, 64) }, props || {}) }] }) }).catch(function () {});
+    } catch (_) {}
+  }
+  var once = {}; function first(k, f) { if (!once[k]) { once[k] = 1; f(); } }
+  function on(id, type, f) { var el = document.getElementById(id); if (el) el.addEventListener(type, f); }
+  on("player", "play", function () { var t = (document.getElementById("nowTitle") || {}).textContent || ""; first("w" + t, function () { ev("comics_play", { ep: t.slice(0, 48), mode: "watch" }); }); });
+  on("aplayer", "play", function () { var t = (document.getElementById("nowTitle") || {}).textContent || ""; first("l" + t, function () { ev("comics_play", { ep: t.slice(0, 48), mode: "listen" }); }); });
+  on("pcVideo", "play", function () { var t = (document.getElementById("pcT") || {}).textContent || ""; first("p" + t, function () { ev("postcard_play", { card: t.slice(0, 48) }); }); });
+  on("pcAnother", "click", function () { ev("postcard_another"); });
+  document.addEventListener("click", function (e) {
+    var a = e.target && e.target.closest && e.target.closest(".door4 a.app, a[href^='/comics/']");
+    if (!a) return;
+    if (a.matches(".door4 a.app")) ev("door_click", { to: (a.hostname || "").slice(0, 32) + (a.href.indexOf("apps.apple.com") > 0 ? ":store" : "") });
+    else ev("comics_list_open");
+  }, true);
+})();
+</script>
+<!-- events:end -->
+</body>
+</html>

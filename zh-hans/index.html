@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Swiftian</title>
+  <title>English Accents · Swiftian</title>
   <meta name="description" content="三张专辑，二十四首歌，每首都配有一段短动画。">
   <meta name="theme-color" content="#0b0f1a">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png?v=20261103">
@@ -179,12 +179,37 @@
       .stage{grid-template-columns:1fr}
       .side{border-left:0;border-top:1px solid var(--line);padding:16px 18px 16px}
     }
-  </style>
+  
+    /* swiftian.com's three pages: top tabs on the header line (RDM-swiftian-three-pages) */
+    nav.tabs-bar{display:flex;align-items:flex-end;justify-content:flex-start;gap:11px;padding:22px 0 0;min-height:0;border-bottom:1px solid rgba(255,255,255,.22)}
+    .tabs{display:flex;gap:8px}
+    .tab{box-sizing:border-box;width:168px;min-height:44px;display:flex;align-items:center;gap:9px;padding:6px 10px 6px 8px;margin-bottom:-1px;
+      color:var(--muted);text-decoration:none;font-size:13.5px;line-height:1.15;background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.16);border-bottom:none;border-radius:10px 10px 0 0}
+    .tab img,.site img{display:block;flex:none;width:32px;height:32px;image-rendering:pixelated}
+    .tab:hover{border-color:rgba(238,242,255,.75);color:var(--ink)}
+    .tab[aria-current]{border-color:var(--ink);border-top-width:3px;padding-top:4px;color:var(--ink)}
+    nav.tabs-bar .lang-toggle{margin:0 0 8px auto}
+    /* other sites: light round-rect buttons */
+    .sites{display:flex;flex-wrap:wrap;gap:8px;margin:46px 0 0;padding-top:22px;border-top:1px solid var(--line)}
+    .site{box-sizing:border-box;width:168px;min-height:42px;display:flex;align-items:center;gap:8px;padding:3px 10px 3px 3px;
+      color:#0b0f1a;text-decoration:none;font-size:13.5px;font-weight:500;background:#eef1f7;border:2px solid #eef1f7;border-radius:10px}
+    .site img{border-radius:6px}
+    .site:hover{border-color:#0b0f1a}
+    @media (max-width:540px){
+      .tabs{flex:1 1 100%;gap:6px}
+      .tab{width:auto;flex:1;flex-direction:column;text-align:center;gap:5px;padding:8px 4px;font-size:12px}
+      .tab[aria-current]{padding-top:6px}
+      nav.tabs-bar{flex-wrap:wrap}
+      nav.tabs-bar .lang-toggle{order:-1;margin:0 0 10px auto}
+      .site{flex:1;width:auto}
+    }
+</style>
   <!-- family-ld:start -->
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "@id": "https://swiftian.com/#org", "name": "Swiftian Inc.", "url": "https://swiftian.com/", "logo": "https://swiftian.com/apple-touch-icon.png", "sameAs": ["https://pythoneer.io/", "https://spriteer.com/", "https://iflipbook.com/", "https://coordigo.com/"]}</script>
   <!-- family-ld:end -->
   <!-- hreflang:start -->
-  <link rel="alternate" hreflang="en" href="https://swiftian.com/">
+  <link rel="alternate" hreflang="en" href="https://swiftian.com/ea/">
   <link rel="alternate" hreflang="ko" href="https://swiftian.com/ko/">
   <link rel="alternate" hreflang="ja" href="https://swiftian.com/ja/">
   <link rel="alternate" hreflang="zh-Hans" href="https://swiftian.com/zh-hans/">
@@ -201,12 +226,13 @@
   <link rel="alternate" hreflang="th" href="https://swiftian.com/th/">
   <link rel="alternate" hreflang="hi" href="https://swiftian.com/hi/">
   <link rel="alternate" hreflang="ar" href="https://swiftian.com/ar/">
-  <link rel="alternate" hreflang="x-default" href="https://swiftian.com/">
+  <link rel="alternate" hreflang="x-default" href="https://swiftian.com/ea/">
   <!-- hreflang:end -->
 </head>
 <body>
   <div class="wrap">
-    <nav>
+    <nav class="tabs-bar" aria-label="Swiftian">
+      <div class="tabs"><a class="tab" href="/"><img src="/assets/tabs/cf-32.png" srcset="/assets/tabs/cf-32.png 1x, /assets/tabs/cf-64.png 2x, /assets/tabs/cf-96.png 3x" width="32" height="32" alt=""><span>Chillfriends</span></a><a class="tab" href="/ea/" aria-current="page"><img src="/assets/tabs/ea-32.png" srcset="/assets/tabs/ea-32.png 1x, /assets/tabs/ea-64.png 2x, /assets/tabs/ea-96.png 3x" width="32" height="32" alt=""><span>English Accents</span></a><a class="tab" href="/cp/"><img src="/assets/tabs/cp-32.png" srcset="/assets/tabs/cp-32.png 1x, /assets/tabs/cp-64.png 2x, /assets/tabs/cp-96.png 3x" width="32" height="32" alt=""><span>Chinese<br>Pronunciation</span></a></div>
       <button class="lang-toggle hide" id="langToggle" type="button"></button>
     </nav>
 
@@ -239,10 +265,7 @@
     </div>
 
 
-    <section class="also" aria-label="Also from Swiftian">
-      <a href="https://pythoneer.io/zh-hans/?ct=web-sw-py"><img src="/assets/apps/pythoneer.png" alt="" width="52" height="52"><span>Pythoneer</span></a>
-      <a href="https://iflipbook.com/zh-hans/?ct=web-sw-if"><img src="/assets/apps/iflipbook.png" alt="" width="52" height="52"><span>iFlipbook</span></a>
-    </section>
+    <section class="sites" aria-label="Also from Swiftian"><a class="site" href="https://pythoneer.io/?ct=web-sw-py"><img src="/assets/tabs/site-pythoneer-32.png" srcset="/assets/tabs/site-pythoneer-32.png 1x, /assets/tabs/site-pythoneer-64.png 2x, /assets/tabs/site-pythoneer-96.png 3x" width="32" height="32" alt=""><span>pythoneer.io</span></a><a class="site" href="https://iflipbook.com/?ct=web-sw-if"><img src="/assets/tabs/site-iflipbook-32.png" srcset="/assets/tabs/site-iflipbook-32.png 1x, /assets/tabs/site-iflipbook-64.png 2x, /assets/tabs/site-iflipbook-96.png 3x" width="32" height="32" alt=""><span>iflipbook.com</span></a></section>
 
 
 
