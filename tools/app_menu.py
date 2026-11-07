@@ -65,7 +65,7 @@ def link(code, cur, here):
         return f'href="{path}"{attrs}'
     src = SITE_APP.get(SITE, "sw").lower()
     url = f"https://{home}{path}?ct=web-{src}-menu"
-    return f'href="{url}" target="_blank" rel="noopener"{attrs}'
+    return f'href="{url}"{attrs}'
 
 
 def label(code):

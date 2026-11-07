@@ -1,6 +1,6 @@
 /* One app menu on all six sites (founder 2026-11-06/07, RDM-web-app-menu-all-sites, RDM-web-app-menu-marks).
-   The apps are the buttons; the categories are labels. Apps on this site open here, the others open
-   their own site in a new tab and show its domain under the name. Real icons, never our codes.
+   The apps are the buttons; the categories are labels. Every app opens in the same tab (founder 2026-11-08); apps on
+   another site show its domain under the name. Real icons, never our codes.
    Loaded by all six sites from https://swiftian.com/assets/app-menu.css; markup from tools/app_menu.py.
    Colours default to a dark page; a light page sets these on .am (or :root):
      --am-ink  --am-muted  --am-line  --am-hover  --am-cur-bg  --am-cur-line  --am-panel */
