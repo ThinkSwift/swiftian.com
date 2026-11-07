@@ -68,24 +68,19 @@ def link(code, cur, here):
     return f'href="{url}"{attrs}'
 
 
-def label(code):
-    name, home, *_ = APPS[code]
-    dom = f'<span class="am-d">{home}</span>' if home != SITE and home != "swiftian.com" else ""
-    return f'<span class="am-n">{html.escape(name)}{dom}</span>'
+def name_attrs(code):
+    # icons only on screen (founder 2026-11-08, RDM-web-app-menu-icons-only); the name stays for
+    # screen readers and as the hover tooltip
+    name = html.escape(APPS[code][0])
+    return f' aria-label="{name}" title="{name}"'
 
 
 def menu(cur, here):
-    bar = "".join(
+    groups = "".join(
         f'<div class="am-g"><p class="am-h">{g}</p><div class="am-row">'
-        + "".join(f'<a class="am-b" {link(c, cur, here)}>{icon(c)}{label(c)}</a>' for c in codes)
+        + "".join(f'<a class="am-i" {link(c, cur, here)}{name_attrs(c)}>{icon(c)}</a>' for c in codes)
         + "</div></div>" for g, codes in GROUPS)
-    rows = "".join(
-        f'<p class="am-h">{g}</p>'
-        + "".join(f'<a class="am-r" {link(c, cur, here)}>{icon(c)}{label(c)}</a>' for c in codes)
-        for g, codes in GROUPS)
-    summary = f'<summary>{icon(cur)}<span class="am-n">{html.escape(APPS[cur][0])}</span><span class="am-more">8 apps</span></summary>'
-    return (f'{BEGIN}<div class="am"><div class="am-bar">{bar}</div>'
-            f'<details class="am-m">{summary}<div class="am-list">{rows}</div></details></div>{END}')
+    return f'{BEGIN}<div class="am" role="navigation" aria-label="Swiftian apps"><div class="am-bar">{groups}</div></div>{END}'
 
 
 def current(rel):
@@ -98,7 +93,7 @@ def current(rel):
 
 OLD_TABS = re.compile(r'<div class="tabs">.*?</div>(?=\s*<button class="lang-toggle|\s*</nav>)', re.S)
 BLOCK = re.compile(re.escape(BEGIN) + ".*?" + re.escape(END), re.S)
-CSS = '<link rel="stylesheet" href="/assets/app-menu.css?v=2">'
+CSS = '<link rel="stylesheet" href="/assets/app-menu.css?v=3">'
 JS = '<script src="/assets/app-menu.js?v=1" defer></script>'
 
 
@@ -127,7 +122,7 @@ def print_site(site):
     global SITE
     SITE = site
     cur = SITE_APP[site]
-    print(f'<link rel="stylesheet" href="{SW}/assets/app-menu.css?v=2">')
+    print(f'<link rel="stylesheet" href="{SW}/assets/app-menu.css?v=3">')
     print(f'<script src="{SW}/assets/app-menu.js?v=1" defer></script>')
     print(menu(cur, "/"))
 

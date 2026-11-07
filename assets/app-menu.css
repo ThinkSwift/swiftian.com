@@ -1,53 +1,36 @@
-/* One app menu on all six sites (founder 2026-11-06/07, RDM-web-app-menu-all-sites, RDM-web-app-menu-marks).
-   The apps are the buttons; the categories are labels. Every app opens in the same tab (founder 2026-11-08); apps on
-   another site show its domain under the name. Real icons, never our codes.
+/* One app menu on all six sites (founder 2026-11-06..08: RDM-web-app-menu-all-sites, -same-tab, -icons-only).
+   Four category labels, the app icons under them, nothing else on screen; every app opens in the same tab.
+   The app's name is the icon's aria-label and hover tooltip.
    Loaded by all six sites from https://swiftian.com/assets/app-menu.css; markup from tools/app_menu.py.
-   Colours default to a dark page; a light page sets these on .am (or :root):
-     --am-ink  --am-muted  --am-line  --am-hover  --am-cur-bg  --am-cur-line  --am-panel */
-.am{--am-ink:var(--ink,#eef2ff);--am-muted:var(--muted,#9aa6c4);--am-line:rgba(255,255,255,.22);--am-hover:rgba(238,242,255,.35);
-  --am-cur-bg:rgba(255,255,255,.07);--am-cur-line:rgba(238,242,255,.75);--am-panel:rgba(11,15,26,.94)}
-.am{position:relative;left:50%;transform:translateX(-50%);width:min(1180px,calc(100vw - 32px));border-bottom:1px solid var(--am-line);
-  text-align:left;font-family:"Inter",-apple-system,system-ui,sans-serif;box-sizing:border-box}
+   Colours default to a dark page; a light page sets these on .am:
+     --am-muted (labels)  --am-line (divider)  --am-hover (hover ring)  --am-cur-bg  --am-cur-line (current app) */
+.am{--am-muted:var(--muted,#9aa6c4);--am-line:rgba(255,255,255,.14);--am-hover:rgba(238,242,255,.30);
+  --am-cur-bg:rgba(255,255,255,.08);--am-cur-line:rgba(238,242,255,.85)}
+.am{display:block;margin:0;position:relative;left:50%;transform:translateX(-50%);width:min(1180px,calc(100vw - 32px));box-sizing:border-box;
+  padding:14px 0 12px;border-bottom:1px solid var(--am-line);text-align:left;font-family:"Inter",-apple-system,system-ui,sans-serif}
 .am *{box-sizing:border-box}
-/* right-to-left pages (Arabic): centre from the right, and keep the English menu left-to-right */
+/* right-to-left pages (Arabic): centre from the right; the row itself stays left-to-right */
 [dir="rtl"] .am{left:auto;right:50%;transform:translateX(50%)}
-.am-bar,.am-m{direction:ltr}
-.am a{text-decoration:none;color:inherit}
-.am img{display:block;flex:none;width:32px;height:32px;border-radius:7px}
-.am img.px{image-rendering:pixelated}
-.am-h{margin:0 0 6px;font:600 11px/1 "Space Grotesk","Inter",system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--am-muted)}
-.am-n{display:flex;flex-direction:column;font-size:13px;line-height:1.2;color:var(--am-ink)}
-.am-d{font-size:11px;color:var(--am-muted);margin-top:2px}
+.am-bar{direction:ltr;display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:10px 32px}
+.am-g{display:flex;flex-direction:column;gap:7px;min-width:0}
+.am-h{margin:0;padding-left:4px;font:600 10.5px/1 "Inter",-apple-system,system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--am-muted);white-space:nowrap}
+.am-row{display:flex;gap:6px}
+.am-i{display:block;padding:3px;border:1.5px solid transparent;border-radius:12px;line-height:0;text-decoration:none;transition:border-color .15s ease,transform .15s ease}
+.am-i img{display:block;width:32px;height:32px;border-radius:8px}
+.am-i img.px{image-rendering:pixelated}
+.am-i:hover{border-color:var(--am-hover);transform:translateY(-1px)}
+.am-i:focus-visible{outline:2px solid var(--am-cur-line);outline-offset:2px}
+.am-i[aria-current]{border-color:var(--am-cur-line);background:var(--am-cur-bg)}
+/* phones: icons stay 32 px (drawn for that size); only the room around them shrinks, so the four
+   groups keep one row down to ~340 px (narrower screens wrap to two rows of two) */
+@media (max-width:560px){
+  .am-bar{gap:10px 10px}
+  .am-row{gap:0}
+  .am-i{padding:1px;border-radius:10px}
+  .am-h{font-size:10px;letter-spacing:.1em;padding-left:2px}
+}
 
 /* swiftian.com's header line holds the menu (its language toggle sits above it, on the right) */
 nav.am-host{display:flex;flex-direction:column;align-items:stretch;gap:0;padding:18px 0 0;border-bottom:0}
-nav.am-host .lang-toggle{align-self:flex-end;order:-1;margin:0 0 10px}
-
-/* wide screens: the whole menu, always open */
-.am-bar{display:flex;justify-content:space-between;gap:12px;padding:0 0 10px}
-.am-g{min-width:0}
-.am-row{display:flex;gap:2px}
-.am-b{display:flex;align-items:center;gap:8px;padding:5px 9px 5px 5px;border:1px solid transparent;border-radius:10px}
-.am-b .am-n{max-width:112px}
-.am-b:hover{border-color:var(--am-hover)}
-.am-b[aria-current]{background:var(--am-cur-bg);border-color:var(--am-cur-line)}
-.am-m{display:none}
-
-/* narrow screens: the current app and "8 apps"; one tap opens the same list */
-@media (max-width:1199px){
-  .am-bar{display:none}
-  .am-m{display:block;padding:0 0 10px}
-  .am-m summary{list-style:none;display:flex;align-items:center;gap:10px;cursor:pointer;padding:4px 0}
-  .am-m summary::-webkit-details-marker{display:none}
-  .am-m summary .am-n{font-size:15px;font-weight:500}
-  .am-more{margin-left:auto;font-size:13px;color:var(--am-muted);border:1px solid var(--am-line);border-radius:999px;padding:6px 12px;white-space:nowrap}
-  .am-more::after{content:" \25BE"}
-  .am-m[open] .am-more::after{content:" \25B4"}
-  .am-list{margin:10px 0 4px;padding:8px;border:1px solid var(--am-line);border-radius:14px;background:var(--am-panel)}
-  .am-list .am-h{margin:12px 6px 4px}
-  .am-list .am-h:first-child{margin-top:4px}
-  .am-r{display:flex;align-items:center;gap:12px;padding:7px 6px;border-radius:10px}
-  .am-r .am-n{flex-direction:row;align-items:baseline;flex:1;font-size:15px}
-  .am-r .am-d{margin:0 0 0 auto;padding-left:10px}
-  .am-r[aria-current]{background:var(--am-cur-bg)}
-}
+nav.am-host .lang-toggle{align-self:flex-end;order:-1;margin:0 0 6px}
+nav.am-host .am{padding-top:0}
