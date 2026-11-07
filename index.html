@@ -102,6 +102,10 @@
     .play:active{transform:translateY(3px);box-shadow:0 2px 0 #a8432a}
     .keys{font-size:12.5px!important;opacity:.85}
     .arena-bar{display:flex;justify-content:flex-end;margin:8px 0 0}
+    /* DEFEND: the same arena, a crow-violet accent */
+    .arena.defend .poster h1 em{color:#9d86ff}
+    .arena.defend .play{background:#7b5cff;color:#fbf5e6;box-shadow:0 5px 0 #4a34b8}
+    .arena.defend .play:active{box-shadow:0 2px 0 #4a34b8}
     .fs{height:30px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.22);
       background:none;color:var(--muted);font:600 12.5px/1 "Inter",system-ui;cursor:pointer}
     .fs:hover{color:var(--ink);border-color:rgba(255,255,255,.5)}
@@ -132,6 +136,17 @@
     </section>
     <div class="arena-bar"><button class="fs" id="fs" type="button" hidden>Full screen</button></div>
 
+    <section class="arena defend" id="arena2" aria-label="DEFEND">
+      <div class="poster" id="poster2">
+        <div class="faces"><span style="border-color:#f07b3a"><img src="/race/img/red_panda_happy.png" alt=""></span><span style="border-color:#8b5a3c"><img src="/race/img/bear_happy.png" alt=""></span><span style="border-color:#f28db2"><img src="/race/img/cat_happy.png" alt=""></span><span style="border-color:#6dbe45"><img src="/race/img/frog_happy.png" alt=""></span><span style="border-color:#f3a6b9"><img src="/race/img/bunny_happy.png" alt=""></span></div>
+        <h1><em>DEFEND</em></h1>
+        <p>The Crow Gang marches down the bridge. Every gate asks a times table: solve it to power up or bring a friend.</p>
+        <a class="play" id="play2" href="/defend/">Play</a>
+        <p class="keys" id="keys2">← → or drag to move · go through the gate with the answer</p>
+      </div>
+    </section>
+    <div class="arena-bar"><button class="fs" id="fs2" type="button" hidden>Full screen</button></div>
+
     <div class="store-row"><a class="store" href="https://apps.apple.com/app/id6752542327?ct=web-sw-cf"><img src="/assets/tabs/cf-32.png" srcset="/assets/tabs/cf-32.png 1x, /assets/tabs/cf-64.png 2x, /assets/tabs/cf-96.png 3x" width="32" height="32" alt=""><span><small>Download on the</small><b>App Store</b></span></a></div>
   </div>
 
@@ -161,25 +176,32 @@
 </script>
 <script>
   (function () {
-    var arena = document.getElementById("arena"), poster = document.getElementById("poster"), fs = document.getElementById("fs");
     var touch = matchMedia("(pointer: coarse)").matches;
-    if (touch) document.getElementById("keys").textContent = "Tap ◀ ▶ to steer, and the side with the right answer";
-    document.getElementById("play").addEventListener("click", function (e) {
-      // phones and narrow windows get the race full screen on its own page; wide screens play it right here
-      if (touch || innerWidth < 760) { SW_EV("race_open", { where: "page" }); return; }
-      e.preventDefault();
-      var f = document.createElement("iframe");
-      f.src = "/race/?embed=1"; f.title = "Chillfriends Race"; f.allow = "fullscreen; autoplay";
-      f.addEventListener("load", function () { try { f.contentWindow.focus(); } catch (_) {} });
-      arena.classList.add("playing"); arena.appendChild(f); poster.remove(); fs.hidden = false; f.focus();
-      arena.scrollIntoView({ block: "nearest", behavior: "smooth" });
-      SW_EV("race_open", { where: "inline" });
-    });
-    fs.addEventListener("click", function () {
-      var f = arena.querySelector("iframe"); if (!f) return;
-      (f.requestFullscreen || f.webkitRequestFullscreen || function () {}).call(f);
-      try { f.contentWindow.focus(); } catch (_) {}
-    });
+    // phones and narrow windows get the game full screen on its own page; wide screens play it right here
+    function mount(arenaId, posterId, playId, fsId, src, title, ev) {
+      var arena = document.getElementById(arenaId), poster = document.getElementById(posterId), fs = document.getElementById(fsId);
+      document.getElementById(playId).addEventListener("click", function (e) {
+        if (touch || innerWidth < 760) { SW_EV(ev, { where: "page" }); return; }
+        e.preventDefault();
+        var f = document.createElement("iframe");
+        f.src = src + "?embed=1"; f.title = title; f.allow = "fullscreen; autoplay";
+        f.addEventListener("load", function () { try { f.contentWindow.focus(); } catch (_) {} });
+        arena.classList.add("playing"); arena.appendChild(f); poster.remove(); fs.hidden = false; f.focus();
+        arena.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        SW_EV(ev, { where: "inline" });
+      });
+      fs.addEventListener("click", function () {
+        var f = arena.querySelector("iframe"); if (!f) return;
+        (f.requestFullscreen || f.webkitRequestFullscreen || function () {}).call(f);
+        try { f.contentWindow.focus(); } catch (_) {}
+      });
+    }
+    if (touch) {
+      document.getElementById("keys").textContent = "Tap ◀ ▶ to steer, and the side with the right answer";
+      document.getElementById("keys2").textContent = "Drag to move · go through the gate with the answer";
+    }
+    mount("arena", "poster", "play", "fs", "/race/", "Chillfriends Race", "race_open");
+    mount("arena2", "poster2", "play2", "fs2", "/defend/", "DEFEND", "defend_open");
   })();
 </script>
 <!-- Cloudflare Web Analytics — 프록시 없이 도는 비콘. 쿠키도, 개인 식별도 없다. --><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "3be86aab8cf24999be8e5d44456fee80"}'></script>
