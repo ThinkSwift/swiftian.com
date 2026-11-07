@@ -63,7 +63,8 @@ def link(code, cur, here):
         return f'href="{here}" aria-current="page"{attrs}'
     if home == SITE:
         return f'href="{path}"{attrs}'
-    url = f"https://{home}{path}?ct=web-{SITE.split('.')[0][:2]}-menu"
+    src = SITE_APP.get(SITE, "sw").lower()
+    url = f"https://{home}{path}?ct=web-{src}-menu"
     return f'href="{url}" target="_blank" rel="noopener"{attrs}'
 
 

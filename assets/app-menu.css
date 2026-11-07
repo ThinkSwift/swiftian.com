@@ -9,6 +9,9 @@
 .am{position:relative;left:50%;transform:translateX(-50%);width:min(1180px,calc(100vw - 32px));border-bottom:1px solid var(--am-line);
   text-align:left;font-family:"Inter",-apple-system,system-ui,sans-serif;box-sizing:border-box}
 .am *{box-sizing:border-box}
+/* right-to-left pages (Arabic): centre from the right, and keep the English menu left-to-right */
+[dir="rtl"] .am{left:auto;right:50%;transform:translateX(50%)}
+.am-bar,.am-m{direction:ltr}
 .am a{text-decoration:none;color:inherit}
 .am img{display:block;flex:none;width:32px;height:32px;border-radius:7px}
 .am img.px{image-rendering:pixelated}
