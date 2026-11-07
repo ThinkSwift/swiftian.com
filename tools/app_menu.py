@@ -8,6 +8,13 @@ per-size files (32 px and 2x), never a shrunk 1024.
 
     tools/app_menu.py                 # swiftian.com: rewrite the menu in every page that has one
     tools/app_menu.py --check         # exit 1 if any page's menu is out of date
+    tools/app_menu.py --site coordigo.com --print
+                                      # the other five sites: print the head tags and the menu block
+                                      # for that site (its own app current, its home as the link);
+                                      # their pages and generators carry it between the markers
+
+On the other sites the CSS, the click script and the icons load from https://swiftian.com, so
+one change here reaches all six. A site whose page is light sets the --am-* colours (see the CSS).
 
 The menu sits inside <nav class="tabs-bar"> between the markers below; the page's language
 toggle (if any) stays in the nav. Styles: /assets/app-menu.css, clicks: /assets/app-menu.js.
@@ -90,7 +97,7 @@ def current(rel):
 
 OLD_TABS = re.compile(r'<div class="tabs">.*?</div>(?=\s*<button class="lang-toggle|\s*</nav>)', re.S)
 BLOCK = re.compile(re.escape(BEGIN) + ".*?" + re.escape(END), re.S)
-CSS = '<link rel="stylesheet" href="/assets/app-menu.css?v=1">'
+CSS = '<link rel="stylesheet" href="/assets/app-menu.css?v=2">'
 JS = '<script src="/assets/app-menu.js?v=1" defer></script>'
 
 
@@ -111,7 +118,23 @@ def rewrite(text, cur, here):
     return text
 
 
+SITE_APP = {"seoulmal.com": "SM", "iflipbook.com": "iF", "spriteer.com": "Sp",
+            "coordigo.com": "Co", "pythoneer.io": "Py"}
+
+
+def print_site(site):
+    global SITE
+    SITE = site
+    cur = SITE_APP[site]
+    print(f'<link rel="stylesheet" href="{SW}/assets/app-menu.css?v=2">')
+    print(f'<script src="{SW}/assets/app-menu.js?v=1" defer></script>')
+    print(menu(cur, "/"))
+
+
 def main():
+    if "--site" in sys.argv:
+        print_site(sys.argv[sys.argv.index("--site") + 1])
+        return
     check = "--check" in sys.argv
     stale, done = [], 0
     for d, _, files in os.walk(ROOT):
@@ -123,7 +146,7 @@ def main():
             p = os.path.join(d, f)
             rel = os.path.relpath(p, ROOT)
             text = open(p, encoding="utf-8").read()
-            if 'class="tabs-bar"' not in text:
+            if 'class="tabs-bar' not in text:
                 continue
             here = "/" + os.path.dirname(rel) + ("/" if os.path.dirname(rel) else "")
             new = rewrite(text, current(rel), here)
