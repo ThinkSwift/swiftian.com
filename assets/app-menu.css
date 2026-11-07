@@ -31,7 +31,7 @@ nav.am-host .lang-toggle{align-self:flex-end;order:-1;margin:0 0 10px}
 .am-m{display:none}
 
 /* narrow screens: the current app and "8 apps"; one tap opens the same list */
-@media (max-width:1099px){
+@media (max-width:1199px){
   .am-bar{display:none}
   .am-m{display:block;padding:0 0 10px}
   .am-m summary{list-style:none;display:flex;align-items:center;gap:10px;cursor:pointer;padding:4px 0}
