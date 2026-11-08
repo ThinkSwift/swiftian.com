@@ -105,7 +105,7 @@ h2{margin:0 0 8px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;c
 #tables{display:flex;flex-wrap:wrap;gap:8px}
 #tables button{min-width:54px;height:44px;border-radius:12px;background:var(--panel);font-size:18px;font-weight:700;padding:0 12px}
 #tables button.sel{background:var(--gold);color:var(--ink)}
-.how{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.how{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .how div{background:var(--panel);border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.35;color:var(--muted)}
 .how b{display:block;color:var(--cream);font-size:16px;margin-bottom:2px}
 .go{height:60px;border-radius:18px;background:var(--gold);color:var(--ink);font-size:24px;font-weight:800;box-shadow:0 5px 0 #b8862a}
@@ -171,15 +171,16 @@ h2{margin:0 0 8px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;c
         <a id="homeLink" href="/" hidden>swiftian.com</a>
         <h1><em>DEFEND</em></h1>
         <p class="tag"><b>Friends vs the Crow Gang.</b></p>
-        <p class="tag">The Crow Gang stole the numbers and its army is marching down the bridge, with flyers overhead and a captain behind them. You start alone. Every gate asks one fact. Each one you solve powers up your marbles or brings one of the other four friends to fight beside you, each with a move of their own; with all five on the team, every solved gate powers you up. A miss takes back the last thing you got.</p>
+        <p class="tag">The Crow Gang stole the numbers and is marching down the bridge in three lanes, with flyers overhead and a captain behind them. You start alone. Every gate asks one fact: solve it and your marbles power up or one of the other four friends joins you. The Gang gets tougher with every gate, so the power you solve for is what keeps you in it.</p>
       </div>
       <div><h2>Your leader</h2><div id="friends"></div></div>
       <div><h2>Table</h2><div id="tables"></div></div>
       <button id="startBtn" class="go">Defend · Stage 1</button>
       <div class="how">
-        <div><b>Hold the line</b>You and your friends shoot nonstop. Slide left and right to cover the army. Crows that reach the barricade break it; if it falls, the stage is lost.</div>
-        <div><b>Gates ask a fact</b>The gate drifts in slowly, then rushes the last stretch. The flag shows the fact and what solving it brings. Solve it: power, then a friend, then power, then a friend, and a shockwave. Miss it: the last one is lost, and the army charges.</div>
-        <div><b>Captain and Corvo</b>A Crow Captain stomps in mid-stage; Boss Corvo closes it. During a boss, every solved gate also lands a boss blast. Beating the Captain repairs the barricade.</div>
+        <div><b>Aim with your feet</b>Your friends shoot straight ahead. The crows come down the left, middle and right lanes, often two at once: slide to the lane that matters. Crows that reach the barricade break it; if it falls, the stage is lost.</div>
+        <div><b>Gates ask a fact</b>The flag shows the fact and what solving it brings: power, then a friend, then power, and a shockwave. Miss it: the last one is lost and a pack of crows breaks through the gate.</div>
+        <div><b>Crates and hazards</b>Slide into a crate to grab it: Frenzy (double fire), Repair or Bomb. Barrels roll at you: step aside, or shoot one open as it rolls through the crowd. A hawk's egg lands in the red ring: get out of it.</div>
+        <div><b>Captain and Corvo</b>A Crow Captain stomps in mid-stage, Boss Corvo closes it, and both walk from lane to lane. During a boss, every solved gate lands a boss blast. Beating the Captain repairs the barricade.</div>
       </div>
       <p class="keys">★ beat Boss Corvo · ★★ with at most 1 missed gate · ★★★ with no missed gates. Missed facts come back at a later gate.</p>
     </div>
@@ -251,7 +252,8 @@ const sun = new THREE.DirectionalLight(0xfff1dc, 0.6); sun.position.set(-20, 40,
 const ov = $('ov'), oc = ov.getContext('2d');
 function canvasTex(w, h, draw, repeat){ const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h);
   const t = new THREE.CanvasTexture(c); t.anisotropy = 4; if (repeat) t.wrapS = t.wrapT = THREE.RepeatWrapping; return t; }
-const ROAD = 5, LINE = -2.2, SPAWN = -78, RANGE = 50;
+// v2 (2026-11-08): a shorter bridge whose whole length is in range; three lanes; the friends shoot a straight column.
+const ROAD = 5, LINE = -2.2, SPAWN = -60, RANGE = 64, LANES = [-3.1, 0, 3.1];
 const barricadeParts = [];
 {
   const sea = new THREE.Mesh(new THREE.PlaneGeometry(500, 500), new THREE.MeshLambertMaterial({map:canvasTex(128, 128, (c, w, h) => {
@@ -259,7 +261,7 @@ const barricadeParts = [];
   sea.material.map.repeat.set(40, 40); sea.rotation.x = -Math.PI/2; sea.position.set(0, -3, -100); scene.add(sea);
   const roadTex = canvasTex(128, 256, (c, w, h) => { c.fillStyle = '#9aa1ad'; c.fillRect(0, 0, w, h);
     for (let i = 0; i < 600; i++) { c.fillStyle = `rgba(0,0,0,${Math.random()*.06})`; c.fillRect(Math.random()*w, Math.random()*h, 2, 2); }
-    c.fillStyle = '#f4f1e6'; c.fillRect(w/2 - 3, 0, 6, h * 0.5); c.fillRect(6, 0, 4, h); c.fillRect(w - 10, 0, 4, h); }, true);
+    c.fillStyle = '#f4f1e6'; for (const u of [0.345, 0.655]) c.fillRect(w * u - 2.5, 0, 5, h * 0.5); c.fillRect(6, 0, 4, h); c.fillRect(w - 10, 0, 4, h); }, true);
   roadTex.repeat.set(1, 20);
   const road = new THREE.Mesh(new THREE.PlaneGeometry(ROAD*2, 200), new THREE.MeshLambertMaterial({map:roadTex})); road.rotation.x = -Math.PI/2; road.position.set(0, 0, -80); scene.add(road);
   const side = new THREE.MeshLambertMaterial({color:0xd8dde6});
@@ -284,7 +286,8 @@ function roundRect(g, x, y, w, h, r){ g.beginPath(); g.moveTo(x + r, y); g.arcTo
 function labelSprite(text, bg, fg, w, h, size, sx){
   const c = document.createElement('canvas'); c.width = w; c.height = h; const g = c.getContext('2d');
   if (bg) { g.fillStyle = bg; roundRect(g, 4, 4, w - 8, h - 8, Math.min(30, h / 3)); g.fill(); }
-  g.font = `800 ${size}px "Baloo 2", system-ui, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = fg; g.fillText(text, w/2, h/2 + size * 0.06);
+  g.font = `800 ${size}px "Baloo 2", system-ui, sans-serif`; const fit = g.measureText(text).width; if (fit > w - 40) { size = Math.floor(size * (w - 40) / fit); g.font = `800 ${size}px "Baloo 2", system-ui, sans-serif`; }
+  g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = fg; g.fillText(text, w/2, h/2 + size * 0.06);
   const sp = new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c), depthWrite:false, depthTest:false}));
   sp.scale.set(sx, sx * h / w, 1); sp.renderOrder = 5; sp.userData.base = [sx, sx * h / w]; return sp;
 }
@@ -312,7 +315,7 @@ let leader = null, team = [];
 function makeLeader(k){ for (const m of team) scene.remove(m.g); leader = makeFriend(k); team = [leader]; }
 function setMood(m, mood, t){ m.moodT = t || 0; m.badge.material.map = BADGE[m.key][mood]; m.badge.material.needsUpdate = true; }
 function leaderMood(mood, t){ for (const m of team) setMood(m, mood, t); }
-const TEAM_X = [0, -1.35, 1.35, -2.7, 2.7], TEAM_Z = [-0.2, 0.5, 0.5, 1.1, 1.1];
+const TEAM_X = [0, -0.85, 0.85, -1.7, 1.7], TEAM_Z = [-0.2, 0.5, 0.5, 1.1, 1.1];
 const SQVIS = 90;
 const sqBody = instanced(new THREE.CylinderGeometry(0.22, 0.28, 0.5, 8).translate(0, 0.25, 0), new THREE.MeshLambertMaterial({color:0xffffff}), SQVIS, 0xffffff);
 const sqHead = instanced(new THREE.SphereGeometry(0.24, 10, 8).translate(0, 0.66, 0), new THREE.MeshLambertMaterial({color:0xffffff}), SQVIS, 0xffffff);
@@ -404,16 +407,19 @@ function buildLadder(){
   TOP = LADDER.length;
 }
 let lvl = 0, maxLvl = 0, home = HOME_MAX, hitStop = 0, gameT = 0, rushSound = false;
-let up = {rate:0, power:0, spread:0}, tier = 0, combo = 0, surgeT = 0;
+let up = {rate:0, power:0, spread:0}, tier = 0, combo = 0, surgeT = 0, gateSerial = 0, frenzyT = 0, dizzyT = 0, crateT = 7, barrelT = 11, scoutT = 8, pickupTurn = 0, grabbed = 0, dizzied = 0;
+let crates = [], barrels = [], eggs = [];
 let army = [], flyers = [], marbles = [], gate = null, boss = null, floaters = [];
 let stageNo = 1, planIdx = 0, waveT = 0, spawnT = 0, flyT = 0, gateT = 0, prizeIdx = 0, kos = 0;
 let timeScale = 1, slowTarget = 1, fovKick = 0;
 let wrongGates = 0, rightGates = 0, snatched = 0, missedFacts = new Map(), missedQ = [], recent = [], lastResult = null, shake = 0, endT = 0;
 const input = {left:false, right:false};
 let autoAcc = 0.85;
-const WAVE_LEN = 24, GATE_EVERY = 6.5;
-const PLAN = ['wave', 'wave', 'captain', 'wave', 'wave', 'corvo'];
-function stageParams(S){ return {speed:2.7 + Math.min(2, S * 0.25), grunt:1 + Math.floor(S / 3), shield:4 + S, brute:28 + S * 6, giant:140 + S * 30, captainHp:900 + S * 260, corvoHp:1800 + S * 450}; }
+const WAVE_LEN = 18, GATE_EVERY = 5.5, RAMP = 0.2, FRENZY_T = 6, DIZZY_T = 1.6, GRAB = 1.6, CRATE_V = 8, BARREL_V = 9;
+const PLAN = ['wave', 'captain', 'wave', 'corvo'];
+function stageParams(S){ return {speed:3.4 + Math.min(1.6, S * 0.2), grunt:1.25 + S * 0.15, shield:4 + S, brute:26 + S * 5, giant:110 + S * 25, captainHp:270 + S * 60, corvoHp:900 + S * 150}; }
+// the Gang grows tougher with every gate that comes (solved or not): only the power from solved gates keeps up
+const pressure = () => 1 + RAMP * gateSerial, unit = () => P.grunt * pressure();
 let P = stageParams(1);
 function pickFact(){
   if (missedQ.length && Math.random() < 0.6) { const m = missedQ.shift(); return {a:m.a, b:m.b, again:true}; }
@@ -429,6 +435,7 @@ function clearAll(){
   if (boss) scene.remove(boss.g);
   for (const r of rings) scene.remove(r.m);
   for (const pd of puddles) if (pd.mesh) scene.remove(pd.mesh); for (const y of yarns) if (y.mesh) scene.remove(y.mesh); puddles = []; yarns = []; bolts = []; overdriveT = 0; for (const k in specialState) delete specialState[k];
+  for (const o of [...crates, ...barrels, ...eggs]) for (const m of o.meshes || []) scene.remove(m); crates = []; barrels = []; eggs = [];
   army = []; flyers = []; marbles = []; gate = null; boss = null; floaters = []; rings = []; pN = 0;
   for (const p of gParts) p.mesh.count = 0; for (const p of aParts) p.mesh.count = 0; pMesh.count = 0; marbleMesh.count = 0; haloMesh.count = 0;
   timeScale = slowTarget = 1; $('vignette').classList.remove('on'); $('gl').classList.remove('grey');
@@ -437,7 +444,7 @@ function startStage(){
   clearAll();
   stageNo = save.stage; P = stageParams(stageNo);
   buildLadder(); squad = 0; lvl = 0; maxLvl = 0; home = HOME_MAX; gameT = 0; hitStop = 0; squadX = 0; targetX = 0; fireAcc = 0; up = {rate:0, power:0, spread:0}; tier = 0; combo = 0; surgeT = 0; kos = 0;
-  planIdx = 0; waveT = 0; spawnT = 1.5; flyT = 14; gateT = 2.5; prizeIdx = 0;
+  planIdx = 0; waveT = 0; spawnT = 1.2; flyT = 9; gateT = 2.5; prizeIdx = 0; gateSerial = 0; frenzyT = 0; dizzyT = 0; crateT = 7; barrelT = 11; scoutT = 8; pickupTurn = 0; grabbed = 0; dizzied = 0;
   wrongGates = 0; rightGates = 0; streak = 0; snatched = 0; missedFacts = new Map(); missedQ = []; recent = [];
   makeLeader(save.friend);
   if (!simClock) SW_EV('defend_start', { table: String(save.table), stage: String(stageNo), friend: save.friend });
@@ -455,7 +462,7 @@ function renderCombo(){ [...$('combo').querySelectorAll('i')].forEach((el, i) =>
 function renderPower(){
   if (simClock) return;
   const pw = LADDER.slice(0, lvl).filter(s => s.power).length;
-  $('power').innerHTML = `<span>Team <b>${squad + 1}/5</b></span><span>Power <b>${pw}/${POWER.length}</b></span><span>${WEAPON_NAMES[tier]}${up.spread ? ' · ' + (1 + 2 * up.spread) + '-way' : ''}</span>`;
+  $('power').innerHTML = `<span>Team <b>${squad + 1}/5</b></span><span>Power <b>${pw}/${POWER.length}</b></span><span>${WEAPON_NAMES[tier]}${up.spread ? ' · ' + (1 + 2 * up.spread) + '-way' : ''}</span>${frenzyT > 0 ? `<span style="color:#ff6bd6">Frenzy <b>${Math.ceil(frenzyT)}</b></span>` : ''}`;
   $('homeFill').style.transform = `scaleX(${clamp(home / HOME_MAX, 0, 1)})`; $('homeNum').textContent = Math.ceil(home);
   $('homeBar').classList.toggle('low', home < 30);
 }
@@ -494,32 +501,40 @@ function hitHome(n, x){
   if (!simClock) { emit(x ?? squadX, 0.8, LINE + 0.3, 3 + n, [0xb88352, 0x8d5f37, 0xffffff], 4, 0.6, 1); if (Math.random() < 0.4) sfx([160, 110], 0.05, 'square', 0.05); }
   renderPower();
 }
-let barricadeHit = 0;
+let barricadeHit = 0, frenzyPrev = false;
 // ---------- Spawning ----------
 function spawnBlock(rows, cols, opts){
   opts = opts || {};
-  const z0 = opts.z ?? SPAWN, w = Math.min(ROAD - 0.45, cols * 0.4), cx = opts.cx !== undefined ? clamp(opts.cx, -ROAD + w + 0.3, ROAD - w - 0.3) : clamp(rnd(-1.5, 1.5), -ROAD + w + 0.3, ROAD - w - 0.3);
+  const pr = pressure();
+  const z0 = opts.z ?? SPAWN, w = Math.min(ROAD - 0.45, cols * 0.3), cx = clamp(opts.cx !== undefined ? opts.cx : LANES[irnd(0, 2)], -ROAD + w + 0.3, ROAD - w - 0.3);
   for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
     if (army.length >= MAXG - 4) return;
     const shield = r === 0 && opts.shieldFront;
     army.push({kind:shield ? 'shield' : 'grunt', x:clamp(cx - w + (c + 0.5) * (2 * w / cols) + rnd(-0.12, 0.12), -ROAD + 0.4, ROAD - 0.4), z:z0 - r * 0.85 + rnd(-0.15, 0.15),
-      hp:shield ? P.shield : P.grunt, max:shield ? P.shield : P.grunt, s:shield ? 1.15 : 1, ph:Math.random() * 6, flash:0, kb:0});
+      hp:(shield ? P.shield : P.grunt) * pr, max:(shield ? P.shield : P.grunt) * pr, s:shield ? 1.15 : 1, ph:Math.random() * 6, flash:0, kb:0});
   }
-  if (opts.brute) army.push({kind:'brute', x:cx, z:z0 - rows * 0.85 - 1.5, hp:P.brute, max:P.brute, s:2.3, ph:Math.random() * 6, flash:0, kb:0});
-  if (opts.giant) army.push({kind:'giant', x:clamp(cx, -2.5, 2.5), z:z0 - rows * 0.85 - 4, hp:P.giant, max:P.giant, s:4.2, ph:Math.random() * 6, flash:0, kb:0, stompT:2});
-  if (opts.scouts) for (let i = 0; i < opts.scouts; i++) army.push({kind:'scout', x:rnd(-ROAD + 0.5, ROAD - 0.5), z:z0 + 3 + rnd(0, 4), hp:1, max:1, s:0.7, ph:Math.random() * 6, flash:0, kb:0});
+  if (opts.brute) army.push({kind:'brute', x:cx, z:z0 - rows * 0.85 - 1.5, hp:P.brute * pr, max:P.brute * pr, s:2.3, ph:Math.random() * 6, flash:0, kb:0});
+  if (opts.giant) army.push({kind:'giant', x:clamp(cx, -2.8, 2.8), z:z0 - rows * 0.85 - 4, hp:P.giant * pr, max:P.giant * pr, s:4.2, ph:Math.random() * 6, flash:0, kb:0, stompT:2});
+}
+// a fast line of scouts down the edge the friends are not on
+function spawnScouts(){
+  const x = squadX > 0 ? -4.2 : 4.2, n = irnd(4, 6) + Math.floor(stageNo / 3), hp = P.grunt * pressure() * 0.8;
+  for (let i = 0; i < n && army.length < MAXG - 1; i++) army.push({kind:'scout', x:x + rnd(-0.25, 0.25), z:SPAWN + 8 - i * 1.1, hp, max:hp, s:0.7, ph:Math.random() * 6, flash:0, kb:0});
 }
 function waveNo(){ return PLAN.slice(0, planIdx + 1).filter(p => p === 'wave').length; }
 function spawnWaveBlock(){
-  const w = waveNo(), pr = 1 + gameT / 38;
-  const rows = Math.round(1.5 + pr * 1.3 + stageNo * 0.3 + rnd(-0.5, 1)), cols = clamp(Math.round(4 + pr * 1.9 + rnd(-1, 1)), 4, 15);
-  spawnBlock(rows, cols, {shieldFront:w >= 2 && Math.random() < 0.5, brute:w >= 2 && Math.random() < 0.3 + w * 0.08, giant:w >= 3 && Math.random() < 0.35, scouts:Math.random() < 0.5 ? irnd(4, 9) : 0});
+  const w = waveNo(), grow = Math.min(1, gameT / 70);
+  const rows = irnd(2, 3) + (grow > 0.5 ? 1 : 0), cols = irnd(4, 5) + Math.floor(grow * 2) + (stageNo >= 4 ? 1 : 0), lane = irnd(0, 2);
+  spawnBlock(rows, cols, {cx:LANES[lane], shieldFront:(w >= 2 || gameT > 12) && Math.random() < 0.45, brute:gameT > 10 && Math.random() < 0.3 + 0.05 * stageNo, giant:w >= 2 && Math.random() < 0.25 + 0.03 * stageNo});
+  // a second block down another lane at the same time: you can't stand in both
+  if ((w >= 2 || stageNo >= 3 || gameT > 6) && Math.random() < 0.55 + 0.04 * stageNo)
+    spawnBlock(Math.max(2, rows - 1), Math.max(3, cols - 1), {z:SPAWN - rnd(0, 6), cx:LANES[(lane + irnd(1, 2)) % 3]});
 }
 function spawnFlyers(){
-  const n = irnd(4, 7) + Math.floor(stageNo / 2), cx = rnd(-3, 3);
+  const n = irnd(3, 5) + Math.floor(stageNo / 2), cx = LANES[irnd(0, 2)], pr = pressure();
   for (let i = 0; i < n && flyers.length < MAXA - 1; i++) { const off = (i - (n - 1) / 2);
-    const hawk = i === Math.floor(n / 2) && Math.random() < 0.6;
-    flyers.push({hawk, sc:hawk ? 2.4 : 1.15, x:clamp(cx + off * 0.9, -ROAD + 0.5, ROAD - 0.5), z:SPAWN + 10 - Math.abs(off) * 1.4 - (hawk ? 3 : 0), hp:hawk ? 24 + stageNo * 6 : 2 + Math.floor(stageNo / 2), ph:Math.random() * 6, flash:0, speed:6.5 + stageNo * 0.3, dive:0}); }
+    const hawk = i === Math.floor(n / 2), hp = (hawk ? 14 + stageNo * 3 : 1.5 + stageNo * 0.3) * pr;
+    flyers.push({hawk, sc:hawk ? 2.4 : 1.15, x:clamp(cx + off * 0.8, -ROAD + 0.5, ROAD - 0.5), z:SPAWN + 10 - Math.abs(off) * 1.4 - (hawk ? 3 : 0), hp, max:hp, ph:Math.random() * 6, flash:0, speed:7 + stageNo * 0.3, dive:0}); }
   toast('Flyers!', '#c9b8ff');
 }
 const PRIZES = [
@@ -530,16 +545,17 @@ const PRIZES = [
   {text:'Wider spread', apply:() => { up.spread++; }},
   {text:'+15 friends', apply:() => addFriends(15)},
 ];
-const BLAST = {text:'Boss blast!', blast:true, apply:() => { if (boss) { const d = boss.max * 0.14; boss.hp -= d; boss.flash = 0.5; boss.z = Math.max(SPAWN - 4, boss.z - 7); dmgText(d, boss.x, boss.z, '#ffd25a', 34);
+const BLAST = {text:'Boss blast!', blast:true, apply:() => { if (boss) { const d = boss.max * 0.12; boss.hp -= d; boss.flash = 0.5; boss.z = Math.max(SPAWN - 4, boss.z - 6); dmgText(d, boss.x, boss.z, '#ffd25a', 34);
   emit(boss.x, 4, boss.z, 70, [0xffd25a, 0xffffff, 0xff8a3d], 9, 0.9, 1.6, 10, 0.9); ring(boss.x, boss.z, 0xffd25a, 9, 0.7); } }};
 function addFriends(n){
   const before = squad; squad = Math.min(400, squad + n);
   for (let i = before; i < Math.min(SQVIS, squad); i++) sqPos[i].born = 0.6 + (i - before) * 0.03;
 }
 function spawnGate(){
+  gateSerial++;
   const f = pickFact(), p = f.a * f.b, w = wrongAnswer(f.a, f.b);
   const bossOn = !!boss;
-  const prize = {text:nextReward() + (bossOn ? ' · boss blast' : ''), blast:bossOn};
+  const prize = {text:nextReward() + (bossOn ? ' + boss blast' : ''), blast:bossOn};
   const sides = shuffle([{v:p, right:true}, {v:w, right:false}]);
   const grp = new THREE.Group();
   sides.forEach((s, i) => {
@@ -554,7 +570,7 @@ function spawnGate(){
     for (const px of [x - 2.35, x + 2.35]) { const post = new THREE.Mesh(new THREE.BoxGeometry(0.26, 3.6, 0.26), new THREE.MeshLambertMaterial({color:0x2f7fe0, emissive:0x10306a})); post.position.set(px, 1.8, 0); grp.add(post); }
   });
   const flag = labelSprite(`${f.a} × ${f.b} = ?`, f.again ? '#ff8fb1' : '#2c2547', f.again ? '#2c2547' : '#ffd25a', 640, 150, 108, 6.8); flag.position.set(0, 4.7, 0); grp.add(flag);
-  const pz = labelSprite(prize.text, prize.blast ? '#ffd25a' : '#5fd68a', '#0d0c16', 480, 104, 68, 3.6); pz.position.set(0, 6.0, 0); grp.add(pz);
+  const pz = labelSprite(prize.text, prize.blast ? '#ffd25a' : '#5fd68a', '#0d0c16', 640, 104, 68, 4.8); pz.position.set(0, 6.0, 0); grp.add(pz);
   grp.position.z = SPAWN + 4; scene.add(grp);
   gate = {fact:f, sides, grp, z:SPAWN + 4, prize, flag, pz};
 }
@@ -579,7 +595,7 @@ function spawnBoss(kind){
   const wings = [-1, 1].map(s => { const w = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.08, 0.5).translate(0.45, 0, 0), mat); w.position.set(s * 0.5, 0.05, 0); w.scale.x = s; body.add(w); return w; });
   const size = corvo ? 10.5 : 7.2; body.scale.setScalar(size);
   scene.add(g);
-  const hp = corvo ? P.corvoHp : P.captainHp;
+  const hp = (corvo ? P.corvoHp : P.captainHp) * pressure();
   boss = {kind, g, body, mat, wings, size, x:0, z:SPAWN - 4, hp, max:hp, flash:0, stompT:2.5, step:0};
   showStamp(corvo ? 'BOSS CORVO' : 'CROW CAPTAIN', 'boss', corvo ? 'the gang leader is here' : 'stomping down the bridge');
   sfx([110, 82, 65], 0.25, 'sawtooth', 0.12); shake = 0.8; if (!simClock) $('hint').style.opacity = 0;
@@ -594,52 +610,56 @@ function step(rdt){
   if (AUTO) autoSteer(rdt);
   targetX = clamp(targetX, -ROAD + 1, ROAD - 1);
   squadX += (targetX - squadX) * Math.min(1, rdt * 12);
-  surgeT = Math.max(0, surgeT - dt);
+  surgeT = Math.max(0, surgeT - dt); frenzyT = Math.max(0, frenzyT - dt); dizzyT = Math.max(0, dizzyT - dt);
   const now = PLAN[planIdx];
   if (now === 'wave') {
-    waveT += dt; spawnT -= dt; flyT -= dt;
+    waveT += dt; spawnT -= dt; flyT -= dt; scoutT -= dt;
     const w = waveNo();
-    if (spawnT <= 0 && waveT < WAVE_LEN - 4) { spawnWaveBlock(); spawnT = clamp(4.2 - w * 0.2 - stageNo * 0.1, 2.8, 4.2) * rnd(0.85, 1.15); }
-    if (flyT <= 0 && w >= 2) { spawnFlyers(); flyT = rnd(9, 13); }
-    if (waveT >= WAVE_LEN && army.length < 12) { planIdx++; waveT = 0; const nx = PLAN[planIdx];
+    if (spawnT <= 0 && waveT < WAVE_LEN - 3) { spawnWaveBlock(); spawnT = Math.max(2.6, 3.4 - stageNo * 0.08) * rnd(0.85, 1.15); }
+    if (scoutT <= 0 && waveT < WAVE_LEN - 3) { spawnScouts(); scoutT = rnd(7, 10); }
+    if (flyT <= 0 && w >= 2) { spawnFlyers(); flyT = rnd(8, 11); }
+    if (waveT >= WAVE_LEN && army.length < 10) { planIdx++; waveT = 0; const nx = PLAN[planIdx];
       if (nx === 'wave') toast(`Wave ${waveNo()}`, '#ffd25a'); else spawnBoss(nx); }
   } else if (boss) {
     spawnT -= dt; flyT -= dt;
-    if (spawnT <= 0) { spawnBlock(irnd(3, 5), irnd(8, 11)); spawnT = rnd(4.5, 6); }
-    if (flyT <= 0 && boss.kind === 'corvo') { spawnFlyers(); flyT = rnd(10, 14); }
+    if (spawnT <= 0) { spawnBlock(irnd(2, 3), irnd(4, 6), {cx:LANES[irnd(0, 2)]}); spawnT = rnd(4, 5.5); }
+    if (flyT <= 0 && boss.kind === 'corvo') { spawnFlyers(); flyT = rnd(9, 12); }
   }
-  renderWaves();
+  renderWaves(); if (!simClock && (frenzyT > 0 || frenzyPrev)) { frenzyPrev = frenzyT > 0; renderPower(); }
   gateT -= dt;
   if (gateT <= 0 && !gate) { spawnGate(); gateT = GATE_EVERY; }
-  // shooting
-  const rate = (1 + 0.3 * up.rate);
+  hazards(dt);
+  // shooting (nothing while dizzy)
+  const rate = (1 + 0.2 * up.rate);
   overdriveT = Math.max(0, overdriveT - dt);
-  fireAcc += (squad + 1) * CHAR_RATE * rate * (overdriveT > 0 ? 1.6 : 1) / (1 + 0.8 * up.spread) * dt;
+  if (dizzyT <= 0) fireAcc += (squad + 1) * CHAR_RATE * rate * (frenzyT > 0 ? 2 : 1) * (overdriveT > 0 ? 1.4 : 1) / (1 + 0.5 * up.spread) * dt;
   specials(dt);
   let shots = 0;
   while (fireAcc >= 1) { fireAcc -= 1; fire(); shots++; }
   if (shots && Math.random() < 0.25) sfx([1400 + Math.random() * 300], 0.012, 'square', 0.012);
-  const dmg = 1 + up.power + tier;
+  const dmg = damage();
   buildBuckets();
-  for (let i = marbles.length - 1; i >= 0; i--) { const m = marbles[i]; const z0 = m.z; m.z -= 38 * dt; m.x += m.vx * dt; m.life -= dt;
-    const d2 = m.side ? dmg * 0.6 : dmg;
-    if (Math.abs(m.x) > ROAD + 0.4 || m.z < -RANGE || hitArmy(m, z0, d2) || hitFlyer(m, z0, d2) || hitBoss(m, z0, d2) || m.life <= 0) marbles.splice(i, 1); }
+  for (let i = marbles.length - 1; i >= 0; i--) { const m = marbles[i]; const z0 = m.z; m.z -= 40 * dt; m.x += m.vx * dt; m.life -= dt;
+    const d2 = m.side ? dmg * 0.5 : dmg;
+    if (Math.abs(m.x) > ROAD + 0.4 || m.z < -RANGE || hitBarrel(m, z0, d2) || hitArmy(m, z0, d2) || hitFlyer(m, z0, d2) || hitBoss(m, z0, d2) || m.life <= 0) marbles.splice(i, 1); }
   // the army marches
-  const sp = P.speed * (surgeT > 0 ? 2.1 : 1);
+  const sp = P.speed * (surgeT > 0 ? 1.8 : 1);
   for (const u of army) { if (u.dead) continue; u.flash = Math.max(0, u.flash - dt);
     const slow = puddles.some(pd => Math.abs(pd.x - u.x) < pd.r && Math.abs(pd.z - u.z) < pd.r) ? 0.4 : 1;
-    u.z += (sp * slow * (u.kind === 'giant' ? 0.5 : u.kind === 'brute' ? 0.75 : u.kind === 'scout' ? 1.7 : 1)) * dt - u.kb * dt * (u.kind === 'giant' ? 0.2 : 1);
+    u.z += (sp * slow * (u.kind === 'giant' ? 0.5 : u.kind === 'brute' ? 0.75 : u.kind === 'scout' ? 2 : 1)) * dt - u.kb * dt * (u.kind === 'giant' ? 0.2 : 1);
     if (u.kind === 'giant') { u.stompT -= dt; if (u.stompT <= 0) { u.stompT = 1.6; shake = Math.max(shake, 0.25); ring(u.x, u.z, 0xff5b5b, 4, 0.4); emit(u.x, 0.2, u.z, 10, [0xcfc6e8, 0x9aa1ad], 4, 0.5, 1, 12, 0.3); } } u.kb = Math.max(0, u.kb - dt * 30);
-    if (u.z >= LINE) { u.dead = true; hitHome(u.kind === 'giant' ? 25 : u.kind === 'brute' ? 8 : u.kind === 'shield' ? 2 : 1, u.x); } }
+    if (u.z >= LINE) { u.dead = true; hitHome(u.kind === 'giant' ? 25 : u.kind === 'brute' ? 10 : u.kind === 'shield' ? 3 : u.kind === 'scout' ? 1 : 2, u.x); } }
   army = army.filter(u => !u.dead);
-  for (const f of flyers) { if (f.dead) continue; f.flash = Math.max(0, f.flash - dt); f.z += f.speed * (surgeT > 0 ? 1.5 : 1) * dt;
-    if (f.z > -16) { f.dive = Math.min(1, f.dive + dt * 1.2); f.x += (squadX - f.x) * dt * 1.4; }
-    if (f.z >= LINE + 0.5) { f.dead = true; hitHome(f.hawk ? 12 : 2, f.x); } }
+  for (const f of flyers) { if (f.dead) continue; f.flash = Math.max(0, f.flash - dt); f.z += f.speed * (surgeT > 0 ? 1.4 : 1) * dt;
+    if (f.z > -16) { f.dive = Math.min(1, f.dive + dt * 1.2); f.x += (squadX - f.x) * dt * 1.2; }
+    // a hawk lets an egg go over the friends: a ring shows where it lands
+    if (f.hawk && !f.dropped && f.z > -20) { f.dropped = true; addEgg(clamp(squadX, -ROAD + 0.8, ROAD - 0.8)); }
+    if (f.z >= LINE + 0.5) { f.dead = true; hitHome(f.hawk ? 8 : 2, f.x); } }
   flyers = flyers.filter(f => !f.dead);
   // the gate: slow while far (time to think), then it rushes in
   if (gate) {
-    const far = gate.z < -26;
-    const v = far ? 6.5 : 6.5 + (gate.z + 26) / 26 * 30;
+    const far = gate.z < -24;
+    const v = far ? 6.5 : 6.5 + (gate.z + 24) / 24 * 28;
     gate.z += v * dt; gate.grp.position.z = gate.z; gate.rush = !far;
     if (!far && !gate.whoosh) { gate.whoosh = true; whoosh(); }
     if (!simClock) { const pulse = 1 + Math.sin(performance.now() / (far ? 160 : 60)) * (far ? 0.03 : 0.08); const b = gate.flag.userData.base; gate.flag.scale.set(b[0] * pulse, b[1] * pulse, 1); }
@@ -648,13 +668,14 @@ function step(rdt){
   // bosses
   if (boss) {
     boss.flash = Math.max(0, boss.flash - dt);
-    boss.z += (boss.kind === 'corvo' ? 1.1 : 1.35) * (surgeT > 0 ? 1.6 : 1) * dt; boss.step += dt;
-    boss.x += (Math.sin(boss.step * 0.6) * (boss.size > 8 ? 0.6 : 1.2) - boss.x) * dt;
+    boss.z += (boss.kind === 'corvo' ? 1.2 : 1.5) * (surgeT > 0 ? 1.6 : 1) * dt; boss.step += dt;
+    // bosses walk from lane to lane: keep under them
+    boss.x += (Math.sin(boss.step * (boss.kind === 'corvo' ? 0.42 : 0.5)) * (boss.kind === 'corvo' ? 2.6 : 3.0) - boss.x) * Math.min(1, dt * 1.5);
     boss.stompT -= dt;
-    if (boss.stompT <= 0) { boss.stompT = boss.kind === 'corvo' ? 2.8 : 3.4; shake = Math.max(shake, boss.kind === 'corvo' ? 1.1 : 0.8); ring(boss.x, boss.z, 0xb9a6ff, boss.size * 2, 0.7); flashScreen('rgba(40,20,80,.25)', 260); emit(boss.x, 0.3, boss.z, 30, [0xcfc6e8, 0x9aa1ad], 6, 0.6, 1.2, 12, 0.3);
-      sfx([70, 55], 0.12, 'sawtooth', 0.12); spawnBlock(irnd(2, 3), irnd(7, 10), {z:boss.z + 3, cx:boss.x}); }
+    if (boss.stompT <= 0) { boss.stompT = boss.kind === 'corvo' ? 3 : 3.6; shake = Math.max(shake, boss.kind === 'corvo' ? 1.1 : 0.8); ring(boss.x, boss.z, 0xb9a6ff, boss.size * 2, 0.7); flashScreen('rgba(40,20,80,.25)', 260); emit(boss.x, 0.3, boss.z, 30, [0xcfc6e8, 0x9aa1ad], 6, 0.6, 1.2, 12, 0.3);
+      sfx([70, 55], 0.12, 'sawtooth', 0.12); spawnBlock(2, irnd(4, 5), {z:boss.z + 3, cx:boss.x}); }
     if (boss.hp <= 0) { if (boss.kind === 'corvo') return finish(true); killBoss(); }
-    else if (boss.z >= LINE - boss.size * 0.75) { hitHome(30, boss.x); boss.z = -40; showStamp('SMASH!', 'wrong', 'the boss hit the barricade'); }
+    else if (boss.z >= LINE - boss.size * 0.75) { hitHome(30, boss.x); boss.z = -36; showStamp('SMASH!', 'wrong', 'the boss hit the barricade'); }
   }
   if (home <= 0 && state === 'play') return finish(false);
 }
@@ -662,20 +683,21 @@ function killBoss(){
   const b = boss; scene.remove(b.g); boss = null;
   emit(b.x, 3, b.z, 160, [0x2c2547, 0x7b5cff, 0xffd25a, 0xffffff], 12, 1.2, 1.8, 10, 0.9); ring(b.x, b.z, 0xffd25a, 14, 0.9); ring(b.x, b.z, 0xffffff, 9, 0.6);
   shake = 1; flashScreen('rgba(255,240,200,.85)', 220);
-  showStamp('CAPTAIN DOWN!', 'right', 'barricade repaired +25'); home = Math.min(HOME_MAX, home + 25); renderPower();
+  showStamp('CAPTAIN DOWN!', 'right', 'Barricade +20'); home = Math.min(HOME_MAX, home + 20); renderPower();
   sfx([523, 659, 784, 1047, 1319], 0.09, 'triangle', 0.1);
   for (const u of army) { if (Math.abs(u.z - b.z) < 14) { u.dead = true; kos++; emit(u.x, 0.6, u.z, 3, 0x2c2547, 5, 0.5); } }
   army = army.filter(u => !u.dead);
-  planIdx++; waveT = 0; spawnT = 2.5;
+  planIdx++; waveT = 0; spawnT = 2; scoutT = 5; toast(`Wave ${waveNo()}`, '#ffd25a');
 }
 const CHAR_RATE = 7;
 function memberX(k){ return clamp(squadX + TEAM_X[k], -ROAD + 0.6, ROAD - 0.6); }
 function fire(){
   const k = Math.floor(Math.random() * (squad + 1));
   const px = simClock ? memberX(k) : (team.filter(m => !m.leaving)[k] || leader).x, pz = TEAM_Z[k];
-  const pellets = 1 + 2 * up.spread, step = 0.1;
-  for (let j = 0; j < pellets; j++) { const a = (j - (pellets - 1) / 2) * step;
-    marbles.push({x:px + rnd(-0.08, 0.08), z:pz - 0.6, vx:Math.sin(a) * 38, life:2.0, c:Math.floor(Math.random() * 5), side:j !== (pellets - 1) / 2, pierce:tier >= 3 ? 3 : 0, last:null}); }
+  // parallel streams, not a fan: triple and five-way widen the column a little, they don't sweep the bridge
+  const pellets = 1 + 2 * up.spread;
+  for (let j = 0; j < pellets; j++) { const off = (j - (pellets - 1) / 2) * 0.32;
+    marbles.push({x:px + off + rnd(-0.05, 0.05), z:pz - 0.6, vx:0, life:1.7, c:Math.floor(Math.random() * 5), side:j !== (pellets - 1) / 2, pierce:tier >= 3 ? 2 : 0, last:null}); }
   if (!simClock && Math.random() < 0.5) { const mz = muzzles[Math.floor(Math.random() * muzzles.length)]; mz.position.set(px, 0.95, pz - 0.5); mz.material.opacity = 1; mz.material.color.copy(HALO_COLS[tier]); mz.userData.t = 0.07; mz.userData.s = 0.8 + tier * 0.35 + up.power * 0.15; }
 }
 function weaponBanner(st, upward){
@@ -686,41 +708,121 @@ function weaponBanner(st, upward){
     for (const m of team) { emit(m.x, 1.4, 0.4, 40, TIER_COLS[tier].map(c => c.getHex()), 7, 1.0, 1.1, -2, 1.5); ring(m.x, 0.4, HALO_COLS[tier].getHex(), 4, 0.6); } sfx([392, 523, 784, 1047, 1568], 0.07, 'square', 0.09); }
   else if (upward) sfx([660, 990], 0.06, 'square', 0.07); else sfx([300, 200], 0.08, 'sawtooth', 0.07);
 }
+// ---------- Crates to grab, barrels and eggs to dodge ----------
+const PICKUP = {frenzy:{name:'Frenzy', sub:'Double fire', color:0xff6bd6, css:'#ff6bd6'}, repair:{name:'Repair', sub:'Barricade +20', color:0x5fd68a, css:'#5fd68a'}, bomb:{name:'Bomb', sub:'', color:0xff8a3d, css:'#ff8a3d'}};
+const damage = () => 1 + 0.3 * up.power + 0.25 * tier;
+// the team's damage per second into one target in its column (all streams, no frenzy)
+const fireDPS = () => (squad + 1) * CHAR_RATE * (1 + 0.2 * up.rate) / (1 + 0.5 * up.spread) * damage() * (1 + up.spread);
+function crateMeshes(kind, x){
+  if (simClock) return [];
+  const g = new THREE.Group();
+  g.add(new THREE.Mesh(new THREE.BoxGeometry(1.1, 1.1, 1.1).translate(0, 0.55, 0), new THREE.MeshLambertMaterial({color:PICKUP[kind].color})));
+  const gold = new THREE.MeshLambertMaterial({color:0xffd25a});
+  g.add(new THREE.Mesh(new THREE.BoxGeometry(1.16, 0.22, 1.16).translate(0, 0.55, 0), gold)); g.add(new THREE.Mesh(new THREE.BoxGeometry(0.22, 1.16, 1.16).translate(0, 0.55, 0), gold));
+  const top = new THREE.Mesh(new THREE.SphereGeometry(0.26, 10, 8), new THREE.MeshBasicMaterial({color:0xffffff})); top.position.y = 1.32; g.add(top);
+  g.position.set(x, 0, -44); scene.add(g); return [g];
+}
+function barrelMeshes(x){
+  if (simClock) return [];
+  const g = new THREE.Group(), body = new THREE.Group(); g.add(body);
+  const red = new THREE.MeshLambertMaterial({color:0xd8452e}), dark = new THREE.MeshLambertMaterial({color:0x3a2a2a}), yel = new THREE.MeshLambertMaterial({color:0xffd25a});
+  const cyl = (r, h, m, x0) => { const c = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, 14).rotateZ(Math.PI / 2), m); c.position.x = x0; body.add(c); };
+  cyl(0.55, 1.3, red, 0); cyl(0.6, 0.12, dark, -0.5); cyl(0.6, 0.12, dark, 0.5); cyl(0.58, 0.3, yel, 0);
+  g.position.set(x, 0.6, -50); g.userData.red = red; scene.add(g); return [g];
+}
+function addEgg(x){
+  const e = {x, t:1.25, fall:1.25, meshes:[]};
+  if (!simClock) { const egg = new THREE.Mesh(new THREE.SphereGeometry(0.4, 12, 10), new THREE.MeshLambertMaterial({color:0xfff3d6})); egg.scale.y = 1.3; scene.add(egg);
+    const r = new THREE.Mesh(new THREE.RingGeometry(1.25, 1.45, 40), new THREE.MeshBasicMaterial({color:0xff3b3b, transparent:true, opacity:0.9, side:THREE.DoubleSide, depthWrite:false}));
+    r.rotation.x = -Math.PI / 2; r.position.set(x, 0.08, 0.2); scene.add(r); e.meshes = [egg, r]; }
+  eggs.push(e);
+}
+function dropMeshes(o){ for (const m of o.meshes || []) scene.remove(m); }
+function hazards(dt){
+  // crates: in the lane away from the friends, so taking one means leaving the fight for a moment
+  crateT -= dt;
+  if (crateT <= 0) { crateT = rnd(9, 12);
+    const kinds = home < 70 ? ['repair', 'frenzy', 'bomb'] : ['frenzy', 'bomb', 'frenzy'], kind = kinds[pickupTurn++ % kinds.length];
+    const x = squadX > 0.5 ? rnd(-4, -2.4) : squadX < -0.5 ? rnd(2.4, 4) : (Math.random() < 0.5 ? -3.4 : 3.4);
+    crates.push({kind, x, z:-44, meshes:crateMeshes(kind, x)}); }
+  for (let i = crates.length - 1; i >= 0; i--) { const c = crates[i]; c.z += CRATE_V * dt;
+    if (c.meshes[0]) { c.meshes[0].position.set(c.x, Math.abs(Math.sin(gameT * 5 + i)) * 0.35, c.z); c.meshes[0].rotation.y += dt * 1.6; }
+    if (c.z >= -0.4) { crates.splice(i, 1); dropMeshes(c); if (Math.abs(c.x - squadX) < GRAB) take(c.kind, c.x); else if (!simClock) emit(c.x, 0.6, 0, 8, [0xcfc6e8, 0xffffff], 3, 0.5, 0.8); } }
+  // barrels: aimed at where the friends stand; about 1.4 s of the whole team's fire to pop
+  barrelT -= dt;
+  if (barrelT <= 0) { barrelT = rnd(8, 11) - Math.min(2, stageNo * 0.25); const x = clamp(squadX + rnd(-0.4, 0.4), -ROAD + 0.7, ROAD - 0.7), hp = 1.4 * fireDPS();
+    barrels.push({x, z:-50, hp, max:hp, flash:0, meshes:barrelMeshes(x)}); }
+  for (let i = barrels.length - 1; i >= 0; i--) { const b = barrels[i]; b.flash = Math.max(0, b.flash - dt); b.z += BARREL_V * dt;
+    if (b.meshes[0]) { b.meshes[0].position.set(b.x, 0.6, b.z); b.meshes[0].children[0].rotation.x = b.z / 0.6; b.meshes[0].userData.red.emissive.setHex(b.flash > 0 ? 0x664444 : 0); }
+    if (b.hp <= 0) { barrels.splice(i, 1); dropMeshes(b); boom(b); continue; }
+    if (b.z >= -0.6) { barrels.splice(i, 1); dropMeshes(b); if (Math.abs(b.x - squadX) < 1.5) { dizzy(); hitHome(4, b.x); } } }
+  for (let i = eggs.length - 1; i >= 0; i--) { const e = eggs[i]; e.t -= dt;
+    if (e.meshes.length) { const k = Math.max(0, e.t / e.fall); e.meshes[0].position.set(e.x, 0.4 + k * k * 7, 0.2); const sc = 0.75 + 0.25 * k + 0.08 * Math.sin(gameT * 24); e.meshes[1].scale.set(sc, sc, 1); }
+    if (e.t <= 0) { eggs.splice(i, 1); dropMeshes(e); const hit = Math.abs(e.x - squadX) < 1.4; if (!simClock) emit(e.x, 0.3, 0.2, hit ? 40 : 20, [0xfff3d6, 0xffd25a, 0xffffff], hit ? 7 : 4, 0.7, 1); if (hit) dizzy(); } }
+}
+function take(kind, x){
+  grabbed++;
+  if (kind === 'frenzy') frenzyT = FRENZY_T;
+  else if (kind === 'repair') { home = Math.min(HOME_MAX, home + 20); renderPower(); }
+  else { const u0 = unit(); for (const u of army) if (u.z > -30) { hurtUnit(u, u.kind === 'giant' ? 6 * u0 : 12 * u0); u.kb = 10; }
+    for (const f of flyers) if (f.z > -30) { f.dead = true; kos++; } flyers = flyers.filter(f => !f.dead);
+    if (boss && boss.z > -34) { boss.hp -= boss.max * 0.06; boss.flash = 0.3; }
+    if (!simClock) { ring(squadX, -14, 0xff8a3d, 20, 0.9); ring(squadX, -14, 0xffffff, 13, 0.6); emit(squadX, 1, -14, 120, [0xff8a3d, 0xffd25a, 0xffffff], 14, 1, 1.6); shake = Math.max(shake, 0.9); flashScreen('rgba(255,180,90,.5)', 300); } }
+  if (!simClock) { const P2 = PICKUP[kind]; emit(x, 1.2, 0, 50, [P2.color, 0xffffff, 0xffd25a], 8, 0.9, 1.1, 6, 1); ring(squadX, 0.3, P2.color, 7, 0.6); leaderMood('win', 1.2);
+    toast(P2.name + '!', P2.css, P2.sub); sfx([660, 880, 1320], 0.06, 'triangle', 0.1); }
+}
+function boom(b){
+  const u0 = unit();
+  for (const u of army) if (Math.hypot(u.x - b.x, u.z - b.z) < 2.8) { hurtUnit(u, u.kind === 'giant' ? 8 * u0 : u.kind === 'brute' ? 16 * u0 : 10 * u0); u.kb = 8; }
+  if (boss && Math.abs(boss.x - b.x) < boss.size * 0.6 && Math.abs(boss.z - b.z) < boss.size * 0.7) { boss.hp -= boss.max * 0.03; boss.flash = 0.2; }
+  if (!simClock) { emit(b.x, 1, b.z, 90, [0xff8a3d, 0xffd25a, 0xd8452e, 0x3a2a2a, 0xffffff], 12, 1, 1.6, 10, 0.9); ring(b.x, b.z, 0xff8a3d, 6, 0.6); ring(b.x, b.z, 0xffffff, 4, 0.4); shake = Math.max(shake, 0.6); sfx([160, 90, 60], 0.08, 'sawtooth', 0.12); }
+}
+function dizzy(){
+  dizzyT = DIZZY_T; dizzied++; frenzyT = 0;
+  if (!simClock) { leaderMood('hit', DIZZY_T); emit(squadX, 3, 0.4, 26, [0xffd25a, 0xffffff], 3, 1.2, 0.9, -1, 0.6); shake = Math.max(shake, 0.7); showStamp('DIZZY!', 'wrong', ''); sfx([300, 200, 300, 200], 0.06, 'square', 0.06); }
+}
+// a barrel is hit only when no crow stands in front of it: inside the crowd it is shielded
+function hitBarrel(m, z0, dmg){
+  for (const b of barrels) { if (b.hp <= 0 || Math.abs(m.x - b.x) >= 0.75 || !(b.z + 0.6 >= m.z && b.z - 0.6 <= z0 + 0.3)) continue;
+    const bk = Math.floor((m.x + ROAD) / BW);
+    if (bk >= 0 && bk < NB && buckets[bk].some(u => !u.dead && Math.abs(m.x - u.x) <= 0.35 * u.s + 0.12 && u.z > b.z && u.z - 0.4 * u.s <= z0 + 0.3)) return false;
+    b.hp -= dmg; b.flash = 0.07; return true; }
+  return false;
+}
 // ---------- Signature moves: each friend on the team has one ----------
 let puddles = [], yarns = [];
-const SPECIAL_CD = {bear:6, bunny:4.5, cat:5, frog:4, red_panda:6};
+const SPECIAL_CD = {bear:8, bunny:7, cat:7, frog:6, red_panda:8};
 function specials(dt){
-  const keys = teamKeys(), boost = 1 + 0.35 * tier + 0.15 * up.power;
+  const keys = teamKeys(), boost = 1 + 0.2 * tier, u0 = unit() * boost;
   keys.forEach((k, i) => {
-    const st = specialState[k] || (specialState[k] = {t:rnd(1.5, 3)});
+    const st = specialState[k] || (specialState[k] = {t:rnd(2, 4)});
     st.t -= dt; if (st.t > 0) return; st.t = SPECIAL_CD[k];
-    const x = memberX(i), front = army.filter(u => u.z > -RANGE).sort((a, b) => b.z - a.z);
-    if (!front.length && !boss) { st.t = 0.6; return; }
+    const x = memberX(i), lane = army.filter(u => !u.dead && u.z > -RANGE && Math.abs(u.x - squadX) < 2.6).sort((a, b) => b.z - a.z);
+    if (!lane.length && !boss) { st.t = 0.6; return; }
     const m = !simClock && team.find(t => t.key === k && !t.leaving); if (m) setMood(m, 'happy', 0.8);
-    if (k === 'bear') { // honey pot: a sticky puddle that slows the army
-      const tz = front.length ? clamp(front[Math.min(front.length - 1, 6)].z, -40, -8) : -20, tx = front.length ? front[0].x : x;
-      puddles.push({x:tx, z:tz, r:2.6, t:5, mesh:simClock ? null : honeyMesh(tx, tz)}); for (const u of army) if (Math.hypot(u.x - tx, u.z - tz) < 2.6) hurtUnit(u, 2 * boost);
+    if (k === 'bear') { // honey pot: a sticky puddle in the team's lane that slows the Gang
+      const tg = lane.length ? lane[Math.min(lane.length - 1, 4)] : null, tz = tg ? clamp(tg.z, -36, -8) : -20, tx = tg ? tg.x : squadX;
+      puddles.push({x:tx, z:tz, r:2.2, t:4.5, mesh:simClock ? null : honeyMesh(tx, tz)}); for (const u of army) if (Math.hypot(u.x - tx, u.z - tz) < 2.2) hurtUnit(u, 1.5 * u0);
       if (!simClock) { emit(tx, 0.5, tz, 30, [0xf2a91d, 0xffd25a], 5, 0.7, 1); sfx([300, 220], 0.06, 'triangle', 0.06); }
-    } else if (k === 'bunny') { // carrot rockets: the biggest targets first
-      const targets = boss ? [boss, boss, boss] : front.filter(u => u.kind === 'brute').concat(front).slice(0, 3);
-      for (const tg of targets) { if (tg === boss) { boss.hp -= 22 * boost; boss.flash = 0.2; dmgText(22 * boost, boss.x, boss.z, '#ff9a3d', 24); if (!simClock) emit(boss.x, 4, boss.z + 1, 14, [0xf47a20, 0xffffff], 6, 0.5, 1); }
-        else { for (const u of army) if (Math.hypot(u.x - tg.x, u.z - tg.z) < 1.3) hurtUnit(u, 8 * boost); if (!simClock) { emit(tg.x, 1, tg.z, 16, [0xf47a20, 0x4fae3a, 0xffffff], 6, 0.5, 1); ring(tg.x, tg.z, 0xf47a20, 2.5, 0.35); } } }
+    } else if (k === 'bunny') { // carrot rockets: the biggest targets in the lane first
+      if (boss && Math.abs(boss.x - squadX) < boss.size * 0.6) { const d = boss.max * 0.025 * boost; boss.hp -= d; boss.flash = 0.2; dmgText(d, boss.x, boss.z, '#ff9a3d', 24); if (!simClock) emit(boss.x, 4, boss.z + 1, 14, [0xf47a20, 0xffffff], 6, 0.5, 1); }
+      else for (const tg of lane.filter(u => u.kind === 'brute' || u.kind === 'giant').concat(lane).slice(0, 2)) { for (const u of army) if (Math.hypot(u.x - tg.x, u.z - tg.z) < 1.2) hurtUnit(u, 5 * u0); if (!simClock) { emit(tg.x, 1, tg.z, 16, [0xf47a20, 0x4fae3a, 0xffffff], 6, 0.5, 1); ring(tg.x, tg.z, 0xf47a20, 2.5, 0.35); } }
       if (!simClock) sfx([700, 1000, 1300], 0.04, 'square', 0.05);
-    } else if (k === 'cat') { // yarn ball: rolls through the ranks
-      yarns.push({x, z:-1, vx:rnd(-3, 3), left:28, mesh:simClock ? null : yarnMesh(x)}); if (!simClock) sfx([500, 650], 0.05, 'triangle', 0.05);
+    } else if (k === 'cat') { // yarn ball: rolls up the team's lane
+      yarns.push({x, z:-1, vx:rnd(-0.6, 0.6), left:14, mesh:simClock ? null : yarnMesh(x)}); if (!simClock) sfx([500, 650], 0.05, 'triangle', 0.05);
     } else if (k === 'frog') { // tongue: snaps the first crows in its lane
-      let n = 0; for (const u of front) { if (Math.abs(u.x - x) < 0.8 && u.z > -24) { hurtUnit(u, 6 * boost); if (++n >= 8) break; } }
+      let n2 = 0; for (const u of lane) { if (Math.abs(u.x - x) < 0.8 && u.z > -24) { hurtUnit(u, 3 * u0); if (++n2 >= 6) break; } }
       if (!simClock) { tongueFx(x); sfx([420, 260], 0.05, 'triangle', 0.06); }
-    } else if (k === 'red_panda') { // tail whirl: a spinning wave just ahead
-      const tz = front.length ? clamp(front[0].z, -18, -4) : -10;
-      for (const u of army) if (Math.hypot(u.x - squadX, u.z - tz) < 4.2) { hurtUnit(u, 5 * boost); u.kb = 10; }
-      if (boss && Math.abs(boss.z - tz) < 5) { boss.hp -= 15 * boost; boss.flash = 0.2; }
-      if (!simClock) { ring(squadX, tz, 0xf07b3a, 9, 0.5); ring(squadX, tz, 0xffffff, 6, 0.35); emit(squadX, 1, tz, 30, [0xf07b3a, 0x4a2f26, 0xffffff], 7, 0.6, 1); sfx([440, 330, 440], 0.04, 'triangle', 0.06); }
+    } else if (k === 'red_panda') { // tail whirl: a spinning wave just ahead of the team
+      const tz = lane.length ? clamp(lane[0].z, -16, -4) : -10;
+      for (const u of army) if (Math.hypot(u.x - squadX, u.z - tz) < 3) { hurtUnit(u, 2.5 * u0); u.kb = 10; }
+      if (boss && Math.abs(boss.z - tz) < 5 && Math.abs(boss.x - squadX) < boss.size * 0.6) { boss.hp -= boss.max * 0.01 * boost; boss.flash = 0.2; }
+      if (!simClock) { ring(squadX, tz, 0xf07b3a, 7, 0.5); ring(squadX, tz, 0xffffff, 5, 0.35); emit(squadX, 1, tz, 30, [0xf07b3a, 0x4a2f26, 0xffffff], 7, 0.6, 1); sfx([440, 330, 440], 0.04, 'triangle', 0.06); }
     }
   });
   for (let i = puddles.length - 1; i >= 0; i--) { const pd = puddles[i]; pd.t -= dt; if (pd.mesh) pd.mesh.material.opacity = Math.min(0.75, pd.t); if (pd.t <= 0) { if (pd.mesh) scene.remove(pd.mesh); puddles.splice(i, 1); } }
   for (let i = yarns.length - 1; i >= 0; i--) { const y = yarns[i]; y.z -= 15 * dt; y.x += y.vx * dt; if (Math.abs(y.x) > ROAD - 0.5) { y.vx *= -1; y.x = clamp(y.x, -ROAD + 0.5, ROAD - 0.5); }
-    for (const u of army) if (!u.dead && !u.yarned && Math.abs(u.x - y.x) < 0.7 && Math.abs(u.z - y.z) < 0.7) { u.yarned = true; hurtUnit(u, 4 * (1 + 0.35 * tier)); y.left--; if (!simClock && Math.random() < 0.5) emit(u.x, 0.6, u.z, 3, [0xf28db2, 0xffffff], 3, 0.3, 0.6); }
+    for (const u of army) if (!u.dead && !u.yarned && Math.abs(u.x - y.x) < 0.7 && Math.abs(u.z - y.z) < 0.7) { u.yarned = true; hurtUnit(u, 2 * unit() * (1 + 0.2 * tier)); y.left--; if (!simClock && Math.random() < 0.5) emit(u.x, 0.6, u.z, 3, [0xf28db2, 0xffffff], 3, 0.3, 0.6); }
     if (y.mesh) { y.mesh.position.set(y.x, 0.45, y.z); y.mesh.rotation.x -= dt * 14; }
     if (y.left <= 0 || y.z < -RANGE) { if (y.mesh) scene.remove(y.mesh); yarns.splice(i, 1); for (const u of army) u.yarned = false; } }
 }
@@ -738,7 +840,7 @@ function hitArmy(m, z0, dmg){
   for (const u of buckets[b]) { if (u.dead || u === m.last) continue; const r = 0.35 * u.s + 0.12; if (Math.abs(m.x - u.x) > r) continue;
     if (u.z + 0.4 * u.s >= m.z && u.z - 0.4 * u.s <= z0 + 0.3) { if (!best || u.z > best.z) best = u; } }
   if (!best) return false;
-  best.hp -= dmg; best.flash = 0.07; best.kb = best.kind === 'giant' ? 0.2 : best.kind === 'brute' ? 1 : 4;
+  best.hp -= dmg; best.flash = 0.07; best.kb = best.kind === 'giant' ? 0.2 : best.kind === 'brute' ? 0.8 : 3;
   if (tier >= 1) weaponHit(best, dmg, b);
   if (!simClock && Math.random() < 0.4) emit(m.x, 0.8, best.z + 0.3, 2, [0xffffff, 0xffe9a0], 3, 0.25, 0.6, 6, 0.5);
   if (best.hp <= 0) { best.dead = true; kos++;
@@ -751,22 +853,22 @@ function hitArmy(m, z0, dmg){
 }
 function weaponHit(best, dmg, b){
   // fire: a small burst around the hit
-  if (Math.random() < 0.5) { for (let k = Math.max(0, b - 3); k <= Math.min(NB - 1, b + 3); k++) for (const u of buckets[k]) if (!u.dead && u !== best && Math.abs(u.x - best.x) < 1.1 && Math.abs(u.z - best.z) < 1.1) hurtUnit(u, dmg * 0.5);
+  if (Math.random() < 0.4) { for (let k = Math.max(0, b - 3); k <= Math.min(NB - 1, b + 3); k++) for (const u of buckets[k]) if (!u.dead && u !== best && Math.abs(u.x - best.x) < 0.9 && Math.abs(u.z - best.z) < 0.9) hurtUnit(u, dmg * 0.5);
     if (!simClock && Math.random() < 0.5) emit(best.x, 0.9, best.z + 0.3, 4, [0xffc04d, 0xff5a1f, 0xfff1a0], 3.5, 0.35, 0.8, -1, 0.8); }
   // lightning: jumps to nearby crows
-  if (tier >= 2 && Math.random() < 0.3) { let from = best; const jumps = tier >= 3 ? 3 : 2, done = new Set([best]);
-    for (let j = 0; j < jumps; j++) { let nx = null, nd = 3.2; const bb = Math.floor((from.x + ROAD) / BW);
-      for (let k = Math.max(0, bb - 7); k <= Math.min(NB - 1, bb + 7); k++) for (const u of buckets[k]) { if (u.dead || done.has(u)) continue; const d = Math.hypot(u.x - from.x, u.z - from.z); if (d < nd) { nd = d; nx = u; } }
+  if (tier >= 2 && Math.random() < 0.25) { let from = best; const jumps = 2, done = new Set([best]);
+    for (let j = 0; j < jumps; j++) { let nx = null, nd = 2.6; const bb = Math.floor((from.x + ROAD) / BW);
+      for (let k = Math.max(0, bb - 6); k <= Math.min(NB - 1, bb + 6); k++) for (const u of buckets[k]) { if (u.dead || done.has(u)) continue; const d = Math.hypot(u.x - from.x, u.z - from.z); if (d < nd) { nd = d; nx = u; } }
       if (!nx) break; done.add(nx); hurtUnit(nx, dmg * 0.7); if (!simClock && bolts.length < 40) bolts.push({x1:from.x, z1:from.z, x2:nx.x, z2:nx.z, life:0.12}); from = nx; } }
 }
 function hitFlyer(m, z0, dmg){
-  for (const f of flyers) { if (f.dead || Math.abs(m.x - f.x) > (f.hawk ? 1.5 : 0.7)) continue; if (f.z + 0.5 >= m.z && f.z - 0.5 <= z0 + 0.3) { f.hp -= dmg; f.flash = 0.07;
+  for (const f of flyers) { if (f.dead || Math.abs(m.x - f.x) > (f.hawk ? 1.3 : 0.6)) continue; if (f.z + 0.5 >= m.z && f.z - 0.5 <= z0 + 0.3) { f.hp -= dmg; f.flash = 0.07;
     if (f.hp <= 0) { f.dead = true; kos++; emit(f.x, flyerY(f), f.z, 14, [0x5a3b8f, 0x3b2669, 0xffffff], 6, 0.8, 1.0, 9, 0.4); sfx([1100, 700], 0.03, 'square', 0.04); } return true; } }
   return false;
 }
 function hitBoss(m, z0, dmg){
-  if (!boss) return false; const r = boss.size * 0.6; if (Math.abs(m.x - boss.x) > r) return false;
-  if (boss.z + r >= m.z && boss.z - r <= z0 + 0.3) { boss.hp -= dmg * 0.6; boss.flash = 0.05; if (Math.random() < 0.15) { dmgText(dmg, boss.x + rnd(-1, 1), boss.z, '#ffe9a0', 18); emit(m.x, 2.5, boss.z + r, 3, [0xffffff, 0xffd25a], 4, 0.3, 0.7); } return true; }
+  if (!boss) return false; const r = boss.size * 0.42; if (Math.abs(m.x - boss.x) > r) return false;
+  if (boss.z + r >= m.z && boss.z - r <= z0 + 0.3) { boss.hp -= dmg; boss.flash = 0.05; if (Math.random() < 0.15) { dmgText(dmg, boss.x + rnd(-1, 1), boss.z, '#ffe9a0', 18); emit(m.x, 2.5, boss.z + r, 3, [0xffffff, 0xffd25a], 4, 0.3, 0.7); } return true; }
   return false;
 }
 function snatch(n, x){
@@ -784,13 +886,12 @@ function passGate(){
     const got = stepUp();
     if (g.prize.blast) BLAST.apply();
     const sub = `${f.a} × ${f.b} = ${f.a * f.b}\n${got}${g.prize.blast ? ' · boss blast' : ''}`;
-    // the shockwave clears the front lines
-    let hits = 0;
-    for (const u of army) if (u.z > -22 && !u.dead) { u.hp -= u.kind === 'giant' ? 30 : u.kind === 'brute' ? 14 : 99; if (u.hp <= 0) { u.dead = true; kos++; hits++; if (hits < 70) emit(u.x, 0.7, u.z, 4, [0xffd25a, 0x2c2547, 0xffffff], 7, 0.7, 1, 10, 0.9); } else u.kb = 12; }
+    // the shockwave clears what is about to reach the barricade
+    let hits = 0; const u0 = unit();
+    for (const u of army) if (u.z > -14 && !u.dead) { hurtUnit(u, u.kind === 'giant' ? 4 * u0 : u.kind === 'brute' ? 8 * u0 : 6 * u0); u.kb = 12; if (u.dead && ++hits < 70) emit(u.x, 0.7, u.z, 4, [0xffd25a, 0x2c2547, 0xffffff], 7, 0.7, 1, 10, 0.9); }
     army = army.filter(u => !u.dead);
-    for (const fl of flyers) if (fl.z > -22) { fl.dead = true; kos++; emit(fl.x, flyerY(fl), fl.z, 8, [0xffd25a, 0x5a3b8f], 7, 0.7); }
+    for (const fl of flyers) if (fl.z > -16) { fl.dead = true; kos++; emit(fl.x, flyerY(fl), fl.z, 8, [0xffd25a, 0x5a3b8f], 7, 0.7); }
     flyers = flyers.filter(fl => !fl.dead);
-    if (boss && boss.z > -26) { boss.hp -= boss.max * 0.04; boss.z -= 3; boss.flash = 0.3; }
     leaderMood('happy', 1.4);
     if (!simClock) {
       s.panel.visible = false; other.panel.visible = false;
@@ -805,7 +906,10 @@ function passGate(){
   } else {
     wrongGates++; streak = 0;
     missedFacts.set(`${f.a} × ${f.b}`, f.a * f.b); if (!missedQ.some(m => m.a === f.a && m.b === f.b)) missedQ.push({a:f.a, b:f.b});
-    const lost = stepDown(); const lose = 3; surgeT = 2.2;
+    const lost = stepDown(); surgeT = 1.5;
+    // the gate you missed breaks open: a pack of crows comes through the other side
+    const bx = squadX < 0 ? 2.5 : -2.5; spawnBlock(2, 5 + Math.floor(stageNo / 3), {z:-22, cx:bx});
+    if (!simClock) { emit(bx, 1.5, -22, 40, [0x43a6ff, 0x2a1d3a, 0x7b5cff, 0xffffff], 8, 0.9, 1.3, 10, 0.7); ring(bx, -22, 0x7b5cff, 6, 0.6); }
     leaderMood('hit', 1.6);
     if (!simClock) {
       s.panel.material.color.setHex(0xff5050); other.panel.material.color.setHex(0x9dffb0);
@@ -814,7 +918,7 @@ function passGate(){
       ring(squadX, -1, 0xff3b3b, 12, 0.6);
       flashScreen('rgba(255,40,40,.55)', 380); crack(); shake = 1.1; fovKick = 6;
       $('gl').classList.add('grey'); setTimeout(() => $('gl').classList.remove('grey'), 900);
-      showStamp(OOPS[Math.floor(Math.random() * OOPS.length)], 'wrong', `${f.a} × ${f.b} = ${f.a * f.b}\n${lost} · the army charges`);
+      showStamp(OOPS[Math.floor(Math.random() * OOPS.length)], 'wrong', `${f.a} × ${f.b} = ${f.a * f.b}\n${lost} · crows break through`);
       sfx([180, 120, 90], 0.14, 'sawtooth', 0.14);
     }
   }
@@ -825,11 +929,18 @@ const flyerY = f => 4.2 - f.dive * 2.8 + Math.sin(performance.now() / 300 + f.ph
 function formation(i){ const per = 8, r = Math.floor(i / per), c = i % per; return [(c - (per - 1) / 2) * 0.55 + (r % 2 ? 0.27 : 0), 0.9 + r * 0.55]; }
 function autoSteer(dt){
   let want = null;
-  if (gate && gate.z > -24) { if (gate.autoSide === undefined) gate.autoSide = Math.random() < autoAcc ? gate.sides.findIndex(s => s.right) : gate.sides.findIndex(s => !s.right); want = gate.autoSide ? 2.5 : -2.5; }
-  if (want === null) { let sw = 0, sx = 0; for (const u of army) { if (u.z < -32) continue; const w = (u.kind === 'brute' ? 5 : 1) * (1 + (u.z + 32) / 6); sw += w; sx += w * u.x; }
-    for (const f of flyers) if (f.z > -30) { sw += 6; sx += 6 * f.x; }
-    if (sw > 0) want = sx / sw; else if (boss) want = boss.x; }
-  if (want !== null) targetX += clamp(want - targetX, -10 * dt, 10 * dt);
+  if (gate && gate.z > -22) { if (gate.autoSide === undefined) gate.autoSide = Math.random() < autoAcc ? gate.sides.findIndex(s => s.right) : gate.sides.findIndex(s => !s.right); want = gate.autoSide ? 2.5 : -2.5; }
+  if (want === null) { for (const e of eggs) if (Math.abs(e.x - squadX) < 1.7) want = e.x > 0 ? e.x - 2.4 : e.x + 2.4;
+    for (const b of barrels) if (b.z > -9 && Math.abs(b.x - squadX) < 1.8) want = b.x > 0 ? b.x - 2.6 : b.x + 2.6; }
+  if (want === null) { const c = crates.find(c => c.z > -16); if (c && army.filter(u => u.z > -10).length < 6 && Math.abs(c.x - squadX) / 10 < -c.z / CRATE_V + 0.2) want = c.x; }
+  if (want === null) { const score = new Array(21).fill(0), add = (x, w) => { const s2 = Math.round((x + ROAD) * 2); if (s2 >= 0 && s2 < 21) score[s2] += w; };
+    for (const u of army) if (u.z > -46) add(u.x, (u.kind === 'giant' ? 6 : u.kind === 'brute' ? 4 : u.kind === 'shield' ? 1.5 : 1) * (1 + Math.max(0, u.z + 46) / 8));
+    for (const f of flyers) if (f.z > -36) add(f.x, f.hawk ? 30 : 6);
+    for (const b of barrels) if (b.z > -40 && b.z < -10) add(b.x, 12);
+    if (boss) add(boss.x, 20);
+    let best = -1, bv = 0; for (let s2 = 2; s2 <= 18; s2++) { let v = 0; for (let k = Math.max(0, s2 - 3); k <= Math.min(20, s2 + 3); k++) v += score[k]; if (v > bv) { bv = v; best = s2; } }
+    if (best >= 0) want = best / 2 - ROAD; }
+  if (want !== null) targetX += clamp(want - targetX, -11 * dt, 11 * dt);
 }
 
 // ---------- Screen effects ----------
@@ -908,6 +1019,10 @@ function drawOverlay(rdt){
   const pill = (p, text, bg, fg, size) => { if (!p) return; oc.font = `800 ${size}px "Baloo 2", system-ui, sans-serif`; const tw = oc.measureText(text).width + size * 0.9, th = size * 1.3;
     oc.fillStyle = bg; roundRect(oc, p[0] - tw / 2, p[1] - th / 2, tw, th, th / 2); oc.fill(); oc.fillStyle = fg; oc.textAlign = 'center'; oc.textBaseline = 'middle'; oc.fillText(text, p[0], p[1] + 1); };
   const bar = (p, frac, color, width, hgt) => { if (!p) return; hgt = hgt || 4; oc.fillStyle = 'rgba(13,12,22,.78)'; oc.fillRect(p[0] - width/2 - 2, p[1] - 2, width + 4, hgt + 4); oc.fillStyle = color; oc.fillRect(p[0] - width/2, p[1], width * clamp(frac, 0, 1), hgt); };
+  for (const c of crates) if (c.z > -36) { const p = proj(c.x, 2.1, c.z); if (p) pill(p, PICKUP[c.kind].name, PICKUP[c.kind].css, '#0d0c16', clamp(28 + c.z * 0.3, 14, 26)); }
+  for (const b of barrels) if (b.z > -34) { const p = proj(b.x, 1.8, b.z); if (p) { const r = clamp(22 + b.z * 0.25, 10, 20); oc.fillStyle = '#ffd25a'; oc.beginPath(); oc.moveTo(p[0], p[1] - r); oc.lineTo(p[0] + r, p[1] + r * 0.8); oc.lineTo(p[0] - r, p[1] + r * 0.8); oc.closePath(); oc.fill();
+    oc.fillStyle = '#d8452e'; oc.font = `900 ${r * 1.2}px system-ui, sans-serif`; oc.textAlign = 'center'; oc.textBaseline = 'middle'; oc.fillText('!', p[0], p[1] + r * 0.25); if (b.hp < b.max) bar(proj(b.x, 1.4, b.z), b.hp / b.max, '#ff8a3d', 34); } }
+  if (dizzyT > 0) pill(proj(squadX, 3.4, 0), '✦ ✦ ✦', '#ffd25a', '#0d0c16', 18);
   if (squad === 0) pill(proj(squadX, 3.3, -0.2), 'solo', FR[leader.key].ring, '#ffffff', 20);
   for (const u of army) if ((u.kind === 'brute' || u.kind === 'giant') && u.hp < u.max) bar(proj(u.x, u.kind === 'giant' ? 6.2 : 3.4, u.z), u.hp / u.max, u.kind === 'giant' ? '#ff5b5b' : '#ffb04a', u.kind === 'giant' ? 70 : 40);
   if (boss) { const bw = Math.min(w - 40, 420), bx = (w - bw) / 2, by = 64 + (parseFloat(getComputedStyle(document.documentElement).paddingTop) || 0);
@@ -958,7 +1073,7 @@ function finish(won){
     if (save.stage === stageNo) { save.stage = stageNo + 1; persist(); }
   } else { leaderMood('hit', 99); showStamp('DEFEAT', 'wrong', 'the gang got everyone'); sfx([330, 262, 196, 147], 0.14, 'triangle'); }
   $('resTitle').textContent = won ? `Stage ${stageNo} clear!` : 'The Crow Gang wins this round';
-  $('resLine').textContent = won ? `${squad + 1} of 5 friends held the bridge; ${kos} crows were knocked out.` : 'Every solved gate blasts the front lines and makes the team stronger. A missed gate lets the army charge.';
+  $('resLine').textContent = won ? `${squad + 1} of 5 friends held the bridge; ${kos} crows were knocked out.` : 'The Gang grows with every gate; solved gates are what keep the team ahead of it. A missed gate lets a pack of crows through.';
   $('stars').innerHTML = '★'.repeat(stars) + `<span>${'★'.repeat(3 - stars)}</span>`;
   $('statGrid').innerHTML = [[`${rightGates}/${rightGates + wrongGates}`, 'GATES SOLVED'], [String(kos), 'KNOCKOUTS'], [String(maxLvl), 'HIGHEST STEP'], [String(Math.ceil(home)), 'BARRICADE LEFT']]
     .map(([b, s]) => `<div><b>${b}</b><span>${s}</span></div>`).join('');
@@ -966,7 +1081,7 @@ function finish(won){
   $('nextBtn').textContent = won ? `Next stage · ${stageNo + 1}` : `Try stage ${stageNo} again`;
   if (!simClock) SW_EV('defend_finish', { table: String(save.table), stage: String(stageNo), won: won ? '1' : '0', stars: String(stars),
     solved: String(rightGates), missed: String(wrongGates), ko: String(kos), step: String(maxLvl), t: String(Math.round(gameT)) });
-  lastResult = {won, stars, squad, wrong:wrongGates, right:rightGates, home:Math.ceil(home), lvl, maxLvl, kos, planIdx, t:Math.round(gameT)};
+  lastResult = {won, stars, squad, wrong:wrongGates, right:rightGates, home:Math.ceil(home), lvl, maxLvl, kos, planIdx, grabbed, dizzied, t:Math.round(gameT)};
 }
 
 // ---------- Sound ----------
