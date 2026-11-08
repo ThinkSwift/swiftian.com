@@ -40,6 +40,8 @@ nav.am-host .am{padding-top:0}
 footer.sf{display:block;margin:0;border:0;padding:40px 16px 32px;text-align:center;font-size:13px;line-height:1.9}
 footer.sf a{text-decoration:none}
 footer.sf a:hover{text-decoration:underline;text-underline-offset:3px}
+footer.sf .sf-c{direction:ltr;unicode-bidi:isolate}   /* the © line reads left to right on Arabic pages too */
+footer.sf .sf-x{white-space:nowrap}
 footer.sf .sf-dot{margin:0 8px;opacity:.4}
 footer.sf a.mail{display:inline-flex;vertical-align:-3px}
 footer.sf a.mail:hover{text-decoration:none;opacity:.75}

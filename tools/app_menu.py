@@ -94,7 +94,7 @@ def current(rel):
 
 OLD_TABS = re.compile(r'<div class="tabs">.*?</div>(?=\s*<button class="lang-toggle|\s*</nav>)', re.S)
 BLOCK = re.compile(re.escape(BEGIN) + ".*?" + re.escape(END), re.S)
-CSS_V, JS_V = 4, 2   # bump when app-menu.css / app-menu.js change; every page on all six sites follows
+CSS_V, JS_V = 5, 2   # bump when app-menu.css / app-menu.js change; every page on all six sites follows
 CSS = f'<link rel="stylesheet" href="/assets/app-menu.css?v={CSS_V}">'
 JS = f'<script src="/assets/app-menu.js?v={JS_V}" defer></script>'
 
@@ -172,18 +172,20 @@ def footer(site, loc="en"):
     support, privacy, terms = LABELS[loc]
     name, extras, has_terms, has_support = FOOT_SITE[site]
     if site == "swiftian.com":
-        first = f"<span>&copy; 2026 {name}</span>"
+        first = f'<span class="sf-c">&copy; 2026 {name}</span>'
     else:
         sw = f"https://swiftian.com/{loc}/" if loc in SW_LOCALES else "https://swiftian.com/"
-        first = f'<span>&copy; 2026 {name} &middot; <a href="{sw}">Swiftian Inc.</a></span>'
+        first = f'<span class="sf-c">&copy; 2026 {name} &middot; <a href="{sw}">Swiftian Inc.</a></span>'
     items = [first] + [f'<a href="{u}">{html.escape(t)}</a>' for u, t in extras]
     if has_terms:
         items.append(f'<a href="/terms/" data-sf="terms">{terms}</a>')
     if has_support:
         items.append(f'<a href="/support/" data-sf="support">{support}</a>')
     items += [f'<a href="/privacy/" data-sf="privacy">{privacy}</a>', MAIL]
+    # each link travels with the dot before it, so a phone's line break never strands a dot
     dot = '<span class="sf-dot" aria-hidden="true">&middot;</span>'
-    return f'{FOOT_BEGIN}<footer class="sf">{dot.join(items)}</footer>{FOOT_END}'
+    rest = "".join(f'<span class="sf-x">{dot}{i}</span>' for i in items[1:])
+    return f'{FOOT_BEGIN}<footer class="sf">{items[0]}{rest}</footer>{FOOT_END}'
 
 
 def page_locale(rel):
