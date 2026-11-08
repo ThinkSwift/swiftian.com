@@ -422,7 +422,8 @@ let timeScale = 1, slowTarget = 1, fovKick = 0;
 let wrongGates = 0, rightGates = 0, snatched = 0, missedFacts = new Map(), missedQ = [], recent = [], lastResult = null, shake = 0, endT = 0;
 const input = {left:false, right:false};
 let autoAcc = 0.85;
-const WAVE_LEN = 18, GATE_EVERY = 5.5, RAMP = 0.2, FRENZY_T = 6, DIZZY_T = 1.6, GRAB = 1.6, CRATE_V = 8, BARREL_V = 9;
+// a gate flies in fast (about 2.7 s on screen); the rest of the 8 s is the fight with no gate in the way
+const WAVE_LEN = 18, GATE_EVERY = 8, GATE_Z = -44, RAMP = 0.2, FRENZY_T = 6, DIZZY_T = 1.6, GRAB = 1.6, CRATE_V = 8, BARREL_V = 9;
 const PLAN = ['wave', 'captain', 'wave', 'corvo'];
 function stageParams(S){ return {speed:3.4 + Math.min(1.6, S * 0.2), grunt:1.25 + S * 0.15, shield:4 + S, brute:26 + S * 5, giant:110 + S * 25, captainHp:270 + S * 60, corvoHp:900 + S * 150}; }
 // the Gang grows tougher with every gate that comes (solved or not): only the power from solved gates keeps up
@@ -571,7 +572,7 @@ function spawnGate(){
   sides.forEach((s, i) => {
     const x = i === 0 ? -2.5 : 2.5;
     const c = document.createElement('canvas'); c.width = 512; c.height = 320; const g = c.getContext('2d');
-    const grd = g.createLinearGradient(0, 0, 0, 320); grd.addColorStop(0, 'rgba(90,180,255,.92)'); grd.addColorStop(1, 'rgba(40,120,230,.86)'); g.fillStyle = grd; g.fillRect(0, 0, 512, 320);
+    const grd = g.createLinearGradient(0, 0, 0, 320); grd.addColorStop(0, 'rgba(90,180,255,.66)'); grd.addColorStop(1, 'rgba(40,120,230,.58)'); g.fillStyle = grd; g.fillRect(0, 0, 512, 320);
     g.strokeStyle = 'rgba(255,255,255,.75)'; g.lineWidth = 14; g.strokeRect(7, 7, 498, 306);
     g.font = '800 200px "Baloo 2", system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineWidth = 22; g.strokeStyle = 'rgba(10,20,50,.55)'; g.lineJoin = 'round';
     g.strokeText(String(s.v), 256, 172); g.fillStyle = '#fff'; g.fillText(String(s.v), 256, 172);
@@ -581,8 +582,8 @@ function spawnGate(){
   });
   const flag = labelSprite(`${f.a} × ${f.b} = ?`, f.again ? '#ff8fb1' : '#2c2547', f.again ? '#2c2547' : '#ffd25a', 640, 150, 108, 6.8); flag.position.set(0, 4.7, 0); grp.add(flag);
   const pz = labelSprite(prize.text, prize.blast ? '#ffd25a' : '#5fd68a', '#0d0c16', 640, 104, 68, 4.8); pz.position.set(0, 6.0, 0); grp.add(pz);
-  grp.position.z = SPAWN + 4; scene.add(grp);
-  gate = {fact:f, sides, grp, z:SPAWN + 4, prize, flag, pz};
+  grp.position.z = GATE_Z; scene.add(grp);
+  gate = {fact:f, sides, grp, z:GATE_Z, prize, flag, pz};
 }
 function spawnBoss(kind){
   const corvo = kind === 'corvo';
@@ -668,8 +669,8 @@ function step(rdt){
   flyers = flyers.filter(f => !f.dead);
   // the gate: slow while far (time to think), then it rushes in
   if (gate) {
-    const far = gate.z < -24;
-    const v = far ? 6.5 : 6.5 + (gate.z + 24) / 24 * 28;
+    const far = gate.z < -18;
+    const v = 12 + 10 * (1 - Math.min(1, gate.z / GATE_Z));   // 12 m/s far off up to 22 m/s at the friends — far faster than the Gang
     gate.z += v * dt; gate.grp.position.z = gate.z; gate.rush = !far;
     if (!far && !gate.whoosh) { gate.whoosh = true; whoosh(); }
     if (!simClock) { const pulse = 1 + Math.sin(performance.now() / (far ? 160 : 60)) * (far ? 0.03 : 0.08); const b = gate.flag.userData.base; gate.flag.scale.set(b[0] * pulse, b[1] * pulse, 1); }
@@ -939,7 +940,7 @@ const flyerY = f => 4.2 - f.dive * 2.8 + Math.sin(performance.now() / 300 + f.ph
 function formation(i){ const per = 8, r = Math.floor(i / per), c = i % per; return [(c - (per - 1) / 2) * 0.55 + (r % 2 ? 0.27 : 0), 0.9 + r * 0.55]; }
 function autoSteer(dt){
   let want = null;
-  if (gate && gate.z > -22) { if (gate.autoSide === undefined) gate.autoSide = Math.random() < autoAcc ? gate.sides.findIndex(s => s.right) : gate.sides.findIndex(s => !s.right); want = gate.autoSide ? 2.5 : -2.5; }
+  if (gate && gate.z > -16) { if (gate.autoSide === undefined) gate.autoSide = Math.random() < autoAcc ? gate.sides.findIndex(s => s.right) : gate.sides.findIndex(s => !s.right); want = gate.autoSide ? 2.5 : -2.5; }
   if (want === null) { for (const e of eggs) if (Math.abs(e.x - squadX) < 1.7) want = e.x > 0 ? e.x - 2.4 : e.x + 2.4;
     for (const b of barrels) if (b.z > -9 && Math.abs(b.x - squadX) < 1.8) want = b.x > 0 ? b.x - 2.6 : b.x + 2.6; }
   if (want === null) { const c = crates.find(c => c.z > -16); if (c && army.filter(u => u.z > -10).length < 6 && Math.abs(c.x - squadX) / 10 < -c.z / CRATE_V + 0.2) want = c.x; }
@@ -1080,7 +1081,7 @@ function drawOverlay(rdt){
   for (let i = floaters.length - 1; i >= 0; i--) { const f = floaters[i]; f.life -= rdt; if (f.life <= 0) { floaters.splice(i, 1); continue; } const p = proj(f.x, f.y + (0.8 - f.life) * 2, f.z); if (!p) continue;
     oc.globalAlpha = clamp(f.life * 2.5, 0, 1); oc.font = `800 ${f.size}px "Baloo 2", system-ui, sans-serif`; oc.lineWidth = 4; oc.strokeStyle = 'rgba(13,12,22,.8)'; oc.strokeText(f.text, p[0], p[1]); oc.fillStyle = f.color; oc.fillText(f.text, p[0], p[1]); }
   oc.globalAlpha = 1;
-  if (gate && gate.rush) { const k = clamp((gate.z + 26) / 26, 0, 1); oc.strokeStyle = `rgba(255,255,255,${0.35 * k})`; oc.lineWidth = 2; const cx = w / 2, cy = h * 0.42, R = Math.hypot(w, h) / 2;
+  if (gate && gate.rush) { const k = clamp((gate.z + 18) / 18, 0, 1); oc.strokeStyle = `rgba(255,255,255,${0.35 * k})`; oc.lineWidth = 2; const cx = w / 2, cy = h * 0.42, R = Math.hypot(w, h) / 2;
     for (let i = 0; i < 28; i++) { const a = (i / 28) * Math.PI * 2 + (performance.now() / 400) % 1, r0 = R * (0.45 + Math.random() * 0.3), r1 = r0 + R * 0.25 * k; oc.beginPath(); oc.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0); oc.lineTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1); oc.stroke(); } }
   for (let i = bolts.length - 1; i >= 0; i--) { const bl = bolts[i]; bl.life -= rdt; if (bl.life <= 0) { bolts.splice(i, 1); continue; }
     const a = proj(bl.x1, 0.9, bl.z1), c = proj(bl.x2, 0.9, bl.z2); if (!a || !c) continue;
