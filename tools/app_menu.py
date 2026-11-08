@@ -94,7 +94,7 @@ def current(rel):
 
 OLD_TABS = re.compile(r'<div class="tabs">.*?</div>(?=\s*<button class="lang-toggle|\s*</nav>)', re.S)
 BLOCK = re.compile(re.escape(BEGIN) + ".*?" + re.escape(END), re.S)
-CSS_V, JS_V = 5, 2   # bump when app-menu.css / app-menu.js change; every page on all six sites follows
+CSS_V, JS_V = 6, 2   # bump when app-menu.css / app-menu.js change; every page on all six sites follows
 CSS = f'<link rel="stylesheet" href="/assets/app-menu.css?v={CSS_V}">'
 JS = f'<script src="/assets/app-menu.js?v={JS_V}" defer></script>'
 
