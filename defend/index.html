@@ -254,7 +254,7 @@ function canvasTex(w, h, draw, repeat){ const c = document.createElement('canvas
   const t = new THREE.CanvasTexture(c); t.anisotropy = 4; if (repeat) t.wrapS = t.wrapT = THREE.RepeatWrapping; return t; }
 // v2 (2026-11-08): a shorter bridge whose whole length is in range; three lanes; the friends shoot a straight column.
 const ROAD = 5, LINE = -2.2, SPAWN = -60, RANGE = 64, LANES = [-3.1, 0, 3.1];
-const barricadeParts = [];
+const barricadeParts = [], FENCE_N = 14;
 {
   const sea = new THREE.Mesh(new THREE.PlaneGeometry(500, 500), new THREE.MeshLambertMaterial({map:canvasTex(128, 128, (c, w, h) => {
     c.fillStyle = '#3aa7e8'; c.fillRect(0, 0, w, h); for (let i = 0; i < 220; i++) { c.fillStyle = `rgba(255,255,255,${Math.random()*.25})`; c.fillRect(Math.random()*w, Math.random()*h, 6 + Math.random()*10, 2); } }, true)}));
@@ -273,9 +273,13 @@ const barricadeParts = [];
   }
   const line = new THREE.Mesh(new THREE.PlaneGeometry(ROAD*2, 0.35), new THREE.MeshBasicMaterial({color:0xffd25a, transparent:true, opacity:0.8}));
   line.rotation.x = -Math.PI/2; line.position.set(0, 0.02, LINE); scene.add(line);
-  const wood = new THREE.MeshLambertMaterial({color:0xb88352, flatShading:true});
-  for (let x = -ROAD + 0.3; x <= ROAD - 0.3; x += 0.7) { const post = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.7, 0.16), wood); post.position.set(x, 0.35, LINE + 0.1); scene.add(post); barricadeParts.push(post); }
-  for (const y of [0.25, 0.55]) { const rail = new THREE.Mesh(new THREE.BoxGeometry(ROAD * 2, 0.1, 0.1), wood); rail.position.set(0, y, LINE + 0.15); scene.add(rail); barricadeParts.push(rail); }
+  // the barricade in pieces: hits crack and tilt the piece they land on; as its health drops pieces break and fall,
+  // and a repair stands them up again (founder 2026-11-08: the fence looked untouched whatever reached it)
+  const n = FENCE_N, w = 2 * ROAD / n;
+  for (let i = 0; i < n; i++) { const g = new THREE.Group(), x = -ROAD + w * (i + 0.5), mat = new THREE.MeshLambertMaterial({color:0xb88352, flatShading:true});
+    const post = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.95, 0.2), mat); post.position.y = 0.47; g.add(post);
+    for (const y of [0.25, 0.55, 0.82]) { const rail = new THREE.Mesh(new THREE.BoxGeometry(w + 0.02, 0.12, 0.1), mat); rail.position.set(0, y, 0.05); g.add(rail); }
+    g.position.set(x, 0, LINE + 0.1); scene.add(g); barricadeParts.push({g, mat, x, damage:0, broken:false, fall:0, hit:0}); }
 }
 
 // ---------- Labels and helpers ----------
@@ -443,7 +447,7 @@ function clearAll(){
 function startStage(){
   clearAll();
   stageNo = save.stage; P = stageParams(stageNo);
-  buildLadder(); squad = 0; lvl = 0; maxLvl = 0; home = HOME_MAX; gameT = 0; hitStop = 0; squadX = 0; targetX = 0; fireAcc = 0; up = {rate:0, power:0, spread:0}; tier = 0; combo = 0; surgeT = 0; kos = 0;
+  buildLadder(); squad = 0; lvl = 0; maxLvl = 0; home = HOME_MAX; for (const f of barricadeParts) { f.damage = 0; f.broken = false; f.hit = 0; } gameT = 0; hitStop = 0; squadX = 0; targetX = 0; fireAcc = 0; up = {rate:0, power:0, spread:0}; tier = 0; combo = 0; surgeT = 0; kos = 0;
   planIdx = 0; waveT = 0; spawnT = 1.2; flyT = 9; gateT = 2.5; prizeIdx = 0; gateSerial = 0; frenzyT = 0; dizzyT = 0; crateT = 7; barrelT = 11; scoutT = 8; pickupTurn = 0; grabbed = 0; dizzied = 0;
   wrongGates = 0; rightGates = 0; streak = 0; snatched = 0; missedFacts = new Map(); missedQ = []; recent = [];
   makeLeader(save.friend);
@@ -497,7 +501,9 @@ function powerFx(upward){ if (simClock) return; const c = upward ? [0x7fd6ff, 0x
   ring(squadX, 1, upward ? 0x7fd6ff : 0x666677, 7, 0.6); }
 function hitHome(n, x){
   home = Math.max(0, home - n);
-  shake = Math.max(shake, 0.18 + Math.min(0.5, n * 0.03)); barricadeHit = 0.15;
+  shake = Math.max(shake, 0.18 + Math.min(0.5, n * 0.03));
+  if (x !== undefined) { let k = 0; for (let i = 1; i < barricadeParts.length; i++) if (Math.abs(barricadeParts[i].x - x) < Math.abs(barricadeParts[k].x - x)) k = i;
+    barricadeParts[k].damage += n; barricadeParts[k].hit = 0.25; for (const j of [k - 1, k + 1]) if (barricadeParts[j]) barricadeParts[j].damage += n * 0.3; }
   if (!simClock) { emit(x ?? squadX, 0.8, LINE + 0.3, 3 + n, [0xb88352, 0x8d5f37, 0xffffff], 4, 0.6, 1); if (Math.random() < 0.4) sfx([160, 110], 0.05, 'square', 0.05); }
   renderPower();
 }
@@ -998,8 +1004,21 @@ function drawWorld(rdt){
     boss.body.rotation.z = Math.sin(boss.step * 3.2) * 0.08;
     for (const w of boss.wings) w.rotation.z = Math.sin(t * 5) * 0.5 * Math.sign(w.scale.x);
     boss.mat.emissive.setHex(boss.flash > 0 ? 0x664466 : 0); }
-  barricadeHit = Math.max(0, barricadeHit - rdt); for (const b of barricadeParts) { b.position.x += (Math.random() - .5) * barricadeHit * 0.3; b.material.color.setHex(home < 30 ? 0x8a5a3a : 0xb88352); }
+  syncFence(rdt);
   stepParticles(rdt * (state === 'play' ? Math.max(0.4, timeScale) : 1)); stepRings(rdt);
+}
+function syncFence(rdt){
+  const n = barricadeParts.length, want = home <= 0 ? n : Math.min(n - 1, Math.floor((1 - home / HOME_MAX) * n));
+  let broken = barricadeParts.filter(f => f.broken).length;
+  while (broken < want) { const f = barricadeParts.filter(f => !f.broken).sort((a, b) => b.damage - a.damage)[0]; if (!f) break; f.broken = true; f.fall = 0; broken++;
+    emit(f.x, 0.7, LINE + 0.2, 26, [0xb88352, 0x8d5f37, 0x5a3a24, 0xffffff], 7, 0.9, 1.3); shake = Math.max(shake, 0.5); sfx([140, 90], 0.06, 'square', 0.08); }
+  while (broken > want) { const f = barricadeParts.filter(f => f.broken).sort((a, b) => a.damage - b.damage)[0]; if (!f) break; f.broken = false; f.damage = 0; broken--;
+    emit(f.x, 0.8, LINE + 0.2, 16, [0x5fd68a, 0xffffff, 0xffd25a], 4, 0.7, 1, 4); }
+  barricadeParts.forEach((f, i) => { f.hit = Math.max(0, f.hit - rdt); const side = i % 2 ? -1 : 1, wob = f.hit > 0 ? Math.sin(f.hit * 60) * f.hit * 0.25 : 0;
+    if (f.broken) { f.fall = Math.min(1, f.fall + rdt * 2.5); const e = f.fall * f.fall;   // knocked over toward the friends, lying in the road
+      f.g.position.set(f.x + side * 0.1 * e, -0.12 * e, LINE + 0.1 + 0.45 * e); f.g.rotation.set(1.35 * e, side * 0.25 * e, 0); }
+    else { f.g.position.set(f.x + wob, 0, LINE + 0.1); f.g.rotation.set(Math.min(0.25, f.damage * 0.015), 0, side * Math.min(0.32, f.damage * 0.02)); }
+    f.mat.color.setHex(f.broken || home < 30 ? 0x5a3a24 : f.damage > 6 ? 0x8d5f37 : 0xb88352); });
 }
 function placeCamera(rdt){
   const w = app.clientWidth, h = app.clientHeight, aspect = w / h;
