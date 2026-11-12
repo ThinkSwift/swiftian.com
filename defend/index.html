@@ -1,0 +1,1591 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Defend · Multiplication &amp; Times Tables</title>
+<meta name="description" content="Hold the bridge against the Crow Gang. Every gate asks a times-table fact; solve it to power up your team. Beat the Crow Captain to win a card.">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png?v=20261103">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=20261103">
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png?v=20261103">
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png?v=20261103">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20261103">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap">
+<style>
+/* One-screen game: a bright 3D sea bridge under dark stage panels. Single dark HUD look by choice (same as /race/). */
+:root{
+  --ink:#0d0c16; --panel:rgba(20,19,32,.84); --panel-hi:rgba(38,36,58,.92);
+  --cream:#fbf5e6; --muted:#b4afc6; --accent:#8f74ff; --good:#5fd68a; --bad:#ff6b6b; --gold:#ffd25a; --coral:#ff7a6b;
+  --display:"Baloo 2", ui-rounded, "SF Pro Rounded", system-ui, sans-serif;
+  color-scheme:dark;
+}
+html,body{height:100%;margin:0;background:var(--ink);color:var(--cream);overflow:hidden;
+  font-family:var(--display);-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+#app{position:fixed;inset:0;touch-action:none}
+#app canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#ov{pointer-events:none}
+button{font-family:inherit;color:inherit;cursor:pointer;border:0}
+button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+/* HUD */
+#hud{position:absolute;inset:0;pointer-events:none}
+#top{position:absolute;left:0;right:0;top:0;display:flex;align-items:flex-start;gap:8px;
+  padding:calc(10px + env(safe-area-inset-top,0px)) calc(10px + env(safe-area-inset-right,0px)) 0 calc(10px + env(safe-area-inset-left,0px))}
+.pan{background:var(--panel);border-radius:12px;padding:5px 12px}
+#waveBox{flex:none;line-height:1.15}
+#waveName{font-size:15px;font-weight:800;white-space:nowrap}
+#ko{font-size:14px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+#barBox{flex:1;min-width:0;max-width:260px}
+#barBox label{display:block;font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.02em}
+.track{height:10px;border-radius:5px;background:rgba(255,255,255,.14);overflow:hidden;margin-top:2px}
+.track i{display:block;height:100%;width:100%;border-radius:5px;background:var(--good);transform-origin:left;transition:transform .2s}
+#barBox.low .track i{background:var(--coral)}
+.spacer{flex:1}
+#quit,#mute{pointer-events:auto;flex:none;width:44px;height:44px;border-radius:50%;background:var(--panel);font-size:16px;font-weight:800}
+#bossBar{position:absolute;left:50%;transform:translateX(-50%);top:calc(70px + env(safe-area-inset-top,0px));width:min(520px,calc(100% - 40px));box-sizing:border-box;text-align:center}
+#bossBar b{display:block;font-size:14px;font-weight:800}
+#bossBar .track{height:12px}
+#bossBar .track i{background:linear-gradient(90deg,#7b5cff,var(--coral))}
+#bottom{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom,0px));width:min(620px,calc(100% - 20px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px)));
+  display:flex;flex-direction:column;align-items:center;gap:6px}
+#teamBar{width:100%;box-sizing:border-box;display:flex;align-items:center;gap:10px;background:var(--panel);border-radius:14px;padding:6px 10px;min-height:44px}
+#teamFaces{display:flex}
+#teamFaces span{width:32px;height:32px;margin-right:-6px;border-radius:50%;background:#fffaf0;border:2px solid;box-sizing:border-box;overflow:hidden;display:grid;place-items:center}
+#teamFaces img{width:118%;height:118%;object-fit:contain}
+#weapon{font-size:14px;font-weight:800;color:var(--gold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;margin-left:6px}
+#frenzy{font-size:16px;font-weight:800;color:#ff6bd6;font-variant-numeric:tabular-nums;white-space:nowrap}
+#streak{font-size:18px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums;white-space:nowrap}
+#keyCaps{font:700 15px/1 ui-monospace,Menlo,monospace;color:rgba(255,255,255,.92);padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);white-space:pre}
+#hint{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);background:var(--panel);border-radius:14px;padding:6px 16px;font-size:16px;font-weight:700;white-space:nowrap;transition:opacity .4s}
+#count{position:absolute;left:50%;top:36%;transform:translate(-50%,-50%);font-size:110px;font-weight:800;text-shadow:0 6px 0 rgba(0,0,0,.35)}
+#flash{position:absolute;inset:0;opacity:0}
+#stamp{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);text-align:center;white-space:nowrap;opacity:0}
+#stamp b{display:block;font-size:58px;line-height:1;font-weight:800;color:var(--gold);text-shadow:0 4px 0 rgba(0,0,0,.45)}
+#stamp.bad b{color:var(--coral)}
+#stamp small{display:block;font-size:26px;font-weight:800;margin-top:4px;color:var(--cream);text-shadow:0 2px 0 rgba(0,0,0,.45);font-variant-numeric:tabular-nums}
+#stamp.go{animation:stamp 1s cubic-bezier(.2,1.5,.4,1) forwards}
+#stamp.go.bad{animation-duration:1.5s}
+@keyframes stamp{0%{opacity:0;transform:translate(-50%,-50%) scale(1.6)}15%{opacity:1;transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-55%) scale(1)}}
+#banner{position:absolute;left:50%;top:24%;transform:translate(-50%,-50%);text-align:center;white-space:nowrap;background:rgba(123,92,255,.88);border-radius:999px;padding:6px 20px;opacity:0;max-width:calc(100% - 32px);box-sizing:border-box}
+#banner b{display:block;font-size:28px;line-height:1.1;font-weight:800}
+#banner small{display:block;font-size:18px;font-weight:800}
+#banner small:empty{display:none}
+#banner.go{animation:banner 1.4s ease-out forwards}
+@keyframes banner{0%{opacity:0;transform:translate(-50%,-90%)}12%{opacity:1;transform:translate(-50%,-50%)}82%{opacity:1}100%{opacity:0}}
+#ending{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;opacity:0;transition:opacity .6s}
+#ending.on{opacity:1}
+#ending.lost{background:radial-gradient(ellipse at center,rgba(90,10,20,.25) 30%,rgba(60,0,10,.7) 100%)}
+#ending b{font-size:clamp(34px,8vw,64px);font-weight:800;text-shadow:0 5px 0 rgba(0,0,0,.45);text-align:center;padding:0 16px}
+#ending.won b{color:var(--gold)}
+#ending.lost b{color:var(--cream)}
+
+/* Menu and results */
+.sheet{position:absolute;inset:0;overflow:auto;background:radial-gradient(120% 90% at 50% 0%,#28234a 0%,#0d0c16 70%);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:calc(18px + env(safe-area-inset-top,0px)) calc(24px + env(safe-area-inset-bottom,0px));box-sizing:border-box;touch-action:pan-y}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+h1{margin:0;font-size:clamp(34px,7vw,52px);line-height:1;font-weight:800;text-wrap:balance}
+h1 em{font-style:normal;color:var(--accent)}
+.tag{margin:4px 0 0;color:var(--muted);font-size:15px;line-height:1.4;max-width:60ch}
+h2{margin:0 0 8px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
+#friends{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.friend{background:var(--panel);border-radius:18px;padding:8px 6px 10px;display:flex;flex-direction:column;align-items:center;gap:2px;border:3px solid transparent;min-width:0}
+.friend.sel{border-color:var(--accent);background:var(--panel-hi)}
+.friend .face{width:100%;max-width:96px;aspect-ratio:1;border-radius:50%;background:#fffaf0;border:4px solid;box-sizing:border-box;overflow:hidden;display:grid;place-items:center}
+.friend .face img{width:115%;height:115%;object-fit:contain}
+.friend strong{font-size:16px;line-height:1.1;margin-top:4px;text-align:center}
+.friend small{font-size:12px;color:var(--muted);line-height:1.2;text-align:center}
+#tables{display:flex;flex-wrap:wrap;gap:8px}
+#tables button{min-width:56px;height:44px;border-radius:12px;background:var(--panel);font-size:18px;font-weight:700;padding:0 12px}
+#tables button.sel{background:var(--accent);color:var(--ink)}
+.go{height:60px;border-radius:18px;background:var(--accent);color:var(--ink);font-size:24px;font-weight:800;box-shadow:0 5px 0 #4b36b0}
+.go:active{transform:translateY(3px);box-shadow:0 2px 0 #4b36b0}
+.ghost{height:52px;border-radius:16px;background:var(--panel);font-size:18px;font-weight:700}
+.how{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.how div{background:var(--panel);border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.35;color:var(--muted)}
+.how b{display:block;color:var(--cream);font-size:15px}
+.keys{font-size:13px;color:var(--muted);margin:0}
+#stats{font-size:17px;color:var(--muted);margin:0}
+#stats strong{color:var(--cream)}
+.row{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px}
+.row > *{min-width:0}
+a.ghost{display:flex;align-items:center;justify-content:center;color:inherit;text-decoration:none}
+a.ghost:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+#homeLink{align-self:flex-start;color:var(--muted);font:600 13px/1 "Inter",system-ui,sans-serif;text-decoration:none;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:7px 12px}
+#homeLink:hover{color:var(--cream)}
+@media (max-width:560px){
+  #friends{gap:6px}
+  .friend small{display:none}
+  .how{grid-template-columns:1fr}
+  .row .go{font-size:20px}
+  #waveName{font-size:14px}
+  #stamp b{font-size:44px}
+  #stamp small{font-size:21px}
+  #banner b{font-size:23px}
+  #banner small{font-size:15px}
+  #teamFaces span{width:28px;height:28px}
+  #count{font-size:90px}
+}
+@media (prefers-reduced-motion:reduce){#stamp.go,#banner.go{animation-duration:.01s}}
+[hidden]{display:none!important}
+/* the prize card: the app's card face (TradingCard.swift), drawn in CSS around the app's own card art */
+#prize{display:flex;align-items:center;gap:18px;background:var(--panel);border-radius:18px;padding:14px}
+.prize-say{display:flex;flex-direction:column;gap:6px;min-width:0}
+.prize-say b{font-size:24px;line-height:1.1}
+.prize-say span{color:var(--muted);font:400 14.5px/1.4 "Inter",system-ui,sans-serif}
+.store{align-self:flex-start;margin-top:6px;background:#000;color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:12px;padding:10px 14px;
+  font:600 15px/1 "Inter",system-ui,sans-serif;text-decoration:none}
+.store:hover{border-color:#fff}
+.card{--cw:132px;position:relative;flex:none;width:var(--cw);aspect-ratio:63/88;container-type:inline-size;color:#2a2633;perspective:700px}
+.cin,.cback{position:absolute;inset:0;border-radius:9cqw;backface-visibility:hidden;-webkit-backface-visibility:hidden;transition:transform .5s cubic-bezier(.3,1.4,.5,1)}
+.cin{display:flex;flex-direction:column;gap:3.5cqw;padding:7cqw;overflow:hidden;border:2.2cqw solid transparent;
+  background:linear-gradient(var(--f1),var(--f2)) padding-box,linear-gradient(135deg,var(--fr)) border-box;box-shadow:0 2.5cqw 6cqw rgba(0,0,0,.4)}
+.cback{display:grid;place-items:center;background:repeating-linear-gradient(45deg,rgba(255,255,255,.1) 0 1px,transparent 1px 16cqw),repeating-linear-gradient(-45deg,rgba(255,255,255,.1) 0 1px,transparent 1px 16cqw),linear-gradient(135deg,#ed7854,#c75438);
+  box-shadow:inset 0 0 0 5.5cqw transparent,inset 0 0 0 6.7cqw rgba(255,255,255,.55);transform:rotateY(0)}
+.cback span{display:grid;place-items:center;width:34cqw;aspect-ratio:1;transform:rotate(45deg);border:1px solid rgba(255,255,255,.5);border-radius:4cqw;background:rgba(255,255,255,.12);color:rgba(255,255,255,.75);font-size:14cqw}
+.card.back .cin{transform:rotateY(180deg)}
+.card:not(.back) .cback{transform:rotateY(-180deg)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:2px;min-height:9cqw}
+.top b{font:800 7.5cqw/1 var(--display);color:rgba(42,38,51,.55);white-space:nowrap;overflow:hidden}
+.top i{font:800 5.2cqw/1 var(--display);font-style:normal;color:#fff;background:var(--ac);border-radius:99px;padding:1.4cqw 2.8cqw .8cqw}
+.top i:empty{display:none}
+.art{flex:1;min-height:0;display:grid;place-items:center;border-radius:6cqw;background:radial-gradient(circle,var(--gl) 0,transparent 70%)}
+.art img{width:90%;height:90%;object-fit:contain}
+.no{font:700 7cqw/1 var(--display);color:rgba(42,38,51,.75);font-variant-numeric:tabular-nums}
+.no small{font-size:5.8cqw;color:rgba(42,38,51,.4)}
+.common{--f1:#fff;--f2:#fff7f0;--fr:#dbdbdb,#c7c7c7;--ac:#9e9e9e;--gl:rgba(244,115,77,.13)}
+.rare{--f1:#fff;--f2:#e0ebf7;--fr:#ebebeb,#a8a8a8,#e0e0e0;--ac:#858585;--gl:rgba(115,140,179,.16)}
+.epic{--f1:#fffced;--f2:#ffebbd;--fr:#ffdb73,#d99e26,#ffeb99;--ac:#d99e1f;--gl:rgba(242,184,38,.2)}
+.legend{--f1:#f7f2ff;--f2:#e0d4fc;--fr:#9e61f2,#fac740,#4dc7eb,#9e61f2;--ac:#7347cc;--gl:rgba(148,97,242,.2)}
+.epic .cin,.legend .cin{border-width:3cqw}
+@media (max-width:560px){#prize{gap:12px;padding:10px}.card{--cw:104px}.prize-say b{font-size:20px}}
+@media (prefers-reduced-motion:reduce){.cin,.cback{transition:none}}
+
+</style>
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://swiftian.com/#site", "name": "Swiftian", "url": "https://swiftian.com/", "publisher": {"@id": "https://swiftian.com/#org"}}, {"@type": "Organization", "@id": "https://swiftian.com/#org", "name": "Swiftian Inc.", "alternateName": "Swiftian", "url": "https://swiftian.com/", "logo": "https://swiftian.com/apple-touch-icon.png", "sameAs": ["https://apps.apple.com/us/developer/swiftian-inc/id1803794298", "https://pythoneer.io/", "https://spriteer.com/", "https://iflipbook.com/", "https://coordigo.com/", "https://seoulmal.com/"]}, {"@type": "SoftwareApplication", "name": "Multiplication & Times Tables", "url": "https://apps.apple.com/app/id6752542327", "operatingSystem": "iOS, iPadOS, macOS, watchOS", "applicationCategory": "EducationalApplication", "author": {"@id": "https://swiftian.com/#org"}}]}</script>
+</head>
+<body>
+<div id="app">
+  <canvas id="ov"></canvas>
+  <div id="flash"></div>
+  <div id="ending"><b id="endText"></b></div>
+  <div id="hud" hidden>
+    <div id="top">
+      <div id="waveBox" class="pan"><div id="waveName">Wave 1</div><div id="ko">✸ 0</div></div>
+      <div id="barBox" class="pan"><label>Barricade</label><div class="track"><i id="homeFill"></i></div></div>
+      <div class="spacer"></div>
+      <button id="mute" aria-label="Sound on or off">🔊</button>
+      <button id="quit" aria-label="Back to the menu">✕</button>
+    </div>
+    <div id="bossBar" class="pan" hidden><b>Crow Captain</b><div class="track"><i id="bossFill"></i></div></div>
+    <div id="hint">Drag to move · stand under the right answer</div>
+    <div id="count"></div>
+    <div id="banner"><b></b><small></small></div>
+    <div id="stamp"><b></b><small></small></div>
+    <div id="bottom">
+      <div id="teamBar"><div id="teamFaces"></div><div id="weapon"></div><div class="spacer"></div><div id="frenzy" hidden></div><div id="streak" hidden></div></div>
+      <div id="keyCaps" hidden>←  A      D  →</div>
+    </div>
+  </div>
+
+  <section id="menu" class="sheet">
+    <div class="wrap">
+      <a id="homeLink" class="exit" href="/">Exit</a>
+      <div>
+        <h1>Times Tables <em>Defend</em></h1>
+        <p class="tag">Hold the bridge against the Crow Gang. Every gate asks a times-table fact; solve it to power up your team. Clear the stage to win a card.</p>
+      </div>
+      <div>
+        <h2>Your friend</h2>
+        <div id="friends"></div>
+      </div>
+      <div>
+        <h2>Table</h2>
+        <div id="tables"></div>
+      </div>
+      <div class="how">
+        <div><b>Lanes</b>Your friends shoot straight ahead. Slide into the lane the crows come down.</div>
+        <div><b>Gates</b>Stand under the right answer. Solve it: a power-up, or a friend joins. Miss it: the last one goes and crows break through.</div>
+        <div><b>Crates and hazards</b>Slide into a crate to grab it. Dodge barrels and eggs, or shoot a barrel open in the crowd.</div>
+      </div>
+      <button id="startBtn" class="go">Defend</button>
+      <p class="keys">Drag anywhere or use ← → (A D) to move. When a gate flies in, stand under the right answer. Beat the Crow Captain to clear the stage; if the barricade falls, try again.</p>
+    </div>
+  </section>
+
+  <section id="results" class="sheet" hidden>
+    <div class="wrap">
+      <h1 id="resTitle">Stage clear!</h1>
+      <p id="stats"></p>
+      <div id="prize" hidden>
+        <div class="card back" id="prizeCard" aria-live="polite"><span class="cin"><span class="top"><b></b><i></i></span><span class="art"><img alt=""></span><span class="no"></span></span><span class="cback" aria-hidden="true"><span>★</span></span></div>
+        <div class="prize-say"><b id="prizeTitle"></b><span id="prizeLine"></span>
+          <a id="storeLink" class="store" href="https://apps.apple.com/app/id6752542327?ct=web-sw-cf-defend" hidden>Collect all 160 in the app</a></div>
+      </div>
+      <div class="row"><button id="againBtn" class="go">Defend again</button><button id="changeBtn" class="ghost">Change</button><a id="exitBtn" class="ghost exit" href="/">Exit</a></div>
+    </div>
+  </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(() => {
+'use strict';
+const $ = id => document.getElementById(id);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+// ---------- Friends ----------
+const FRIENDS = [
+  {key:'bear',      name:'Bear',      body:0x8b5a3c, trim:0xf6d7a7, ring:'#8b5a3c', move:'🍯 Honey pot slows the crows'},
+  {key:'bunny',     name:'Bunny',     body:0xf4efe4, trim:0xf3a6b9, ring:'#f3a6b9', move:'🥕 Carrot rockets hit the biggest'},
+  {key:'cat',       name:'Cat',       body:0x34333d, trim:0xf28db2, ring:'#f28db2', move:'🧶 Yarn ball rolls up the lane'},
+  {key:'frog',      name:'Frog',      body:0x6dbe45, trim:0xdff2a8, ring:'#6dbe45', move:'👅 Tongue snaps the front crows'},
+  {key:'red_panda', name:'Red Panda', body:0xf07b3a, trim:0x4a2f26, ring:'#f07b3a', move:'🌀 Tail whirl knocks crows back'},
+];
+const FR = Object.fromEntries(FRIENDS.map(f => [f.key, f]));
+const MOODS = ['idle','happy','hit','win'];
+const imgSrc = (k, m) => `/race/img/${k}_${m}.png`;
+const IMG = {};
+function loadImages(){
+  const jobs = [];
+  for (const f of FRIENDS) { IMG[f.key] = {};
+    for (const m of MOODS) jobs.push(new Promise(res => { const im = new Image(); im.onload = () => res(); im.onerror = () => res(); im.src = imgSrc(f.key, m); IMG[f.key][m] = im; }));
+  }
+  return Promise.all(jobs);
+}
+
+// ---------- Settings memory ----------
+let pick = {friend:'red_panda', table:7};
+try { const s = JSON.parse(localStorage.getItem('mudefend.pick') || 'null'); if (s && FR[s.friend] && (s.table === 0 || (s.table >= 2 && s.table <= 12))) pick = s; } catch (e) {}
+const savePick = () => { try { localStorage.setItem('mudefend.pick', JSON.stringify(pick)); } catch (e) {} };
+function factsFor(table){
+  const out = [];
+  if (table) for (let b = 2; b <= 12; b++) out.push({a:table, b});
+  else for (let a = 2; a <= 12; a++) for (let b = a; b <= 12; b++) out.push({a, b});
+  return out;
+}
+
+// =====================================================================================
+// The simulation: a port of the app's ShooterCore.swift (DEFEND v2 rules). Pure — it never draws.
+// Units: metres and seconds. x across the bridge (-5…5), z along it; the friends stand near z = 0,
+// the Crow Gang marches from z = -60 toward +z. The web cut plays one stage: a wave, then the Crow Captain.
+// =====================================================================================
+const ROAD = 5, LINE = -2.2, SPAWN = -60, RANGE = 64;
+const GATE_EVERY = 8, GATE_START = -44, WAVE_LEN = 18, HOME_MAX = 100, CHAR_RATE = 7, MARBLE_SPEED = 40;
+const TEAM_X = [0, -0.85, 0.85, -1.7, 1.7], TEAM_Z = [-0.2, 0.5, 0.5, 1.1, 1.1], LANES = [-3.1, 0, 3.1];
+const MAX_CROWS = 700, MAX_FLYERS = 70, MAX_MARBLES = 520, RAMP = 0.2, FRENZY_TIME = 6, DIZZY_TIME = 1.6, GRAB = 1.6;
+const CRATE_SPEED = 8, BARREL_SPEED = 9, CRATE_Z = -44, BARREL_Z = -50;
+const NB = 40, BW = ROAD * 2 / NB;
+// The app's plan is [wave, captain, wave, corvo]; the web stage is the first half, and the Captain closes it.
+const PLAN = ['wave', 'captain'];
+// The Captain closes the web stage, so it fights like the app's closing boss: Boss Corvo's health (900 + 150 × stage
+// instead of 270 + 60 × stage) and a flock of flyers now and then. In the app flyers, and their hawks' eggs, come from
+// the second wave on, which the web stage never reaches.
+const CAPTAIN_AS_LAST_BOSS = true;
+const SPECIAL_CD = {bear:8, bunny:7, cat:7, frog:6, red_panda:8};
+const COLLECTION = ['red_panda', 'bunny', 'frog', 'cat', 'bear'];   // CardCharacter.collectionOrder
+const POWERS = [['rate','rapid1'], ['damage','big'], ['spread','triple'], ['evolve','fire'], ['rate','rapid2'], ['damage','bigger'],
+  ['spread','five'], ['evolve','lightning'], ['damage','huge'], ['rate','rapid3'], ['damage','giant'], ['evolve','stars']];
+const WEAPON = {rapid1:'Rapid fire', big:'Big marbles', triple:'Triple shot', fire:'Fire marbles', rapid2:'Rapid fire II', bigger:'Bigger marbles',
+  five:'Five-way shot', lightning:'Lightning marbles', huge:'Huge marbles', rapid3:'Rapid fire III', giant:'Giant marbles', stars:'Super stars'};
+const PICKUP = {frenzy:{name:'Frenzy', sub:'Double fire', color:'#ff6bd6', hex:0xff6bd6}, repair:{name:'Repair', sub:'Barricade +20', color:'#5fd68a', hex:0x5fd68a}, bomb:{name:'Bomb', sub:'', color:'#ff8a3d', hex:0xff8a3d}};
+const CHEERS = ['NICE!', 'GREAT!', 'AWESOME!', 'AMAZING!', 'UNSTOPPABLE!'];
+const MISSES = ['OOPS!', 'SO CLOSE!', 'ALMOST!'];
+
+function mulberry32(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function makeLadder(leader){
+  const others = COLLECTION.filter(k => k !== leader), steps = []; let p = 0;
+  for (const f of others) { steps.push({power:POWERS[p][0], name:POWERS[p][1]}); p++; steps.push({friend:f}); }
+  while (p < POWERS.length) { steps.push({power:POWERS[p][0], name:POWERS[p][1]}); p++; }
+  return steps;
+}
+const factKey = f => `${f.a}x${f.b}`;
+
+class Core {
+  constructor(leader, facts, seed){
+    const S = 1;   // the app's own difficulty climbs with every clear (stage 1…8); the web stage is stage 1
+    this.stage = S; this.leader = leader;
+    this.P = {speed:3.4 + Math.min(1.6, S * 0.2), grunt:1.25 + S * 0.15, shield:4 + S, brute:26 + S * 5, giant:110 + S * 25, captainHP:270 + S * 60, corvoHP:900 + S * 150};
+    this.facts = facts.length ? facts : factsFor(2);
+    this.r = mulberry32(seed >>> 0);
+    this.ladder = makeLadder(leader);
+    this.time = 0; this.planIndex = 0; this.waveTime = 0;
+    this.spawnT = 1.2; this.flyT = 9; this.gateT = 2.5; this.crateT = 7; this.barrelT = 11; this.scoutT = 8;
+    this.level = 0; this.maxLevel = 0; this.loadout = {rate:0, damage:0, spread:0, tier:0}; this.team = [leader];
+    this.home = HOME_MAX; this.surgeT = 0; this.overdriveT = 0; this.frenzyT = 0; this.dizzyT = 0; this.hitStop = 0;
+    this.streak = 0; this.solved = 0; this.missed = 0; this.knockouts = 0; this.grabbed = 0; this.dizzied = 0;
+    this.missedFacts = []; this.missedQueue = []; this.recent = []; this.specialT = {}; this.fireAcc = 0; this.pickupTurn = 0; this.serial = 0;
+    this.finished = null;   // true won, false lost
+    this.squadX = 0; this._target = 0;
+    this.crows = []; this.flyers = []; this.marbles = []; this.gate = null; this.boss = null;
+    this.puddles = []; this.yarns = []; this.crates = []; this.barrels = []; this.eggs = []; this.events = [];
+    this.gateSerial = 0; this.autoGate = -1; this.autoPick = 0;
+  }
+  get targetX(){ return this._target; }
+  set targetX(v){ this._target = clamp(v, -ROAD + 1, ROAD - 1); }
+  get phase(){ return PLAN[Math.min(this.planIndex, PLAN.length - 1)]; }
+  get nextReward(){ return this.level < this.ladder.length ? this.ladder[this.level] : null; }
+  get waveNumber(){ return PLAN.slice(0, this.planIndex + 1).filter(p => p === 'wave').length; }
+  get stars(){ return this.finished === true ? (this.missed === 0 ? 3 : this.missed <= 1 ? 2 : 1) : 0; }
+  get pressure(){ return 1 + RAMP * this.gateSerial; }
+  get unit(){ return this.P.grunt * this.pressure; }
+  get weapon(){ for (let i = this.level - 1; i >= 0; i--) if (this.ladder[i].power) return this.ladder[i].name; return null; }
+  memberX(i){ return clamp(this.squadX + TEAM_X[i], -ROAD + 0.6, ROAD - 0.6); }
+  rnd(a, b){ return a + this.r() * (b - a); }
+  irnd(a, b){ const n = b - a + 1; return a + Math.floor(this.r() * n) % n; }
+  clampX(x, m = 0.5){ return clamp(x, -ROAD + m, ROAD - m); }
+  shuffle(a){ for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(this.r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+  applyLevel(){
+    const l = {rate:0, damage:0, spread:0, tier:0}, team = [this.leader];
+    for (const st of this.ladder.slice(0, this.level)) { if (st.power) { if (st.power === 'evolve') l.tier++; else l[st.power]++; } else team.push(st.friend); }
+    this.loadout = l; this.team = team;
+  }
+
+  // ----- Questions -----
+  pickFact(){
+    if (this.missedQueue.length && this.r() < 0.6) return [this.missedQueue.shift(), true];
+    let f = this.facts[0];
+    for (let i = 0; i < 20; i++) {
+      f = this.facts[Math.floor(this.r() * this.facts.length) % this.facts.length];
+      if (this.r() < 0.45) f = {a:f.b, b:f.a};
+      if (!this.recent.some(q => (q.a === f.a && q.b === f.b) || (q.a === f.b && q.b === f.a))) break;
+    }
+    this.recent.push(f); if (this.recent.length > 6) this.recent.shift();
+    return [f, false];
+  }
+  /** A believable wrong answer: a neighbouring line of the table, or a near number. */
+  wrongAnswer(f){
+    const p = f.a * f.b;
+    const c = this.shuffle([f.a * (f.b + 1), f.a * (f.b - 1), (f.a + 1) * f.b, (f.a - 1) * f.b, p + 1, p - 1, p + 2, p - 2, p + 10, p - 10].filter(v => v > 0 && v !== p));
+    return c.length ? c[0] : p + 1;
+  }
+
+  // ----- Step -----
+  step(realDt){
+    if (this.finished !== null) return;
+    if (this.hitStop > 0) this.hitStop -= realDt;
+    const dt = realDt * (this.hitStop > 0 ? 0.06 : 1);
+    this.time += dt;
+    this.squadX += (this._target - this.squadX) * Math.min(1, realDt * 12);
+    this.surgeT = Math.max(0, this.surgeT - dt); this.overdriveT = Math.max(0, this.overdriveT - dt);
+    this.frenzyT = Math.max(0, this.frenzyT - dt); this.dizzyT = Math.max(0, this.dizzyT - dt);
+    this.runPlan(dt);
+    this.gateT -= dt;
+    if (this.gateT <= 0 && !this.gate) { this.spawnGate(); this.gateT = GATE_EVERY; }
+    this.hazards(dt);
+    this.shoot(dt);
+    this.specials(dt);
+    this.marchArmy(dt);
+    this.moveFlyers(dt);
+    this.moveGate(dt);
+    this.moveBoss(dt);
+    if (this.home <= 0 && this.finished === null) { this.finished = false; this.events.push({t:'lost'}); }
+  }
+  runPlan(dt){
+    if (this.phase === 'wave') {
+      this.waveTime += dt; this.spawnT -= dt; this.flyT -= dt; this.scoutT -= dt;
+      const w = this.waveNumber;
+      if (this.spawnT <= 0 && this.waveTime < WAVE_LEN - 3) { this.spawnWaveBlock(); this.spawnT = Math.max(2.6, 3.4 - this.stage * 0.08) * this.rnd(0.85, 1.15); }
+      if (this.scoutT <= 0 && this.waveTime < WAVE_LEN - 3) { this.spawnScouts(); this.scoutT = this.rnd(7, 10); }
+      if (this.flyT <= 0 && w >= 2) { this.spawnFlyers(); this.flyT = this.rnd(8, 11); }
+      if (this.waveTime >= WAVE_LEN && this.crows.length < 10) {
+        this.planIndex++; this.waveTime = 0;
+        if (this.phase === 'wave') this.events.push({t:'waveStarted', n:this.waveNumber});
+        else { this.spawnBoss('captain'); this.flyT = 5; }
+      }
+    } else {
+      if (!this.boss) return;
+      this.spawnT -= dt; this.flyT -= dt;
+      if (this.spawnT <= 0) { this.spawnBlock(this.irnd(2, 3), this.irnd(4, 6), {cx:LANES[this.irnd(0, 2)]}); this.spawnT = this.rnd(4, 5.5); }
+      if (this.flyT <= 0 && CAPTAIN_AS_LAST_BOSS) { this.spawnFlyers(); this.flyT = this.rnd(9, 12); }
+    }
+  }
+
+  // ----- Spawning -----
+  /** A block of crows in one lane. Its health is set by `pressure` at the moment it comes. */
+  spawnBlock(rows, cols, o = {}){
+    const z0 = o.z ?? SPAWN;
+    const w = Math.min(ROAD - 0.45, cols * 0.3);
+    const cx = clamp(o.cx ?? LANES[this.irnd(0, 2)], -ROAD + w + 0.3, ROAD - w - 0.3);
+    const p = this.pressure, P = this.P;
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+      if (this.crows.length >= MAX_CROWS - 4) return;
+      const shield = r === 0 && !!o.shieldFront;
+      const x = this.clampX(cx - w + (c + 0.5) * (2 * w / cols) + this.rnd(-0.1, 0.1), 0.4);
+      const hp = (shield ? P.shield : P.grunt) * p;
+      this.crows.push(this.crow(shield ? 'shield' : 'grunt', x, z0 - r * 0.85 + this.rnd(-0.15, 0.15), hp, shield ? 1.15 : 1));
+    }
+    if (o.brute) this.crows.push(this.crow('brute', cx, z0 - rows * 0.85 - 1.5, P.brute * p, 2.3));
+    if (o.giant) this.crows.push(this.crow('giant', clamp(cx, -2.8, 2.8), z0 - rows * 0.85 - 4, P.giant * p, 4.2));
+  }
+  crow(kind, x, z, hp, scale){ return {kind, x, z, hp, maxHP:hp, scale, phase:this.rnd(0, 6), flash:0, knock:0, stompT:2, dead:false, yarned:false}; }
+  spawnWaveBlock(){
+    const w = this.waveNumber, S = this.stage;
+    const grow = Math.min(1, this.time / 70);
+    const rows = this.irnd(2, 3) + (grow > 0.5 ? 1 : 0);
+    const cols = this.irnd(4, 5) + Math.floor(grow * 2) + (S >= 4 ? 1 : 0);
+    const lane = this.irnd(0, 2);
+    this.spawnBlock(rows, cols, {cx:LANES[lane], shieldFront:(w >= 2 || this.time > 12) && this.r() < 0.45,
+      brute:this.time > 10 && this.r() < 0.3 + 0.05 * S, giant:w >= 2 && this.r() < 0.25 + 0.03 * S});
+    // a second block down another lane at the same time: you can't stand in both
+    if ((w >= 2 || S >= 3 || this.time > 6) && this.r() < 0.55 + 0.04 * S) {
+      const other = (lane + this.irnd(1, 2)) % 3;
+      this.spawnBlock(Math.max(2, rows - 1), Math.max(3, cols - 1), {z:SPAWN - this.rnd(0, 6), cx:LANES[other]});
+    }
+  }
+  /** A fast line of scouts down one edge — the edge the friends are not in. */
+  spawnScouts(){
+    const x = this.squadX > 0 ? -4.2 : 4.2, n = this.irnd(4, 6) + Math.floor(this.stage / 3), hp = this.P.grunt * this.pressure * 0.8;
+    for (let i = 0; i < n; i++) { if (this.crows.length >= MAX_CROWS - 1) break;
+      this.crows.push(this.crow('scout', x + this.rnd(-0.25, 0.25), SPAWN + 8 - i * 1.1, hp, 0.7)); }
+  }
+  spawnFlyers(){
+    const S = this.stage, n = this.irnd(3, 5) + Math.floor(S / 2), cx = LANES[this.irnd(0, 2)], p = this.pressure;
+    for (let i = 0; i < n; i++) { if (this.flyers.length >= MAX_FLYERS - 1) break;
+      const off = i - (n - 1) / 2, hawk = i === Math.floor(n / 2);
+      const hp = (hawk ? 14 + S * 3 : 1.5 + S * 0.3) * p;
+      this.flyers.push({hawk, x:this.clampX(cx + off * 0.8), z:SPAWN + 10 - Math.abs(off) * 1.4 - (hawk ? 3 : 0), hp, maxHP:hp, phase:this.rnd(0, 6), speed:7 + S * 0.3, dive:0, flash:0, dead:false, dropped:false});
+    }
+    this.events.push({t:'flyersIncoming'});
+  }
+  spawnGate(){
+    this.gateSerial++;
+    const [f, again] = this.pickFact(), w = this.wrongAnswer(f);
+    const sides = this.shuffle([{value:f.a * f.b, correct:true, x:0}, {value:w, correct:false, x:0}]);
+    sides[0].x = -2.5; sides[1].x = 2.5;
+    this.gate = {fact:f, again, sides, z:GATE_START, reward:this.nextReward, blast:!!this.boss, rushing:false, done:false, serial:this.gateSerial};
+    this.events.push({t:'gateSpawned'});
+  }
+  spawnBoss(kind){
+    const hp = (CAPTAIN_AS_LAST_BOSS ? this.P.corvoHP : this.P.captainHP) * this.pressure;
+    this.boss = {kind, x:0, z:SPAWN - 4, hp, maxHP:hp, size:7.2, flash:0, stompT:2.5, step:0};
+    this.events.push({t:'bossArrived', kind});
+  }
+
+  // ----- Crates, barrels, eggs -----
+  hazards(dt){
+    // crates: in the lane away from the friends, so taking one means leaving the fight for a moment
+    this.crateT -= dt;
+    if (this.crateT <= 0) {
+      this.crateT = this.rnd(9, 12);
+      const kinds = this.home < 70 ? ['repair', 'frenzy', 'bomb'] : ['frenzy', 'bomb', 'frenzy'];
+      const kind = kinds[this.pickupTurn % kinds.length]; this.pickupTurn++;
+      const x = this.squadX > 0.5 ? this.rnd(-4, -2.4) : this.squadX < -0.5 ? this.rnd(2.4, 4) : (this.r() < 0.5 ? -3.4 : 3.4);
+      this.serial++;
+      this.crates.push({kind, x, z:CRATE_Z, serial:this.serial});
+    }
+    for (let i = this.crates.length - 1; i >= 0; i--) {
+      const c = this.crates[i]; c.z += CRATE_SPEED * dt;
+      if (c.z >= -0.4) { this.crates.splice(i, 1);
+        if (Math.abs(c.x - this.squadX) < GRAB) this.take(c.kind, c.x); else this.events.push({t:'crateMissed', x:c.x}); }
+    }
+    // barrels: aimed at where the friends stand
+    this.barrelT -= dt;
+    if (this.barrelT <= 0) {
+      this.barrelT = this.rnd(8, 11) - Math.min(2, this.stage * 0.25);
+      this.serial++;
+      const hp = 1.4 * this.fireDPS;   // about 1.4 s of the team's whole fire: pop it early, or step aside
+      this.barrels.push({x:this.clampX(this.squadX + this.rnd(-0.4, 0.4), 0.7), z:BARREL_Z, hp, maxHP:hp, flash:0, serial:this.serial});
+    }
+    for (let i = this.barrels.length - 1; i >= 0; i--) {
+      const b = this.barrels[i];
+      b.flash = Math.max(0, b.flash - dt); b.z += BARREL_SPEED * dt;
+      if (b.hp <= 0) { this.barrels.splice(i, 1); this.boom(b); continue; }
+      if (b.z >= -0.6) { this.barrels.splice(i, 1);
+        if (Math.abs(b.x - this.squadX) < 1.5) { this.dizzy(); this.hitHome(4, b.x); } else this.events.push({t:'barrelPassed', x:b.x}); }
+    }
+    for (let i = this.eggs.length - 1; i >= 0; i--) {
+      const e = this.eggs[i]; e.t -= dt;
+      if (e.t <= 0) { this.eggs.splice(i, 1); const hit = Math.abs(e.x - this.squadX) < 1.4; this.events.push({t:'eggSplat', x:e.x, hit}); if (hit) this.dizzy(); }
+    }
+  }
+  take(kind, x){
+    this.grabbed++;
+    if (kind === 'frenzy') this.frenzyT = FRENZY_TIME;
+    else if (kind === 'repair') this.home = Math.min(HOME_MAX, this.home + 20);
+    else {
+      const u = this.unit;
+      for (const c of this.crows) if (c.z > -30) { this.hurt(c, c.kind === 'giant' ? 6 * u : 12 * u); c.knock = 10; }
+      for (const f of this.flyers) if (f.z > -30) { f.dead = true; this.knockouts++; }
+      const b = this.boss; if (b && b.z > -34) { b.hp -= b.maxHP * 0.06; b.flash = 0.3; }
+    }
+    this.events.push({t:'crateTaken', kind, x});
+  }
+  boom(b){
+    const u = this.unit;
+    for (const c of this.crows) if (Math.hypot(c.x - b.x, c.z - b.z) < 2.8) { this.hurt(c, c.kind === 'giant' ? 8 * u : c.kind === 'brute' ? 16 * u : 10 * u); c.knock = 8; }
+    const bo = this.boss; if (bo && Math.abs(bo.x - b.x) < bo.size * 0.6 && Math.abs(bo.z - b.z) < bo.size * 0.7) { bo.hp -= bo.maxHP * 0.03; bo.flash = 0.2; }
+    this.events.push({t:'barrelBoom', x:b.x, z:b.z});
+  }
+  dizzy(){ this.dizzyT = DIZZY_TIME; this.dizzied++; this.frenzyT = 0; this.events.push({t:'dizzy'}); }
+
+  // ----- Shooting -----
+  get damage(){ return 1 + 0.3 * this.loadout.damage + 0.25 * this.loadout.tier; }
+  /** The team's damage per second into one target in its column (all streams, no frenzy). */
+  get fireDPS(){ const L = this.loadout, rate = 1 + 0.2 * L.rate; return this.team.length * CHAR_RATE * rate / (1 + 0.5 * L.spread) * this.damage * (1 + L.spread); }
+  shoot(dt){
+    const L = this.loadout, members = this.team.length;
+    if (this.dizzyT <= 0) {
+      const rate = 1 + 0.2 * L.rate, boost = (this.frenzyT > 0 ? 2 : 1) * (this.overdriveT > 0 ? 1.4 : 1);
+      this.fireAcc += members * CHAR_RATE * rate * boost / (1 + 0.5 * L.spread) * dt;
+    }
+    while (this.fireAcc >= 1) {
+      this.fireAcc -= 1;
+      const k = Math.floor(this.r() * members) % members, px = this.memberX(k), pz = TEAM_Z[k];
+      // parallel streams, not a fan: the triple and five-way shots widen the column a little
+      const pellets = 1 + 2 * L.spread;
+      for (let j = 0; j < pellets && this.marbles.length < MAX_MARBLES; j++) {
+        const off = (j - (pellets - 1) / 2) * 0.32;
+        this.marbles.push({x:px + off + this.rnd(-0.05, 0.05), z:pz - 0.6, vx:0, life:1.7, color:Math.floor(this.r() * 5), side:j !== (pellets - 1) / 2, pierce:L.tier >= 3 ? 2 : 0, lastHit:null});
+      }
+      this.shots = (this.shots || 0) + 1;
+    }
+    const buckets = this.makeBuckets(), dmg0 = this.damage;
+    for (let i = this.marbles.length - 1; i >= 0; i--) {
+      const m = this.marbles[i], z0 = m.z;
+      m.z -= MARBLE_SPEED * dt; m.x += m.vx * dt; m.life -= dt;
+      const d = m.side ? dmg0 * 0.5 : dmg0;
+      let gone = Math.abs(m.x) > ROAD + 0.4 || m.z < -RANGE || m.life <= 0;
+      if (!gone) gone = this.hitBarrel(m, z0, d, buckets) || this.hitArmy(m, z0, d, buckets) || this.hitFlyer(m, z0, d) || this.hitBoss(m, z0, d);
+      if (gone) this.marbles.splice(i, 1);
+    }
+  }
+  makeBuckets(){
+    const b = Array.from({length:NB}, () => []);
+    for (const u of this.crows) { if (u.dead) continue;
+      const r = 0.35 * u.scale + 0.12;
+      const b0 = Math.max(0, Math.floor((u.x - r + ROAD) / BW)), b1 = Math.min(NB - 1, Math.floor((u.x + r + ROAD) / BW));
+      for (let k = b0; k <= b1; k++) b[k].push(u);
+    }
+    return b;
+  }
+  /** A barrel is hit only when no crow stands in front of it in the marble's path: inside the crowd it is shielded. */
+  hitBarrel(m, z0, dmg, buckets){
+    for (const b of this.barrels) {
+      if (b.hp <= 0) continue;
+      if (!(Math.abs(m.x - b.x) < 0.75 && b.z + 0.6 >= m.z && b.z - 0.6 <= z0 + 0.3)) continue;
+      const bk = Math.floor((m.x + ROAD) / BW);
+      if (bk >= 0 && bk < NB && buckets[bk].some(u => !u.dead && Math.abs(m.x - u.x) <= 0.35 * u.scale + 0.12 && u.z > b.z && u.z - 0.4 * u.scale <= z0 + 0.3)) return false;
+      b.hp -= dmg; b.flash = 0.07;
+      return true;
+    }
+    return false;
+  }
+  hitArmy(m, z0, dmg, buckets){
+    const b = Math.floor((m.x + ROAD) / BW);
+    if (b < 0 || b >= NB) return false;
+    let best = null;
+    for (const u of buckets[b]) {
+      if (u.dead || u === m.lastHit) continue;
+      const r = 0.35 * u.scale + 0.12;
+      if (Math.abs(m.x - u.x) > r) continue;
+      if (u.z + 0.4 * u.scale >= m.z && u.z - 0.4 * u.scale <= z0 + 0.3 && (!best || u.z > best.z)) best = u;
+    }
+    if (!best) return false;
+    best.hp -= dmg; best.flash = 0.07;
+    best.knock = best.kind === 'giant' ? 0.2 : best.kind === 'brute' ? 0.8 : 3;
+    if (this.loadout.tier >= 1) this.weaponHit(best, dmg, b, buckets);
+    if (best.hp <= 0) this.kill(best);
+    if (m.pierce > 0) { m.pierce--; m.lastHit = best; return false; }
+    return true;
+  }
+  weaponHit(hit, dmg, b, buckets){
+    if (this.r() < 0.4) {   // fire: a small burst around the hit
+      for (let k = Math.max(0, b - 3); k <= Math.min(NB - 1, b + 3); k++) for (const u of buckets[k]) if (u !== hit && !u.dead && Math.abs(u.x - hit.x) < 0.9 && Math.abs(u.z - hit.z) < 0.9) this.hurt(u, dmg * 0.5);
+    }
+    if (this.loadout.tier >= 2 && this.r() < 0.25) {   // lightning: jumps to nearby crows
+      let from = hit; const done = new Set([hit]);
+      for (let j = 0; j < 2; j++) {
+        let next = null, nd = 2.6; const bb = Math.floor((from.x + ROAD) / BW);
+        for (let k = Math.max(0, bb - 6); k <= Math.min(NB - 1, Math.max(0, bb + 6)); k++) for (const u of buckets[k]) { if (u.dead || done.has(u)) continue;
+          const d = Math.hypot(u.x - from.x, u.z - from.z); if (d < nd) { nd = d; next = u; } }
+        if (!next) break;
+        done.add(next); this.hurt(next, dmg * 0.7);
+        this.events.push({t:'lightning', x1:from.x, z1:from.z, x2:next.x, z2:next.z});
+        from = next;
+      }
+    }
+  }
+  hurt(u, d){ if (u.dead) return; u.hp -= d; u.flash = 0.08; if (u.hp <= 0) this.kill(u); }
+  kill(u){ if (u.dead) return; u.dead = true; this.knockouts++; this.events.push({t:'crowDown', kind:u.kind, x:u.x, z:u.z}); }
+  hitFlyer(m, z0, dmg){
+    for (const f of this.flyers) {
+      if (f.dead || Math.abs(m.x - f.x) > (f.hawk ? 1.3 : 0.6)) continue;
+      if (f.z + 0.5 >= m.z && f.z - 0.5 <= z0 + 0.3) {
+        f.hp -= dmg; f.flash = 0.07;
+        if (f.hp <= 0) { f.dead = true; this.knockouts++; this.events.push({t:'flyerDown', hawk:f.hawk, x:f.x, z:f.z}); }
+        return true;
+      }
+    }
+    return false;
+  }
+  hitBoss(m, z0, dmg){
+    const b = this.boss; if (!b || b.hp <= 0) return false;
+    const r = b.size * 0.42;
+    if (!(Math.abs(m.x - b.x) <= r && b.z + r >= m.z && b.z - r <= z0 + 0.3)) return false;
+    b.hp -= dmg; b.flash = 0.05;
+    return true;
+  }
+
+  // ----- Signature moves: every friend on the team has one, aimed where the team stands -----
+  specials(dt){
+    const boost = 1 + 0.2 * this.loadout.tier, u = this.unit * boost;
+    this.team.forEach((k, i) => {
+      let t = (this.specialT[k] ?? this.rnd(2, 4)) - dt;
+      if (t > 0) { this.specialT[k] = t; return; }
+      t = SPECIAL_CD[k] ?? 7;
+      const x = this.memberX(i);
+      const inLane = this.crows.filter(c => !c.dead && c.z > -RANGE && Math.abs(c.x - this.squadX) < 2.6).sort((a, b) => b.z - a.z);
+      if (!inLane.length && !this.boss) { this.specialT[k] = 0.6; return; }
+      this.specialT[k] = t;
+      const b = this.boss;
+      if (k === 'bear') {   // honey pot: a sticky puddle in the team's lane that slows the Gang
+        const target = inLane.length ? inLane[Math.min(inLane.length - 1, 4)] : null;
+        const tz = target ? clamp(target.z, -36, -8) : -20, tx = target ? target.x : this.squadX;
+        this.puddles.push({x:tx, z:tz, r:2.2, t:4.5});
+        for (const c of this.crows) if (Math.hypot(c.x - tx, c.z - tz) < 2.2) this.hurt(c, 1.5 * u);
+        this.events.push({t:'special', k, x:tx, z:tz});
+      } else if (k === 'bunny') {   // carrot rockets: the biggest targets in the lane first
+        if (b && b.hp > 0 && Math.abs(b.x - this.squadX) < b.size * 0.6) { b.hp -= b.maxHP * 0.025 * boost; b.flash = 0.2; this.events.push({t:'special', k, x:b.x, z:b.z}); }
+        else {
+          const targets = inLane.filter(c => c.kind === 'brute' || c.kind === 'giant').concat(inLane).slice(0, 2);
+          for (const c of targets) { const cx = c.x, cz = c.z; for (const o of this.crows) if (Math.hypot(o.x - cx, o.z - cz) < 1.2) this.hurt(o, 5 * u); this.events.push({t:'special', k, x:cx, z:cz}); }
+        }
+      } else if (k === 'cat') {   // yarn ball: rolls up the team's lane
+        this.yarns.push({x, z:-1, vx:this.rnd(-0.6, 0.6), hitsLeft:14}); this.events.push({t:'special', k, x, z:-1});
+      } else if (k === 'frog') {   // tongue: snaps the first crows in its lane
+        let n = 0;
+        for (const c of inLane) if (Math.abs(c.x - x) < 0.8 && c.z > -24) { this.hurt(c, 3 * u); if (++n >= 6) break; }
+        this.events.push({t:'special', k, x, z:-12});
+      } else if (k === 'red_panda') {   // tail whirl: a spinning wave just ahead of the team
+        const tz = inLane.length ? clamp(inLane[0].z, -16, -4) : -10;
+        for (const c of this.crows) if (Math.hypot(c.x - this.squadX, c.z - tz) < 3) { this.hurt(c, 2.5 * u); c.knock = 10; }
+        if (b && b.hp > 0 && Math.abs(b.z - tz) < 5 && Math.abs(b.x - this.squadX) < b.size * 0.6) { b.hp -= b.maxHP * 0.01 * boost; b.flash = 0.2; }
+        this.events.push({t:'special', k, x:this.squadX, z:tz});
+      }
+    });
+    for (let i = this.puddles.length - 1; i >= 0; i--) { this.puddles[i].t -= dt; if (this.puddles[i].t <= 0) this.puddles.splice(i, 1); }
+    for (let i = this.yarns.length - 1; i >= 0; i--) {
+      const y = this.yarns[i];
+      y.z -= 15 * dt; y.x += y.vx * dt;
+      if (Math.abs(y.x) > ROAD - 0.5) { y.vx *= -1; y.x = this.clampX(y.x); }
+      for (const c of this.crows) if (!c.dead && !c.yarned && Math.abs(c.x - y.x) < 0.7 && Math.abs(c.z - y.z) < 0.7) { c.yarned = true; this.hurt(c, 2 * u); y.hitsLeft--; }
+      if (y.hitsLeft <= 0 || y.z < -RANGE) { this.yarns.splice(i, 1); for (const c of this.crows) c.yarned = false; }
+    }
+  }
+
+  // ----- Movement -----
+  marchArmy(dt){
+    const sp = this.P.speed * (this.surgeT > 0 ? 1.8 : 1);
+    for (const u of this.crows) {
+      if (u.dead) continue;
+      u.flash = Math.max(0, u.flash - dt);
+      const slow = this.puddles.some(p => Math.abs(p.x - u.x) < p.r && Math.abs(p.z - u.z) < p.r) ? 0.4 : 1;
+      const kindSpeed = u.kind === 'giant' ? 0.5 : u.kind === 'brute' ? 0.75 : u.kind === 'scout' ? 2 : 1;
+      u.z += sp * slow * kindSpeed * dt - u.knock * dt * (u.kind === 'giant' ? 0.2 : 1);
+      u.knock = Math.max(0, u.knock - dt * 30);
+      if (u.kind === 'giant') { u.stompT -= dt; if (u.stompT <= 0) { u.stompT = 1.6; this.events.push({t:'bossStomp', x:u.x, z:u.z}); } }
+      if (u.z >= LINE) {
+        u.dead = true;
+        this.hitHome(u.kind === 'giant' ? 25 : u.kind === 'brute' ? 10 : u.kind === 'shield' ? 3 : u.kind === 'scout' ? 1 : 2, u.x);
+      }
+    }
+    this.crows = this.crows.filter(u => !u.dead);
+  }
+  moveFlyers(dt){
+    for (const f of this.flyers) {
+      if (f.dead) continue;
+      f.flash = Math.max(0, f.flash - dt);
+      f.z += f.speed * (this.surgeT > 0 ? 1.4 : 1) * dt;
+      if (f.z > -16) { f.dive = Math.min(1, f.dive + dt * 1.2); f.x += (this.squadX - f.x) * dt * 1.2; }
+      // a hawk lets an egg go over the friends' heads: a ring shows where it will land
+      if (f.hawk && !f.dropped && f.z > -20) {
+        f.dropped = true;
+        const ex = this.clampX(this.squadX, 0.8);
+        this.eggs.push({x:ex, t:1.25, fall:1.25}); this.events.push({t:'eggDropped', x:ex});
+      }
+      if (f.z >= LINE + 0.5) { f.dead = true; this.hitHome(f.hawk ? 8 : 2, f.x); }
+    }
+    this.flyers = this.flyers.filter(f => !f.dead);
+  }
+  /** 12 m/s at the far end up to 22 m/s at the friends: much faster than the Gang, so it reads as its own thing. */
+  moveGate(dt){
+    const g = this.gate; if (!g) return;
+    const k = 1 - Math.min(1, -g.z / -GATE_START);
+    g.z += (12 + 10 * k) * dt;
+    if (g.z > -18 && !g.rushing) { g.rushing = true; this.events.push({t:'gateRush'}); }
+    if (g.z >= -0.4) this.passGate();
+  }
+  moveBoss(dt){
+    const b = this.boss; if (!b || this.finished !== null) return;
+    b.flash = Math.max(0, b.flash - dt);
+    b.z += 1.5 * (this.surgeT > 0 ? 1.6 : 1) * dt; b.step += dt;
+    // bosses walk from lane to lane: keep under them
+    b.x += (Math.sin(b.step * 0.5) * 3.0 - b.x) * Math.min(1, dt * 1.5);
+    b.stompT -= dt;
+    if (b.stompT <= 0) {
+      b.stompT = 3.6;
+      this.events.push({t:'bossStomp', x:b.x, z:b.z});
+      this.spawnBlock(2, this.irnd(4, 5), {z:b.z + 3, cx:b.x});
+    }
+    if (b.hp <= 0) {
+      // the web stage ends with the Captain (in the app the next wave and Boss Corvo follow)
+      this.events.push({t:'captainDown', x:b.x, z:b.z});
+      this.finished = true; this.events.push({t:'won'});
+    } else if (b.z >= LINE - b.size * 0.75) {
+      this.hitHome(30, b.x); b.z = -36; this.events.push({t:'bossGrab'});
+    }
+  }
+  hitHome(n, x){ this.home = Math.max(0, this.home - n); this.events.push({t:'barricadeHit', n, x}); }
+
+  // ----- Gates -----
+  passGate(){
+    const g = this.gate; if (!g || g.done) return;
+    g.done = true; this.gate = null; this.hitStop = 0.14;
+    const side = this.squadX < 0 ? g.sides[0] : g.sides[1];
+    if (side.correct) {
+      this.solved++; this.streak++;
+      let gained = null, repaired = false;
+      if (this.level < this.ladder.length) {
+        gained = this.ladder[this.level]; this.level++; this.maxLevel = Math.max(this.maxLevel, this.level); this.applyLevel();
+        if (gained.friend) { this.events.push({t:'friendJoined', k:gained.friend}); if (this.team.length === 5) this.events.push({t:'fullTeam'}); }
+        if (gained.power === 'evolve') this.overdriveT = 3;
+      } else { this.home = Math.min(HOME_MAX, this.home + 15); repaired = true; }
+      const b = this.boss;
+      if (g.blast && b && b.hp > 0) { b.hp -= b.maxHP * 0.12; b.flash = 0.5; b.z = Math.max(SPAWN - 4, b.z - 6); }
+      // the shockwave clears what is about to reach the barricade
+      const u = this.unit;
+      for (const c of this.crows) if (c.z > -14) { this.hurt(c, c.kind === 'giant' ? 4 * u : c.kind === 'brute' ? 8 * u : 6 * u); c.knock = 12; }
+      this.crows = this.crows.filter(c => !c.dead);
+      for (const f of this.flyers) if (f.z > -16) { f.dead = true; this.knockouts++; }
+      this.flyers = this.flyers.filter(f => !f.dead);
+      this.events.push({t:'gateSolved', fact:g.fact, gained, streak:this.streak, blast:g.blast, repair:repaired, x:side.x});
+    } else {
+      this.missed++; this.streak = 0; this.surgeT = 1.5;
+      if (!this.missedFacts.some(f => factKey(f) === factKey(g.fact))) this.missedFacts.push(g.fact);
+      if (!this.missedQueue.some(f => factKey(f) === factKey(g.fact))) this.missedQueue.push(g.fact);
+      let lost = null;
+      if (this.level > 0) {
+        lost = this.ladder[this.level - 1]; this.level--; this.applyLevel();
+        if (lost.friend) this.events.push({t:'friendLeft', k:lost.friend});
+      }
+      this.events.push({t:'gateMissed', fact:g.fact, lost, x:side.x});
+      // the gate you missed breaks open: a pack of crows comes through the other side
+      const bx = this.squadX < 0 ? 2.5 : -2.5;
+      this.spawnBlock(2, 5 + Math.floor(this.stage / 3), {z:-22, cx:bx});
+      this.events.push({t:'breakout', x:bx, z:-22});
+    }
+  }
+
+  // ----- Autopilot (the balance check and the test hook) -----
+  /** Plays like a player: at each gate picks the right side with the given accuracy; otherwise dodges barrels and
+   *  eggs, grabs crates it can reach, and stands under the most dangerous lane. */
+  autopilot(accuracy, dt, steer = true){
+    let want = null;
+    const g = this.gate;
+    if (g && g.z > -16) {
+      if (this.autoGate !== this.gateSerial) {
+        this.autoGate = this.gateSerial;
+        const right = Math.max(0, g.sides.findIndex(s => s.correct));
+        this.autoPick = this.r() < accuracy ? right : 1 - right;
+      }
+      want = this.autoPick === 0 ? -2.5 : 2.5;
+    }
+    if (want === null && !steer) want = 0;
+    if (want === null) {
+      for (const e of this.eggs) if (Math.abs(e.x - this.squadX) < 1.7) want = e.x > 0 ? e.x - 2.4 : e.x + 2.4;
+      for (const b of this.barrels) if (b.z > -9 && Math.abs(b.x - this.squadX) < 1.8) want = b.x > 0 ? b.x - 2.6 : b.x + 2.6;
+    }
+    if (want === null) {
+      const c = this.crates.find(c => c.z > -16);
+      if (c) { const near = this.crows.filter(u => u.z > -10).length;
+        if (near < 6 && Math.abs(c.x - this.squadX) / 10 < (0 - c.z) / CRATE_SPEED + 0.2) want = c.x; }
+    }
+    if (want === null) {
+      const score = new Array(21).fill(0), slot = x => Math.round((x + ROAD) * 2);
+      for (const u of this.crows) if (u.z > -46) { const w = (u.kind === 'giant' ? 6 : u.kind === 'brute' ? 4 : u.kind === 'shield' ? 1.5 : 1) * (1 + Math.max(0, u.z + 46) / 8); const s = slot(u.x); if (s >= 0 && s < 21) score[s] += w; }
+      for (const f of this.flyers) if (f.z > -36) { const s = slot(f.x); if (s >= 0 && s < 21) score[s] += f.hawk ? 30 : 6; }
+      for (const b of this.barrels) if (b.z > -40 && b.z < -10) { const s = slot(b.x); if (s >= 0 && s < 21) score[s] += 12; }
+      if (this.boss && this.boss.hp > 0) { const s = slot(this.boss.x); if (s >= 0 && s < 21) score[s] += 20; }
+      let best = -1, bestV = 0;
+      for (let s = 2; s <= 18; s++) { let v = 0; for (let k = Math.max(0, s - 3); k <= Math.min(20, s + 3); k++) v += score[k]; if (v > bestV) { bestV = v; best = s; } }
+      if (best >= 0) want = best / 2 - ROAD;
+    }
+    if (want !== null) this.targetX = this._target + clamp(want - this._target, -11 * dt, 11 * dt);
+  }
+}
+
+// =====================================================================================
+// Drawing: three.js r128. Mirrors the core every frame; the core never draws.
+// =====================================================================================
+const app = $('app');
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+app.insertBefore(renderer.domElement, app.firstChild);
+const scene = new THREE.Scene();
+const SKY = 0xc7e3f7;
+scene.background = new THREE.Color(SKY);
+scene.fog = new THREE.Fog(SKY, 70, 150);
+const BASE_FOV = 56;
+const camera = new THREE.PerspectiveCamera(BASE_FOV, 1, 0.1, 400);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x6aa0c0, 0.95));
+const sun = new THREE.DirectionalLight(0xfff1dc, 0.6); sun.position.set(-20, 40, 10); scene.add(sun);
+const ov = $('ov'), oc = ov.getContext('2d');
+function resize(){
+  const w = app.clientWidth, h = app.clientHeight;
+  renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+  const dpr = Math.min(devicePixelRatio || 1, 2); ov.width = w * dpr; ov.height = h * dpr; oc.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+addEventListener('resize', resize);
+function canvasTex(w, h, draw, repeat){
+  const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h);
+  const t = new THREE.CanvasTexture(c); t.anisotropy = 4; if (repeat) t.wrapS = t.wrapT = THREE.RepeatWrapping; return t;
+}
+const lam = (hex, extra) => new THREE.MeshLambertMaterial(Object.assign({color:hex, flatShading:true}, extra || {}));
+function instanced(geo, mat, max, colorAll){
+  const m = new THREE.InstancedMesh(geo, mat, max); m.frustumCulled = false;
+  if (colorAll !== undefined) { const c = new THREE.Color(colorAll); for (let i = 0; i < max; i++) m.setColorAt(i, c); }
+  m.count = 0; scene.add(m); return m;
+}
+
+// ---------- The bridge ----------
+const FENCE_N = 14, fence = [], fenceMats = [lam(0xb88352), lam(0x8d5f37), lam(0x5a3a24)];
+{
+  const sea = new THREE.Mesh(new THREE.PlaneGeometry(500, 500), new THREE.MeshLambertMaterial({map:canvasTex(128, 128, (c, w, h) => {
+    c.fillStyle = '#3aa7e8'; c.fillRect(0, 0, w, h); for (let i = 0; i < 220; i++) { c.fillStyle = `rgba(255,255,255,${Math.random() * .25})`; c.fillRect(Math.random() * w, Math.random() * h, 6 + Math.random() * 10, 2); } }, true)}));
+  sea.material.map.repeat.set(40, 40); sea.rotation.x = -Math.PI / 2; sea.position.set(0, -3, -100); scene.add(sea);
+  // dashed lines between the three lanes (lanes at x = -3.1, 0, 3.1; lines at ±1.55 on a 10 m road)
+  const roadTex = canvasTex(128, 256, (c, w, h) => { c.fillStyle = '#9aa1ad'; c.fillRect(0, 0, w, h);
+    for (let i = 0; i < 600; i++) { c.fillStyle = `rgba(0,0,0,${Math.random() * .06})`; c.fillRect(Math.random() * w, Math.random() * h, 2, 2); }
+    c.fillStyle = '#f4f1e6'; for (const u of [0.345, 0.655]) c.fillRect(w * u - 2.5, 0, 5, h * 0.5); c.fillRect(6, 0, 4, h); c.fillRect(w - 10, 0, 4, h); }, true);
+  roadTex.repeat.set(1, 20);
+  const road = new THREE.Mesh(new THREE.PlaneGeometry(ROAD * 2, 200), new THREE.MeshLambertMaterial({map:roadTex})); road.rotation.x = -Math.PI / 2; road.position.set(0, 0, -80); scene.add(road);
+  for (const s of [-1, 1]) {
+    const kerb = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.6, 200), lam(0xd8dde6)); kerb.position.set(s * (ROAD + 0.25), 0.3, -80); scene.add(kerb);
+    const rail = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, 200), lam(0xffffff)); rail.position.set(s * (ROAD + 0.25), 1.2, -80); scene.add(rail);
+    const under = new THREE.Mesh(new THREE.BoxGeometry(0.8, 3, 200), lam(0x8b93a3)); under.position.set(s * (ROAD - 0.6), -1.5, -80); scene.add(under);
+    const posts = new THREE.InstancedMesh(new THREE.BoxGeometry(0.14, 0.7, 0.14), lam(0xffffff), 50); const m = new THREE.Matrix4();
+    for (let i = 0; i < 50; i++) { m.makeTranslation(s * (ROAD + 0.25), 0.9, 20 - i * 4); posts.setMatrixAt(i, m); } scene.add(posts);
+  }
+  const line = new THREE.Mesh(new THREE.PlaneGeometry(ROAD * 2, 0.34), new THREE.MeshLambertMaterial({color:0xffd25a})); line.rotation.x = -Math.PI / 2; line.position.set(0, 0.02, LINE); scene.add(line);
+  // the barricade in 14 pieces: hits crack and tilt the piece they land on, low health breaks pieces, a repair stands them up
+  const w = 2 * ROAD / FENCE_N, post = new THREE.BoxGeometry(0.2, 0.95, 0.2), railG = new THREE.BoxGeometry(w + 0.02, 0.12, 0.1);
+  for (let i = 0; i < FENCE_N; i++) {
+    const x = -ROAD + w * (i + 0.5), root = new THREE.Group(); root.position.set(x, 0, LINE + 0.1);
+    const p = new THREE.Mesh(post, fenceMats[0]); p.position.y = 0.47; root.add(p);
+    for (const y of [0.25, 0.55, 0.82]) { const r = new THREE.Mesh(railG, fenceMats[0]); r.position.set(0, y, 0.05); root.add(r); }
+    scene.add(root); fence.push({root, x, damage:0, broken:false, fall:0, hit:0, mat:0});
+  }
+}
+
+// ---------- Badges (the friends' faces over their heads) ----------
+const BADGE = {};
+function badgeTex(f, mood){ return canvasTex(256, 256, c => { c.beginPath(); c.arc(128, 128, 124, 0, Math.PI * 2); c.fillStyle = f.ring; c.fill();
+  c.beginPath(); c.arc(128, 128, 106, 0, Math.PI * 2); c.fillStyle = '#fffaf0'; c.fill(); c.save(); c.clip(); const im = IMG[f.key][mood]; if (im && im.naturalWidth) c.drawImage(im, 4, 10, 248, 248); c.restore(); }); }
+
+// ---------- Friends ----------
+const members = new Map(); let leaving = [];
+function makeMember(k, born){
+  const f = FR[k], g = new THREE.Group(), body = new THREE.Group(); g.add(body);
+  const mat = lam(f.body), trim = lam(f.trim);
+  const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.55, 0.8, 12), mat); torso.position.y = 0.5; body.add(torso);
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.42, 14, 10, 0, Math.PI * 2, 0, Math.PI / 2), mat); head.position.y = 0.9; head.scale.y = 0.72; body.add(head);
+  const belt = new THREE.Mesh(new THREE.CylinderGeometry(0.57, 0.57, 0.14, 12), trim); belt.position.y = 0.3; body.add(belt);
+  const pack = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.45, 0.3), trim); pack.position.set(0, 0.62, -0.42); body.add(pack);
+  const badge = new THREE.Sprite(new THREE.SpriteMaterial({map:BADGE[k].happy, depthWrite:false})); badge.position.y = 2.0; badge.scale.set(1.5, 1.5, 1); g.add(badge);
+  scene.add(g);
+  return {key:k, g, badge, x:core ? core.squadX : 0, born:born || 0, moodT:0, leaveT:0};
+}
+function setMood(k, mood, t){ const m = members.get(k); if (!m) return; m.moodT = t; m.badge.material.map = BADGE[k][mood]; m.badge.material.needsUpdate = true; }
+function teamMood(mood, t){ if (core) for (const k of core.team) setMood(k, mood, t); }
+
+// ---------- The Crow Gang (instanced) ----------
+const MAXG = MAX_CROWS;
+const gParts = [];
+function gpart(geo, mat, x, y, z, colored){ const m = instanced(geo, mat, MAXG, colored ? 0xffffff : undefined); gParts.push({mesh:m, local:new THREE.Matrix4().makeTranslation(x, y, z), colored}); return m; }
+const gBody = gpart(new THREE.SphereGeometry(0.42, 10, 8).scale(1, 1.05, 1.05), lam(0xffffff), 0, 0.55, 0, true);
+const gHelm = gpart(new THREE.SphereGeometry(0.37, 10, 6, 0, Math.PI * 2, 0, Math.PI / 2).scale(1, 0.55, 1), lam(0xffffff), 0, 0.78, -0.02, true);
+gpart(new THREE.ConeGeometry(0.12, 0.38, 6).rotateX(Math.PI / 2), lam(0xffa53a), 0, 0.55, 0.48);
+const eyeG = new THREE.SphereGeometry(0.11, 8, 6), pupG = new THREE.SphereGeometry(0.055, 6, 4), eyeM = new THREE.MeshBasicMaterial({color:0xffffff}), pupM = new THREE.MeshBasicMaterial({color:0x15131f});
+for (const x of [-0.15, 0.15]) { gpart(eyeG, eyeM, x, 0.68, 0.36); gpart(pupG, pupM, x, 0.67, 0.45); }
+const footG = new THREE.BoxGeometry(0.16, 0.08, 0.26), footM = lam(0xffa53a);
+for (const x of [-0.15, 0.15]) gpart(footG, footM, x, 0.06, 0.08);
+const GC = {grunt:[0x2c2547, 0x7b5cff], scout:[0x4b3f7a, 0x9fe0ff], shield:[0x3b4a6b, 0xc0c8d8], brute:[0x4a2c5c, 0xffb04a], giant:[0x5a1f3a, 0xff5b5b]};
+for (const k in GC) GC[k] = GC[k].map(h => new THREE.Color(h));
+const WHITE = new THREE.Color(0xffffff);
+// flyers: a body and two flapping wings
+const MAXA = MAX_FLYERS, aParts = [];
+function apart(geo, mat, x, y, z, flap){ const m = instanced(geo, mat, MAXA); aParts.push({mesh:m, local:new THREE.Matrix4().makeTranslation(x, y, z), flap}); return m; }
+const aBodyMat = lam(0x5a3b8f);
+apart(new THREE.SphereGeometry(0.48, 10, 8).scale(1, 0.9, 1.15), aBodyMat, 0, 0, 0);
+apart(new THREE.ConeGeometry(0.13, 0.42, 6).rotateX(Math.PI / 2), lam(0xffa53a), 0, 0.02, 0.6);
+for (const x of [-0.16, 0.16]) { apart(eyeG, eyeM, x, 0.16, 0.42); apart(pupG, pupM, x, 0.15, 0.51); }
+const wingM = lam(0x3b2669);
+apart(new THREE.BoxGeometry(1.0, 0.07, 0.5).translate(0.5, 0, 0), wingM, 0.4, 0.05, 0, 1);
+apart(new THREE.BoxGeometry(1.0, 0.07, 0.5).translate(-0.5, 0, 0), wingM, -0.4, 0.05, 0, -1);
+
+// ---------- Marbles ----------
+const MAXM = MAX_MARBLES;
+const marbleMesh = instanced(new THREE.SphereGeometry(0.16, 8, 6), new THREE.MeshBasicMaterial({color:0xffffff}), MAXM, 0xffffff);
+const haloMesh = instanced(new THREE.SphereGeometry(0.16, 8, 6), new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:0.3, blending:THREE.AdditiveBlending, depthWrite:false}), MAXM, 0xffffff);
+const TIER_COLS = [[0xffd25a, 0xff8fb1, 0x7fd6ff, 0x9dff8a, 0xffa25a], [0xfff1a0, 0xffc04d, 0xff8a3d], [0x9fe8ff, 0x63c7ff, 0x7f9bff], [0xffd25a, 0xff8fe0, 0x9dfcff, 0xc58bff]].map(a => a.map(h => new THREE.Color(h)));
+const HALO_COLS = [0xfff3c4, 0xff5a1f, 0x3aa8ff, 0xff4fd8].map(h => new THREE.Color(h));
+
+// ---------- Particles and rings ----------
+const MAXP = 1400;
+const pMesh = instanced(new THREE.BoxGeometry(0.16, 0.16, 0.16), new THREE.MeshBasicMaterial({color:0xffffff}), MAXP, 0xffffff);
+const PX = new Float32Array(MAXP), PY = new Float32Array(MAXP), PZ = new Float32Array(MAXP), VX = new Float32Array(MAXP), VY = new Float32Array(MAXP), VZ = new Float32Array(MAXP),
+  PL = new Float32Array(MAXP), PMX = new Float32Array(MAXP), PSZ = new Float32Array(MAXP), PG = new Float32Array(MAXP), PC = Array.from({length:MAXP}, () => new THREE.Color());
+let pN = 0;
+const rnd = (a, b) => a + Math.random() * (b - a);
+function burst(x, y, z, n, colors, speed, life, size, gravity){
+  for (let i = 0; i < n; i++) { if (pN >= MAXP) return; const k = pN++;
+    PX[k] = x; PY[k] = y; PZ[k] = z; const a = Math.random() * Math.PI * 2, sp = speed * rnd(0.4, 1);
+    VX[k] = Math.cos(a) * sp; VZ[k] = Math.sin(a) * sp; VY[k] = 0.6 * speed * rnd(0.3, 1.2);
+    PL[k] = PMX[k] = life * rnd(0.6, 1.2); PSZ[k] = size * rnd(0.6, 1.3); PG[k] = gravity ?? 14;
+    PC[k].setHex(colors[Math.floor(Math.random() * colors.length)]); }
+}
+const PM4 = new THREE.Matrix4(), PQ = new THREE.Quaternion(), PV = new THREE.Vector3(), PS = new THREE.Vector3(), PAX = new THREE.Vector3(1, 1, 0).normalize();
+function stepParticles(dt){
+  let j = 0;
+  for (let i = 0; i < pN; i++) {
+    PL[i] -= dt; if (PL[i] <= 0) continue;
+    VY[i] -= PG[i] * dt; PX[i] += VX[i] * dt; PY[i] += VY[i] * dt; PZ[i] += VZ[i] * dt;
+    if (PY[i] < 0.05) { PY[i] = 0.05; VY[i] *= -0.35; VX[i] *= 0.7; VZ[i] *= 0.7; }
+    if (j !== i) { PX[j] = PX[i]; PY[j] = PY[i]; PZ[j] = PZ[i]; VX[j] = VX[i]; VY[j] = VY[i]; VZ[j] = VZ[i]; PL[j] = PL[i]; PMX[j] = PMX[i]; PSZ[j] = PSZ[i]; PG[j] = PG[i]; PC[j].copy(PC[i]); }
+    const sc = PSZ[j] * Math.max(0.2, PL[j] / PMX[j]);
+    PM4.compose(PV.set(PX[j], PY[j], PZ[j]), PQ.setFromAxisAngle(PAX, PL[j] * 9), PS.set(sc, sc, sc));
+    pMesh.setMatrixAt(j, PM4); pMesh.setColorAt(j, PC[j]); j++;
+  }
+  pN = j; pMesh.count = pN; pMesh.instanceMatrix.needsUpdate = true; if (pMesh.instanceColor) pMesh.instanceColor.needsUpdate = true;
+}
+let rings = [];
+const ringGeo = new THREE.RingGeometry(0.8, 1.2, 48);
+function ring(x, z, color, to, life){ if (rings.length > 24) return; const m = new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({color, transparent:true, opacity:0.9, side:THREE.DoubleSide, depthWrite:false}));
+  m.rotation.x = -Math.PI / 2; m.position.set(x, 0.15, z); scene.add(m); rings.push({m, to, life, max:life}); }
+function stepRings(dt){ for (let i = rings.length - 1; i >= 0; i--) { const r = rings[i]; r.life -= dt; const k = 1 - r.life / r.max, s = 0.5 + k * r.to; r.m.scale.set(s, s, s); r.m.material.opacity = Math.max(0, 0.9 * (1 - k)); if (r.life <= 0) { scene.remove(r.m); r.m.material.dispose(); rings.splice(i, 1); } } }
+function clearRings(){ for (const r of rings) { scene.remove(r.m); r.m.material.dispose(); } rings = []; }
+
+// ---------- Crates, barrels, eggs, honey, yarn ----------
+function pool(n, make){ return Array.from({length:n}, () => { const o = make(); o.visible = false; scene.add(o); return o; }); }
+const crateMats = {}; for (const k in PICKUP) crateMats[k] = lam(PICKUP[k].hex);
+const cratePool = pool(4, () => { const g = new THREE.Group();
+  const body = new THREE.Mesh(new THREE.BoxGeometry(1.1, 1.1, 1.1), crateMats.frenzy); body.position.y = 0.55; g.add(body); g.userData.body = body;
+  const band = lam(0xffd25a); const b1 = new THREE.Mesh(new THREE.BoxGeometry(1.16, 0.22, 1.16), band); b1.position.y = 0.55; g.add(b1);
+  const b2 = new THREE.Mesh(new THREE.BoxGeometry(0.22, 1.16, 1.16), band); b2.position.y = 0.55; g.add(b2);
+  const top = new THREE.Mesh(new THREE.SphereGeometry(0.26, 10, 8), new THREE.MeshBasicMaterial({color:0xffffff})); top.position.y = 1.32; g.add(top);
+  return g; });
+const barrelMats = [lam(0xd8452e), lam(0x3a2a2a), lam(0xffd25a)], barrelFlash = new THREE.MeshBasicMaterial({color:0xffffff});
+const barrelPool = pool(4, () => { const g = new THREE.Group(), meshes = [];
+  const drum = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 1.3, 14).rotateZ(Math.PI / 2), barrelMats[0]); g.add(drum); meshes.push([drum, 0]);
+  for (const x of [-0.5, 0.5]) { const r = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 0.12, 14).rotateZ(Math.PI / 2), barrelMats[1]); r.position.x = x; g.add(r); meshes.push([r, 1]); }
+  const st = new THREE.Mesh(new THREE.CylinderGeometry(0.58, 0.58, 0.3, 14).rotateZ(Math.PI / 2), barrelMats[2]); g.add(st); meshes.push([st, 2]);
+  g.userData.meshes = meshes; return g; });
+const eggPool = pool(4, () => { const m = new THREE.Mesh(new THREE.SphereGeometry(0.4, 12, 10), lam(0xfff3d6)); m.scale.set(1, 1.3, 1); return m; });
+const eggRingPool = pool(4, () => { const m = new THREE.Mesh(new THREE.TorusGeometry(1.4, 0.1, 6, 36), new THREE.MeshBasicMaterial({color:0xff3b3b})); m.rotation.x = -Math.PI / 2; return m; });
+const puddlePool = pool(6, () => new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.2, 0.06, 24), new THREE.MeshBasicMaterial({color:0xf2a91d, transparent:true, opacity:0.75})));
+const yarnPool = pool(6, () => new THREE.Mesh(new THREE.SphereGeometry(0.45, 12, 10), lam(0xf28db2)));
+let tongues = [];
+function tongue(x){ const m = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.1, 22), new THREE.MeshBasicMaterial({color:0xff6f9a, transparent:true, opacity:0.95})); m.position.set(x, 0.8, -12); scene.add(m); tongues.push({m, t:0.22}); }
+
+// ---------- The Crow Captain ----------
+let bossModel = null;
+function makeCaptain(){
+  const g = new THREE.Group(), body = new THREE.Group(); g.add(body);
+  const mat = lam(0x3b2a55);
+  body.add(new THREE.Mesh(new THREE.SphereGeometry(0.62, 14, 12).scale(1, 0.95, 1.1), mat));
+  const belly = new THREE.Mesh(new THREE.SphereGeometry(0.42, 10, 8), lam(0x5a4f86)); belly.position.set(0, -0.12, 0.32); body.add(belly);
+  const beak = new THREE.Mesh(new THREE.ConeGeometry(0.17, 0.5, 6).rotateX(Math.PI / 2), lam(0xffa53a)); beak.position.set(0, 0.05, 0.78); body.add(beak);
+  for (const x of [-0.22, 0.22]) { const e = new THREE.Mesh(eyeG, eyeM); e.scale.setScalar(1.9); e.position.set(x, 0.25, 0.57); body.add(e); const p = new THREE.Mesh(pupG, pupM); p.scale.setScalar(1.8); p.position.set(x, 0.23, 0.72); body.add(p); }
+  const brow = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.08, 0.08), lam(0x15131f)); brow.position.set(0, 0.42, 0.62); brow.rotation.x = 0.2; body.add(brow);
+  const helm = new THREE.Mesh(new THREE.SphereGeometry(0.55, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2).scale(1, 0.58, 1), lam(0xc0c8d8)); helm.position.y = 0.2; body.add(helm);
+  const spike = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.35, 6), lam(0xc0c8d8)); spike.position.y = 0.85; body.add(spike);
+  for (const x of [-0.25, 0.25]) { const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.5, 6), lam(0xffa53a)); leg.position.set(x, -0.75, 0); body.add(leg); }
+  const wings = [-1, 1].map(s => { const w = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.08, 0.5).translate(0.45, 0, 0), mat); w.position.set(s * 0.5, 0.05, 0); w.scale.x = s; body.add(w); return w; });
+  body.scale.setScalar(7.2);
+  scene.add(g);
+  return {g, body, mat, wings};
+}
+function removeBoss(){ if (bossModel) { scene.remove(bossModel.g); bossModel = null; } }
+
+// ---------- The gate ----------
+let gateGroup = null, gateSerial = -1;
+const gatePanelMat = new THREE.MeshBasicMaterial({color:0x43a6ff, transparent:true, opacity:0.55, side:THREE.DoubleSide, depthWrite:false});   // the crows show through
+const gatePostMat = lam(0x2f7fe0, {emissive:0x10306a});
+function syncGate(){
+  const g = core.gate;
+  if (!g) { if (gateGroup) { scene.remove(gateGroup); gateGroup = null; } return; }
+  if (g.serial !== gateSerial) {
+    if (gateGroup) scene.remove(gateGroup);
+    gateSerial = g.serial; gateGroup = new THREE.Group();
+    for (const s of g.sides) {
+      const p = new THREE.Mesh(new THREE.PlaneGeometry(4.6, 2.9), gatePanelMat); p.position.set(s.x, 1.7, 0); gateGroup.add(p);
+      for (const px of [s.x - 2.35, s.x + 2.35]) { const q = new THREE.Mesh(new THREE.BoxGeometry(0.26, 3.6, 0.26), gatePostMat); q.position.set(px, 1.8, 0); gateGroup.add(q); }
+    }
+    scene.add(gateGroup);
+  }
+  gateGroup.position.z = g.z;
+}
+
+// =====================================================================================
+// Game state, HUD and events
+// =====================================================================================
+let state = 'menu', core = null, paused = false, countT = 0, endT = 0, endCrows = [], fireworkT = 0;
+let shake = 0, fovKick = 0, keyDir = 0, bolts = [], drag = null, hintT = 0, lastEvents = [];
+let stampID = 0;
+const keysL = new Set(), keysR = new Set();
+
+function showStamp(text, sub, good){
+  if (state !== 'play') return;
+  const s = $('stamp'); s.className = good ? '' : 'bad'; s.querySelector('b').textContent = text; s.querySelector('small').textContent = sub || '';
+  void s.offsetWidth; s.classList.add('go');
+}
+function showBanner(text, sub){
+  if (state !== 'play') return;
+  const b = $('banner'); b.className = ''; b.querySelector('b').textContent = text; b.querySelector('small').textContent = sub || '';
+  void b.offsetWidth; b.classList.add('go');
+}
+function flashScreen(color, ms){ const f = $('flash'); f.style.transition = 'none'; f.style.background = color; f.style.opacity = 1; void f.offsetWidth; f.style.transition = `opacity ${ms}ms ease-out`; f.style.opacity = 0; }
+
+function handle(e){
+  const c = core;
+  switch (e.t) {
+    case 'crowDown':
+      if (e.kind === 'giant') { burst(e.x, 2.5, e.z, 60, [0x5a1f3a, 0xff5b5b, 0xffd25a, 0xffffff], 11, 1.1, 1.8); ring(e.x, e.z, 0xff5b5b, 9, 0.7); shake = Math.max(shake, 0.8); }
+      else if (e.kind === 'brute') { burst(e.x, 1.2, e.z, 24, [0x4a2c5c, 0xffb04a, 0xffffff], 8, 0.8, 1.4); ring(e.x, e.z, 0xffb04a, 4, 0.5); shake = Math.max(shake, 0.3); sfx([300, 180], 0.06, 'square', 0.06); }
+      else if (Math.random() < 0.5) { burst(e.x, 0.7, e.z, 4, [0x2c2547, 0x7b5cff, 0x15131f], 4.5, 0.5, 0.9); if (Math.random() < 0.12) sfx([900 + Math.random() * 400, 600], 0.02, 'square', 0.02); }
+      break;
+    case 'flyerDown': burst(e.x, 3, e.z, e.hawk ? 30 : 10, [0x5a3b8f, 0x3b2669, 0xffffff], 6, 0.8, e.hawk ? 1.4 : 1); sfx([1100, 700], 0.03, 'square', 0.04); break;
+    case 'barricadeHit': {
+      shake = Math.max(shake, 0.18 + Math.min(0.5, e.n * 0.03));
+      burst(e.x, 0.8, LINE + 0.3, Math.min(16, 4 + e.n), [0xb88352, 0x8d5f37, 0xffffff], 5, 0.7, 1.1);
+      burst(e.x, 0.6, LINE - 0.2, 5, [0x2c2547, 0x7b5cff], 4, 0.5, 0.9);
+      let k = 0; for (let i = 1; i < fence.length; i++) if (Math.abs(fence[i].x - e.x) < Math.abs(fence[k].x - e.x)) k = i;
+      fence[k].damage += e.n; fence[k].hit = 0.25; for (const j of [k - 1, k + 1]) if (fence[j]) fence[j].damage += e.n * 0.3;
+      if (Math.random() < 0.4) sfx([160, 110], 0.05, 'square', 0.05);
+      break; }
+    case 'bossArrived':
+      shake = 0.8; removeBoss(); bossModel = makeCaptain(); showBanner('Crow Captain'); sfx([110, 82, 65], 0.25, 'sawtooth', 0.1); break;
+    case 'bossStomp': shake = Math.max(shake, 0.5); ring(e.x, e.z, 0xb9a6ff, 8, 0.6); burst(e.x, 0.3, e.z, 14, [0xcfc6e8, 0x9aa1ad], 6, 0.6, 1.2, 12); sfx([70, 55], 0.12, 'sawtooth', 0.1); break;
+    case 'bossGrab': shake = 1.0; flashScreen('rgba(255,60,60,.4)', 300); break;
+    case 'captainDown': burst(e.x, 3, e.z, 120, [0x2c2547, 0x7b5cff, 0xffd25a, 0xffffff, 0xff8fb1], 13, 1.3, 1.9); ring(e.x, e.z, 0xffd25a, 16, 0.9); removeBoss(); shake = 1.2; flashScreen('rgba(255,240,200,.85)', 400); break;
+    case 'gateSolved': {
+      if (gateGroup) gateGroup.visible = false;
+      burst(e.x, 2, -0.4, 70, [0xffd25a, 0xffffff, 0x5fd68a, 0xff8fb1, 0x7fd6ff], 11, 1.2, 1.2, 9);
+      ring(c.squadX, -1, 0xffd25a, 22, 0.8); ring(c.squadX, -1, 0xffffff, 14, 0.55); fovKick = -10; shake = Math.max(shake, 0.4);
+      teamMood('happy', 1.4);
+      flashScreen('rgba(255,236,170,.6)', 260);
+      showStamp(CHEERS[Math.min(5, Math.max(1, e.streak)) - 1], '', true);
+      sfx(e.streak >= 3 ? [523, 659, 784, 1047, 1319] : [523, 659, 784, 1047], 0.07, 'triangle', 0.1);
+      if (e.gained && e.gained.power) { setTimeout(() => showBanner(e.gained.power === 'evolve' ? 'EVOLUTION!' : 'WEAPON UP', WEAPON[e.gained.name]), 120); sfx([660, 990], 0.06, 'square', 0.06); }
+      else if (e.repair) setTimeout(() => showBanner('Barricade repaired'), 120);
+      break; }
+    case 'gateMissed':
+      if (gateGroup) gateGroup.visible = false;
+      burst(e.x, 2, -0.4, 50, [0x2a1d3a, 0x55306b, 0xff5b5b, 0x111111], 9, 1.1, 1.4, 4);
+      ring(c.squadX, -1, 0xff3b3b, 12, 0.6); fovKick = 6; shake = Math.max(shake, 1.1);
+      teamMood('hit', 1.6);
+      flashScreen('rgba(255,40,40,.45)', 380);
+      stampID++; showStamp(MISSES[stampID % 3], `${e.fact.a} × ${e.fact.b} = ${e.fact.a * e.fact.b}`, false);
+      sfx([180, 120, 90], 0.14, 'sawtooth', 0.12);
+      break;
+    case 'friendJoined': {
+      if (!members.has(e.k)) { const m = makeMember(e.k, 0.9); members.set(e.k, m); }
+      const hex = new THREE.Color(FR[e.k].ring).getHex();
+      burst(c.squadX, 3, 0.5, 50, [hex, 0xffffff, 0xffd25a], 8, 1.1, 1.1, 8); ring(c.squadX, 0.5, hex, 8, 0.7);
+      setTimeout(() => showBanner(`${FR[e.k].name} joins!`), 120); sfx([523, 784, 1047], 0.08, 'triangle', 0.09);
+      break; }
+    case 'friendLeft': { const m = members.get(e.k); if (m) { members.delete(e.k); m.leaveT = 1; m.badge.material.map = BADGE[e.k].hit; m.badge.material.needsUpdate = true; leaving.push(m); } break; }
+    case 'fullTeam': setTimeout(() => showBanner('FULL TEAM!'), 1300); break;
+    case 'special':
+      setMood(e.k, 'happy', 0.8);
+      if (e.k === 'bear') { burst(e.x, 0.5, e.z, 20, [0xf2a91d, 0xffd25a], 5, 0.7, 1); sfx([300, 220], 0.06, 'triangle', 0.05); }
+      else if (e.k === 'bunny') { burst(e.x, 1.5, e.z + 1, 14, [0xf47a20, 0x4fae3a, 0xffffff], 6, 0.5, 1); ring(e.x, e.z, 0xf47a20, 2.5, 0.35); sfx([700, 1000, 1300], 0.04, 'square', 0.04); }
+      else if (e.k === 'cat') sfx([500, 650], 0.05, 'triangle', 0.05);
+      else if (e.k === 'frog') { burst(e.x, 0.8, -6, 10, [0xff6f9a, 0xffffff], 4, 0.4, 0.8); tongue(e.x); sfx([420, 260], 0.05, 'triangle', 0.05); }
+      else if (e.k === 'red_panda') { ring(e.x, e.z, 0xf07b3a, 9, 0.5); ring(e.x, e.z, 0xffffff, 6, 0.35); burst(e.x, 1, e.z, 24, [0xf07b3a, 0x4a2f26, 0xffffff], 7, 0.6, 1); sfx([440, 330, 440], 0.04, 'triangle', 0.05); }
+      break;
+    case 'breakout': burst(e.x, 1.5, e.z, 40, [0x43a6ff, 0x2a1d3a, 0x7b5cff, 0xffffff], 8, 0.9, 1.3, 10); ring(e.x, e.z, 0x7b5cff, 6, 0.6); break;
+    case 'crateTaken': {
+      const P = PICKUP[e.kind];
+      burst(e.x, 1.2, 0, 50, [P.hex, 0xffffff, 0xffd25a], 8, 0.9, 1.1, 6); ring(c.squadX, 0.3, P.hex, 7, 0.6);
+      teamMood('win', 1.2);
+      if (e.kind === 'bomb') { ring(c.squadX, -14, 0xff8a3d, 20, 0.9); ring(c.squadX, -14, 0xffffff, 13, 0.6); burst(c.squadX, 1, -14, 80, [0xff8a3d, 0xffd25a, 0xffffff], 14, 1, 1.6); shake = Math.max(shake, 0.9); }
+      if (e.kind === 'repair') burst(0, 0.8, LINE + 0.3, 30, [0x5fd68a, 0xffffff, 0xb88352], 5, 0.8, 1);
+      showBanner(P.name, P.sub); sfx([660, 880, 1320], 0.06, 'square', 0.07);
+      break; }
+    case 'crateMissed': burst(e.x, 0.6, 0, 8, [0xcfc6e8, 0xffffff], 3, 0.5, 0.8); break;
+    case 'barrelBoom': burst(e.x, 1, e.z, 70, [0xff8a3d, 0xffd25a, 0xd8452e, 0x3a2a2a, 0xffffff], 12, 1, 1.6, 10); ring(e.x, e.z, 0xff8a3d, 6, 0.6); ring(e.x, e.z, 0xffffff, 4, 0.4); shake = Math.max(shake, 0.6); sfx([140, 90, 60], 0.08, 'sawtooth', 0.1); break;
+    case 'dizzy': burst(c.squadX, 3, 0.4, 26, [0xffd25a, 0xffffff], 3, 1.2, 0.9, -1); teamMood('hit', DIZZY_TIME); shake = Math.max(shake, 0.7); showStamp('DIZZY!', '', false); sfx([300, 200], 0.08, 'sawtooth', 0.08); break;
+    case 'eggSplat': burst(e.x, 0.3, 0.2, e.hit ? 40 : 20, [0xfff3d6, 0xffd25a, 0xffffff], e.hit ? 7 : 4, 0.7, 1); break;
+    case 'flyersIncoming': showBanner('Flyers incoming!'); break;
+    case 'gateRush': whoosh(); break;
+    case 'lightning': {
+      if (bolts.length >= 8) break;
+      const a = proj(e.x1, 1, e.z1), b = proj(e.x2, 1, e.z2); if (!a || !b) break;
+      const pts = [a]; for (let k = 1; k < 6; k++) { const t = k / 6; pts.push([a[0] + (b[0] - a[0]) * t + rnd(-9, 9), a[1] + (b[1] - a[1]) * t + rnd(-9, 9)]); }
+      pts.push(b); bolts.push({pts, life:0.14}); break; }
+    case 'won': case 'lost': beginEnding(core.finished === true); break;
+  }
+}
+
+// ---------- HUD ----------
+const hudCache = {};
+function setText(id, v){ if (hudCache[id] !== v) { hudCache[id] = v; $(id).textContent = v; } }
+function renderHUD(){
+  const c = core; if (!c) return;
+  setText('waveName', c.boss && c.boss.hp > 0 ? 'Crow Captain' : `Wave ${c.waveNumber}`);
+  setText('ko', `✸ ${c.knockouts}`);
+  const h = clamp(c.home / HOME_MAX, 0, 1);
+  if (hudCache.home !== h) { hudCache.home = h; $('homeFill').style.transform = `scaleX(${h})`; $('barBox').classList.toggle('low', h <= 0.35); }
+  const bossOn = !!(c.boss && c.boss.hp > 0);
+  if (hudCache.bossOn !== bossOn) { hudCache.bossOn = bossOn; $('bossBar').hidden = !bossOn; }
+  if (bossOn) { const v = clamp(c.boss.hp / c.boss.maxHP, 0, 1); if (hudCache.boss !== v) { hudCache.boss = v; $('bossFill').style.transform = `scaleX(${v})`; } }
+  const team = c.team.join(',');
+  if (hudCache.team !== team) { hudCache.team = team; $('teamFaces').innerHTML = c.team.map(k => `<span style="border-color:${FR[k].ring}"><img src="${imgSrc(k, 'happy')}" alt="${FR[k].name}"></span>`).join(''); }
+  setText('weapon', c.weapon ? '⚡ ' + WEAPON[c.weapon] : '');
+  const fz = c.frenzyT > 0 ? Math.ceil(c.frenzyT) : 0;
+  if (hudCache.fz !== fz) { hudCache.fz = fz; $('frenzy').hidden = !fz; $('frenzy').textContent = `» ${fz}`; }
+  const st = c.streak >= 2 ? c.streak : 0;
+  if (hudCache.st !== st) { hudCache.st = st; $('streak').hidden = !st; $('streak').textContent = `🔥 ${st}`; }
+}
+function resetHUD(){ for (const k in hudCache) delete hudCache[k]; }
+
+// ---------- Run lifecycle ----------
+function clearScene(){
+  removeBoss(); if (gateGroup) { scene.remove(gateGroup); gateGroup = null; } gateSerial = -1;
+  for (const m of members.values()) scene.remove(m.g); members.clear();
+  for (const m of leaving) scene.remove(m.g); leaving = [];
+  for (const t of tongues) scene.remove(t.m); tongues = [];
+  clearRings(); pN = 0; pMesh.count = 0; bolts = []; endCrows = [];
+  for (const p of gParts) p.mesh.count = 0; for (const p of aParts) p.mesh.count = 0; marbleMesh.count = haloMesh.count = 0;
+  for (const o of [...cratePool, ...barrelPool, ...eggPool, ...eggRingPool, ...puddlePool, ...yarnPool]) o.visible = false;
+  for (const f of fence) { f.damage = 0; f.broken = false; f.fall = 0; f.hit = 0; }
+  $('ending').className = ''; $('flash').style.opacity = 0;
+}
+function newRun(){
+  clearScene();
+  core = new Core(pick.friend, factsFor(pick.table), (Math.random() * 4294967296) >>> 0);
+  members.set(pick.friend, makeMember(pick.friend, 0));
+  resetHUD();
+  $('menu').hidden = true; $('results').hidden = true; $('hud').hidden = false;
+  $('stamp').className = ''; $('banner').className = '';
+  $('hint').style.opacity = 1; hintT = 5;
+  state = 'count'; countT = 2.2; paused = false; endT = 0; keyDir = 0; keysL.clear(); keysR.clear(); drag = null;
+  audioStart(); resize(); renderHUD();
+}
+function toMenu(){
+  silence();
+  clearScene(); core = null; state = 'menu';
+  $('hud').hidden = true; $('results').hidden = true; $('menu').hidden = false; buildMenu();
+}
+function beginEnding(won){
+  state = 'ending'; endT = 0; fireworkT = 0;
+  if (gateGroup) gateGroup.visible = false;
+  for (const o of [...cratePool, ...barrelPool, ...eggPool, ...eggRingPool]) o.visible = false;
+  $('stamp').className = ''; $('banner').className = '';
+  endCrows = core.crows.map(u => ({x:u.x, y:0, z:u.z, s:u.scale, kind:u.kind, h:Math.sin(u.x * 12.9898 + u.z * 78.233), gone:false}));
+  if (won) { teamMood('win', 99); sfx([523, 659, 784, 1047, 1319, 1568], 0.1, 'triangle', 0.1); }
+  else { teamMood('hit', 99); burst(core.squadX, 1, 0, 40, [0x2c2547, 0x7b5cff, 0xff5b5b, 0xffffff], 9, 1, 1.4); ring(core.squadX, 0, 0xff3b3b, 10, 0.7); shake = 1.2; sfx([330, 262, 196, 147], 0.14, 'triangle', 0.1); }
+  $('endText').textContent = won ? 'Captain down!' : 'The barricade fell';
+  const e = $('ending'); e.className = won ? 'won' : 'lost'; void e.offsetWidth; e.classList.add('on');
+  $('hud').hidden = true;
+}
+const ENDING_TIME = 3.2;
+
+// ---------- Results and the prize ----------
+function showResults(){
+  state = 'results';
+  silence();
+  const c = core, won = c.finished === true;
+  $('ending').className = '';
+  $('resTitle').textContent = won ? 'Stage clear!' : 'The barricade fell';
+  const asked = c.solved + c.missed;
+  $('stats').innerHTML = `Gates solved <strong>${c.solved}/${asked}</strong> · knockouts <strong>${c.knockouts}</strong> · table <strong>${pick.table ? '×' + pick.table : 'mix'}</strong>`;
+  $('hud').hidden = true; $('results').hidden = false;
+  showPrize(won);
+}
+// one card per rarity for each friend, the same art the home page shows (assets/cards, from the app)
+const CARD_NUMS = {bear:[6,25,30,32], bunny:[7,25,30,32], cat:[5,25,30,32], frog:[10,25,30,32], red_panda:[6,25,30,32]};
+const TIERS = [['common',80,''], ['rare',14,'RARE'], ['epic',5,'EPIC'], ['legend',1,'LEGEND']];   // CardRarity.drawWeight
+let prizeTimer = 0;
+function showPrize(won){
+  const box = $('prize'), card = $('prizeCard'), f = FR[pick.friend];
+  clearTimeout(prizeTimer);
+  $('storeLink').hidden = !standalone;
+  if (!won) {
+    card.hidden = true; box.hidden = false;
+    $('prizeTitle').textContent = 'No card this time';
+    $('prizeLine').textContent = 'Clear the stage to win a card.';
+    return;
+  }
+  let r = Math.random() * 100, t = 0;
+  while (r >= TIERS[t][1]) { r -= TIERS[t][1]; t++; }
+  const n = CARD_NUMS[f.key][t], nn = String(n).padStart(2, '0');
+  card.className = 'card back ' + TIERS[t][0]; card.hidden = false;
+  card.querySelector('b').textContent = f.name.toUpperCase();
+  card.querySelector('i').textContent = TIERS[t][2];
+  card.querySelector('.no').innerHTML = `No. ${nn}<small> / 32</small>`;
+  const img = card.querySelector('img'); img.src = `/assets/cards/${f.key}_${nn}.webp`; img.alt = f.name;
+  $('prizeTitle').textContent = TIERS[t][2] ? `${TIERS[t][2][0] + TIERS[t][2].slice(1).toLowerCase()} card!` : 'You won a card!';
+  $('prizeLine').textContent = `${f.name} No. ${nn} — one of 160 cards in the app, five friends with 32 each.`;
+  box.hidden = false;
+  prizeTimer = setTimeout(() => card.classList.remove('back'), 650);
+  try { const ev = window.SW_EV || (window.parent !== window && window.parent.SW_EV); if (ev) ev('defend_card', { tier: TIERS[t][0] }); } catch (e) {}   // the home page's event sender when framed
+}
+
+// ---------- Sound (short blips only, nothing that keeps playing) ----------
+let ac = null, muted = false;
+try { muted = localStorage.getItem('mudefend.muted') === '1'; } catch (e) {}
+function audioStart(){ try { if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); } catch (e) { ac = null; } }
+function silence(){ try { if (ac && ac.state === 'running') ac.suspend(); } catch (e) {} }
+function sfx(notes, len, type, vol){
+  if (!ac || muted || ac.state !== 'running' || (state !== 'play' && state !== 'count' && state !== 'ending')) return;
+  const t0 = ac.currentTime;
+  notes.forEach((f, i) => { const o = ac.createOscillator(), g = ac.createGain(); o.type = type || 'triangle'; o.frequency.value = f; const s = t0 + i * len;
+    g.gain.setValueAtTime(0.0001, s); g.gain.exponentialRampToValueAtTime(vol || 0.08, s + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, s + len * 1.6); o.connect(g); g.connect(ac.destination); o.start(s); o.stop(s + len * 1.7); });
+}
+function whoosh(){ if (!ac || muted || ac.state !== 'running' || state !== 'play') return; const t0 = ac.currentTime, o = ac.createOscillator(), g = ac.createGain(); o.type = 'sawtooth'; o.frequency.setValueAtTime(180, t0); o.frequency.exponentialRampToValueAtTime(900, t0 + 0.6);
+  g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(0.035, t0 + 0.5); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.7); o.connect(g); g.connect(ac.destination); o.start(t0); o.stop(t0 + 0.75); }
+function setMuteUI(){ $('mute').textContent = muted ? '🔇' : '🔊'; }
+document.addEventListener('visibilitychange', () => {
+  paused = document.hidden;
+  if (!ac) return;
+  if (document.hidden) silence(); else if (state === 'count' || state === 'play' || state === 'ending') audioStart();
+});
+
+// ---------- Drawing per frame ----------
+const M4 = new THREE.Matrix4(), B4 = new THREE.Matrix4(), W4 = new THREE.Matrix4(), Q = new THREE.Quaternion(), V = new THREE.Vector3(), SV = new THREE.Vector3(), ZAX = new THREE.Vector3(0, 0, 1), XAX = new THREE.Vector3(1, 0, 0);
+let clock = 0;
+function drawWorld(rdt){
+  const c = core; if (!c) return;
+  clock += rdt; const t = clock, ending = state === 'ending' || state === 'results';
+  // friends
+  for (const k of c.team) if (!members.has(k)) members.set(k, makeMember(k, 0));
+  c.team.forEach((k, i) => {
+    const m = members.get(k); if (!m) return;
+    if (ending) {
+      if (c.finished) { m.g.position.set(m.x, Math.abs(Math.sin(endT * 7 + i * 0.9)) * 1.3, TEAM_Z[i]); m.g.rotation.z = Math.sin(endT * 7 + i) * 0.2; }
+      else { const side = m.x < c.squadX ? -1 : m.x > c.squadX ? 1 : (i % 2 === 0 ? -1 : 1), e = Math.min(1.6, endT);
+        m.g.position.set(m.x + side * e * 4, Math.max(0, e * 5 - e * e * 4), TEAM_Z[i] + e * 3); m.g.rotation.z = side * e * 5; }
+      return;
+    }
+    const tx = c.memberX(i); m.x += (tx - m.x) * Math.min(1, rdt * 10);
+    let y = Math.abs(Math.sin(t * 8 + i)) * 0.1;
+    if (m.born > 0) { m.born = Math.max(0, m.born - rdt); y += m.born * 9; if (m.born === 0) { burst(m.x, 0.2, TEAM_Z[i], 16, [0xffffff, 0xffd25a], 5, 0.5, 0.9, 8); shake = Math.max(shake, 0.3); } }
+    m.g.position.set(m.x, y, TEAM_Z[i]); m.g.rotation.z = 0;
+    if (m.moodT > 0 && m.moodT < 50) { m.moodT -= rdt; if (m.moodT <= 0) setMood(k, 'idle', 0); }
+  });
+  for (let i = leaving.length - 1; i >= 0; i--) { const m = leaving[i]; m.leaveT -= rdt * 1.4;
+    m.g.position.x += (m.x < c.squadX ? -1 : 1) * rdt * 8; m.g.position.y += rdt * 6; m.g.rotation.z = (1 - m.leaveT) * 6;
+    if (m.leaveT <= 0) { scene.remove(m.g); leaving.splice(i, 1); } }
+  // marbles
+  const L = c.loadout, tier = Math.min(3, L.tier);
+  const mc = ending ? 0 : Math.min(MAXM, c.marbles.length), ms = 1 + L.damage * 0.28 + tier * 0.22, stretch = 2.2 + tier * 1.1 + L.rate * 0.35, cols = TIER_COLS[tier], halo = HALO_COLS[tier];
+  const haloEvery = mc > 240 ? 3 : mc > 120 ? 2 : 1;
+  for (let i = 0; i < mc; i++) { const m = c.marbles[i], y = 0.95 + Math.min(1, -m.z * 0.04);
+    M4.compose(V.set(m.x, y, m.z), Q.identity(), SV.set(ms, ms, ms * stretch)); marbleMesh.setMatrixAt(i, M4); marbleMesh.setColorAt(i, cols[m.color % cols.length]);
+    const hs = (i % haloEvery === 0 ? 1 : 0) * ms * (1.7 + tier * 0.3); M4.compose(V.set(m.x, y, m.z + 0.15 * stretch), Q.identity(), SV.set(hs, hs, hs * (1.2 + stretch * 0.35))); haloMesh.setMatrixAt(i, M4); haloMesh.setColorAt(i, halo); }
+  marbleMesh.count = haloMesh.count = mc; marbleMesh.instanceMatrix.needsUpdate = haloMesh.instanceMatrix.needsUpdate = true;
+  if (marbleMesh.instanceColor) marbleMesh.instanceColor.needsUpdate = true; if (haloMesh.instanceColor) haloMesh.instanceColor.needsUpdate = true;
+  // the Gang
+  let gc = 0;
+  if (ending) {
+    for (const u of endCrows) { if (u.gone || gc >= MAXG) continue;
+      if (c.finished) { u.x += (u.x >= 0 ? 1 : -1) * rdt * (2 + Math.abs(u.h) * 3); u.y += rdt * (6 + Math.abs(u.h) * 4); u.z -= rdt * 5; if (u.y > 14) { u.gone = true; continue; } }
+      else { u.x += u.h * rdt * 0.6; u.y = Math.abs(Math.sin(t * 12 + u.h * 6)) * 0.35 * u.s; u.z += rdt * (8 + Math.abs(u.h) * 5); if (u.z > 14) { u.gone = true; continue; } }
+      const rot = c.finished ? endT * (8 + u.h * 4) : Math.sin(t * 12 + u.h) * 0.25;
+      B4.compose(V.set(u.x, u.y, u.z), c.finished ? Q.setFromAxisAngle(new THREE.Vector3(0, 1, 0), rot) : Q.setFromAxisAngle(ZAX, rot), SV.set(u.s, u.s, u.s));
+      for (const p of gParts) { M4.multiplyMatrices(B4, p.local); p.mesh.setMatrixAt(gc, M4); }
+      const cc = GC[u.kind]; gBody.setColorAt(gc, cc[0]); gHelm.setColorAt(gc, cc[1]); gc++; }
+  } else {
+    for (const u of c.crows) { if (gc >= MAXG) break;
+      const s = u.scale, walk = Math.sin(t * 11 + u.phase);
+      B4.compose(V.set(u.x + walk * 0.04, Math.abs(walk) * 0.12 * s, u.z), Q.setFromAxisAngle(ZAX, walk * 0.12), SV.set(s, s, s));
+      for (const p of gParts) { M4.multiplyMatrices(B4, p.local); p.mesh.setMatrixAt(gc, M4); }
+      const cc = GC[u.kind], fl = u.flash > 0 && (u.kind === 'brute' || u.kind === 'giant' || u.kind === 'shield');
+      gBody.setColorAt(gc, fl ? WHITE : cc[0]); gHelm.setColorAt(gc, fl ? WHITE : cc[1]); gc++; }
+  }
+  for (const p of gParts) { p.mesh.count = gc; p.mesh.instanceMatrix.needsUpdate = true; if (p.colored && p.mesh.instanceColor) p.mesh.instanceColor.needsUpdate = true; }
+  // flyers
+  const fc = ending ? 0 : Math.min(MAXA, c.flyers.length);
+  for (let i = 0; i < fc; i++) { const f = c.flyers[i], flap = Math.sin(t * 18 + f.phase) * 0.8, sc = f.hawk ? 2.4 : 1.15;
+    B4.compose(V.set(f.x, 4.2 - f.dive * 2.8 + Math.sin(t * 3 + f.phase) * 0.2 + (f.hawk ? 1.2 : 0), f.z), Q.setFromAxisAngle(XAX, f.dive * 0.5), SV.set(sc, sc, sc));
+    for (const p of aParts) { if (p.flap) { W4.makeRotationZ(flap * p.flap); M4.multiplyMatrices(B4, p.local).multiply(W4); } else M4.multiplyMatrices(B4, p.local); p.mesh.setMatrixAt(i, M4); } }
+  for (const p of aParts) { p.mesh.count = fc; p.mesh.instanceMatrix.needsUpdate = true; }
+  aBodyMat.emissive.setHex(c.flyers.some(f => f.flash > 0) ? 0x333333 : 0);
+  // the Captain
+  const b = c.boss;
+  if (bossModel && b && b.hp > 0) { const bob = Math.abs(Math.sin(b.step * 3.2)) * 0.5; bossModel.g.position.set(b.x, b.size * 0.75 + bob, b.z);
+    bossModel.body.rotation.z = Math.sin(b.step * 3.2) * 0.08; for (const w of bossModel.wings) w.rotation.z = Math.sin(t * 5) * 0.5 * Math.sign(w.scale.x);
+    bossModel.mat.emissive.setHex(b.flash > 0 ? 0x664466 : 0); }
+  if (!ending) syncGate();
+  // items
+  if (!ending) {
+    cratePool.forEach((g, i) => { const cr = c.crates[i]; if (!cr) { g.visible = false; return; } g.visible = true; g.position.set(cr.x, Math.abs(Math.sin(t * 5 + cr.serial)) * 0.35, cr.z); g.rotation.y = t * 1.6 + cr.serial; g.userData.body.material = crateMats[cr.kind]; });
+    barrelPool.forEach((g, i) => { const br = c.barrels[i]; if (!br) { g.visible = false; return; } g.visible = true; g.position.set(br.x, 0.6, br.z); g.rotation.x = br.z / 0.6;
+      for (const [m, k] of g.userData.meshes) m.material = br.flash > 0 ? barrelFlash : barrelMats[k]; });
+    eggPool.forEach((m, i) => { const eg = c.eggs[i], r = eggRingPool[i]; if (!eg) { m.visible = r.visible = false; return; } const k = Math.max(0, eg.t / eg.fall);
+      m.visible = r.visible = true; m.position.set(eg.x, 0.4 + k * k * 7, 0.2); r.position.set(eg.x, 0.08, 0.2); const s = 0.75 + 0.25 * k + 0.08 * Math.sin(t * 24); r.scale.set(s, s, 1); });
+  }
+  puddlePool.forEach((m, i) => { const p = ending ? null : c.puddles[i]; if (!p) { m.visible = false; return; } m.visible = true; m.position.set(p.x, 0.05, p.z); m.material.opacity = Math.min(0.75, p.t); });
+  yarnPool.forEach((m, i) => { const y = ending ? null : c.yarns[i]; if (!y) { m.visible = false; return; } m.visible = true; m.position.set(y.x, 0.45, y.z); m.rotation.x = -t * 14; });
+  for (let i = tongues.length - 1; i >= 0; i--) { const tg = tongues[i]; tg.t -= rdt; tg.m.material.opacity = Math.max(0, tg.t / 0.22); tg.m.scale.x = 1 + (0.22 - tg.t) * 4; if (tg.t <= 0) { scene.remove(tg.m); tongues.splice(i, 1); } }
+  syncFence(rdt);
+  if (ending && c.finished) {
+    fireworkT -= rdt;
+    if (fireworkT <= 0) { fireworkT = 0.28; const pal = [[0xffd25a, 0xffffff], [0xff8fb1, 0xffffff], [0x7fd6ff, 0xffffff], [0x5fd68a, 0xffd25a], [0xc58bff, 0xffffff]];
+      burst(rnd(-4.5, 4.5), rnd(5, 8), rnd(-9, -2), 34, pal[Math.floor(Math.random() * pal.length)], 9, 1.1, 1.1, 5); }
+  } else if (ending && Math.floor(endT * 4) !== Math.floor((endT - rdt) * 4)) burst(rnd(-4, 4), 0.5, LINE, 10, [0x5a3a24, 0x3a2a2a, 0x9aa1ad], 3, 1.2, 1.6, -1);
+  stepParticles(rdt); stepRings(rdt);
+}
+function syncFence(dt){
+  const c = core, n = fence.length;
+  const want = c.home <= 0 ? n : Math.min(n - 1, Math.floor((1 - c.home / HOME_MAX) * n));
+  let broken = fence.filter(f => f.broken).length;
+  while (broken < want) { let k = -1; fence.forEach((f, i) => { if (!f.broken && (k < 0 || f.damage > fence[k].damage)) k = i; }); if (k < 0) break;
+    fence[k].broken = true; fence[k].fall = 0; broken++; burst(fence[k].x, 0.7, LINE + 0.2, 22, [0xb88352, 0x8d5f37, 0x5a3a24, 0xffffff], 7, 0.9, 1.3); shake = Math.max(shake, 0.5); }
+  while (broken > want) { let k = -1; fence.forEach((f, i) => { if (f.broken && (k < 0 || f.damage < fence[k].damage)) k = i; }); if (k < 0) break;
+    fence[k].broken = false; fence[k].damage = 0; broken--; burst(fence[k].x, 0.8, LINE + 0.2, 14, [0x5fd68a, 0xffffff, 0xffd25a], 4, 0.7, 1, 4); }
+  const low = c.home / HOME_MAX;
+  fence.forEach((f, i) => {
+    f.hit = Math.max(0, f.hit - dt);
+    const wobble = f.hit > 0 ? Math.sin(f.hit * 60) * f.hit * 0.25 : 0, sgn = i % 2 === 0 ? 1 : -1;
+    if (f.broken) { f.fall = Math.min(1, f.fall + dt * 2.5); const e = f.fall * f.fall;   // knocked over toward the friends, lying in the road
+      f.root.position.set(f.x - 0.1 * sgn * e, -0.12 * e, LINE + 0.1 + 0.45 * e); f.root.rotation.set(1.35 * e, 0.25 * sgn * e, 0); }
+    else { f.root.position.set(f.x + wobble, 0, LINE + 0.1); f.root.rotation.set(Math.min(0.25, f.damage * 0.015), 0, Math.min(0.32, f.damage * 0.02) * sgn); }
+    const mat = f.broken || low < 0.3 ? 2 : f.damage > 6 ? 1 : 0;
+    if (mat !== f.mat) { f.mat = mat; for (const ch of f.root.children) ch.material = fenceMats[mat]; }
+  });
+}
+function placeCamera(rdt){
+  const w = app.clientWidth, h = app.clientHeight, aspect = w / h, c = core;
+  shake = Math.max(0, shake - rdt * 1.6);
+  fovKick += (0 - fovKick) * Math.min(1, rdt * 3);
+  const half = Math.atan(Math.tan(BASE_FOV * Math.PI / 360) * aspect), d = clamp(5.9 / Math.tan(half), 9, 24);
+  const sx = shake > 0 ? (Math.random() - .5) * shake : 0, sy = shake > 0 ? (Math.random() - .5) * shake * 0.6 : 0;
+  const q = c ? c.squadX : Math.sin(clock * 0.3) * 1.5;
+  let from = [q * 0.25, d * 0.7, d * 0.84], at = [q * 0.15, 0.6, -d * 1.05];
+  if (c && (state === 'ending' || state === 'results')) {
+    // closer to the cheering team, or up and back over the lost bridge
+    const k = Math.min(1, endT / 1.6), e = k * k * (3 - 2 * k), won = c.finished === true;
+    const fromB = won ? [q * 0.4, d * 0.38, d * 0.5] : [0, d * 1.05, d * 1.25], atB = won ? [q * 0.6, 1.4, -d * 0.25] : [0, 0, -d * 0.6];
+    from = from.map((v, i) => v + (fromB[i] - v) * e); at = at.map((v, i) => v + (atB[i] - v) * e); fovKick = 0;
+  }
+  camera.fov = BASE_FOV + fovKick; camera.updateProjectionMatrix();
+  camera.position.set(from[0] + sx, from[1] + sy, from[2]); camera.lookAt(at[0], at[1], at[2]);
+}
+function proj(x, y, z){ V.set(x, y, z).project(camera); if (V.z > 1 || V.z < -1) return null; return [(V.x * .5 + .5) * app.clientWidth, (-V.y * .5 + .5) * app.clientHeight]; }
+function rr(g, x, y, w, h, r){ g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+const FONT = s => `800 ${Math.round(s)}px "Baloo 2", ui-rounded, system-ui, sans-serif`;
+function drawOverlay(rdt){
+  const w = app.clientWidth, h = app.clientHeight;
+  oc.clearRect(0, 0, w, h);
+  const c = core; if (!c || state === 'menu' || state === 'results' || state === 'ending') return;
+  oc.textAlign = 'center'; oc.textBaseline = 'middle';
+  // speed lines while a gate rushes in
+  const g = c.gate;
+  if (g && g.rushing) { const k = clamp((g.z + 18) / 18, 0, 1), cx = w / 2, cy = h * 0.42, R = Math.hypot(w, h) / 2;
+    oc.strokeStyle = `rgba(255,255,255,${0.32 * k})`; oc.lineWidth = 2;
+    for (let i = 0; i < 26; i++) { const a = (i / 26) * Math.PI * 2 + (clock * 2.5) % 1, r0 = R * (0.45 + Math.random() * 0.3), r1 = r0 + R * 0.25 * k; oc.beginPath(); oc.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0); oc.lineTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1); oc.stroke(); } }
+  // crates and barrels
+  for (const cr of c.crates) { if (cr.z <= -36) continue;
+    const p = proj(cr.x, 2.1, cr.z), l = proj(cr.x - 0.6, 1, cr.z), r = proj(cr.x + 0.6, 1, cr.z); if (!p || !l || !r) continue;
+    const s = clamp(Math.abs(r[0] - l[0]) * 0.5, 13, 30), P = PICKUP[cr.kind];
+    oc.font = FONT(s); const tw = oc.measureText(P.name).width + s * 0.9, th = s * 1.3;
+    oc.fillStyle = P.color; rr(oc, p[0] - tw / 2, p[1] - th / 2, tw, th, th / 2); oc.fill(); oc.fillStyle = '#0d0c16'; oc.fillText(P.name, p[0], p[1] + s * 0.06); }
+  for (const br of c.barrels) { if (br.z <= -34) continue;
+    const p = proj(br.x, 1.7, br.z), l = proj(br.x - 0.6, 1, br.z), r = proj(br.x + 0.6, 1, br.z); if (!p || !l || !r) continue;
+    const s = clamp(Math.abs(r[0] - l[0]) * 0.6, 14, 34);
+    oc.beginPath(); oc.moveTo(p[0], p[1] - s * 0.55); oc.lineTo(p[0] + s * 0.6, p[1] + s * 0.45); oc.lineTo(p[0] - s * 0.6, p[1] + s * 0.45); oc.closePath();
+    oc.fillStyle = '#ffd25a'; oc.fill(); oc.lineWidth = 2; oc.strokeStyle = '#d8452e'; oc.stroke();
+    oc.fillStyle = '#d8452e'; oc.font = FONT(s * 0.62); oc.fillText('!', p[0], p[1] + s * 0.12); }
+  // the gate: the prize over the fact on its flag, an answer on each side
+  if (g && !g.done) {
+    const top = proj(0, 4.1, g.z), a = proj(-2.3, 1.7, g.z), b = proj(2.3, 1.7, g.z);
+    for (const s of g.sides) { const p = proj(s.x, 1.7, g.z), l = proj(s.x - 2.3, 1.7, g.z), r = proj(s.x + 2.3, 1.7, g.z); if (!p || !l || !r) continue;
+      const sz = clamp(Math.abs(r[0] - l[0]) * 0.42, 30, 110); oc.font = FONT(sz);
+      oc.fillStyle = '#2972db'; oc.fillText(String(s.value), p[0], p[1] + sz * 0.1); oc.fillStyle = '#ffffff'; oc.fillText(String(s.value), p[0], p[1] + sz * 0.04); }
+    if (top && a && b) {
+      const size = clamp(Math.abs(b[0] - a[0]) * 0.13, 18, 64);
+      const fact = (g.again ? '↻ ' : '') + `${g.fact.a} × ${g.fact.b}`;
+      oc.font = FONT(size); const fw = oc.measureText(fact).width + size, fh = size * 1.24;
+      oc.fillStyle = '#faf5e6'; rr(oc, top[0] - fw / 2, top[1] - fh / 2, fw, fh, size * 0.3); oc.fill();
+      oc.fillStyle = '#0d0c16'; oc.fillText(fact, top[0], top[1] + size * 0.07);
+      if (g.reward) {
+        const ps = Math.max(11, size * 0.42), py = top[1] - fh / 2 - ps * 0.95;
+        const fr = g.reward.friend ? FR[g.reward.friend] : null, label = fr ? `+ ${fr.name}` : `⚡ ${WEAPON[g.reward.name]}`;
+        oc.font = FONT(ps); const face = fr ? ps * 1.6 : 0, pw = oc.measureText(label).width + 16 + (fr ? face + 4 : 0), ph = Math.max(ps * 1.4, face + 4);
+        oc.fillStyle = 'rgba(20,18,33,.82)'; rr(oc, top[0] - pw / 2, py - ph / 2, pw, ph, ph / 2); oc.fill();
+        let tx = top[0];
+        if (fr) { const fx = top[0] - pw / 2 + 8 + face / 2; oc.save(); oc.beginPath(); oc.arc(fx, py, face / 2, 0, Math.PI * 2); oc.fillStyle = fr.ring; oc.fill();
+          oc.beginPath(); oc.arc(fx, py, face / 2 - 2, 0, Math.PI * 2); oc.fillStyle = '#fffaf0'; oc.fill(); oc.clip(); const im = IMG[fr.key].happy; if (im && im.naturalWidth) oc.drawImage(im, fx - face * 0.55, py - face * 0.5, face * 1.1, face * 1.1); oc.restore(); tx += (face + 4) / 2; }
+        oc.fillStyle = '#ffd25a'; oc.fillText(label, tx, py + ps * 0.06);
+      }
+    }
+  }
+  // brute health
+  for (const u of c.crows) if (u.kind === 'brute' && u.hp < u.maxHP) { const p = proj(u.x, 3.4, u.z); if (!p) continue;
+    oc.fillStyle = 'rgba(13,12,22,.78)'; oc.fillRect(p[0] - 22, p[1] - 2, 44, 8); oc.fillStyle = '#ffb04a'; oc.fillRect(p[0] - 20, p[1], 40 * clamp(u.hp / u.maxHP, 0, 1), 4); }
+  // lightning
+  for (let i = bolts.length - 1; i >= 0; i--) { const bl = bolts[i]; bl.life -= rdt; if (bl.life <= 0) { bolts.splice(i, 1); continue; }
+    oc.strokeStyle = 'rgba(190,240,255,.95)'; oc.lineWidth = 2.5; oc.shadowColor = '#63c7ff'; oc.shadowBlur = 10; oc.beginPath(); oc.moveTo(bl.pts[0][0], bl.pts[0][1]);
+    for (const q of bl.pts) oc.lineTo(q[0], q[1]); oc.stroke(); oc.shadowBlur = 0; }
+}
+
+// ---------- Loop ----------
+let last = performance.now();
+function frame(now){
+  requestAnimationFrame(frame);
+  const rdt = Math.min(0.05, (now - last) / 1000); last = now;
+  tick(rdt);
+}
+function tick(rdt){
+  if (paused && state !== 'menu' && state !== 'results') { render(0); return; }
+  if (state === 'count') {
+    countT -= rdt; const n = Math.ceil(countT - 0.4);
+    $('count').textContent = countT > 0.4 ? (n > 0 ? n : '') : 'Go!';
+    if (n !== tick.lastN && n > 0 && n <= 3) sfx([440], 0.12, 'square', 0.06); tick.lastN = n;
+    if (countT <= 0) { state = 'play'; $('count').textContent = ''; sfx([880], 0.2, 'square', 0.06); }
+  } else if (state === 'play') {
+    if (keyDir) core.targetX = core.targetX + keyDir * 11 * rdt;
+    core.step(rdt);
+    const evs = core.events; core.events = [];
+    for (const e of evs) handle(e);
+    if (hintT > 0) { hintT -= rdt; if (hintT <= 0 || Math.abs(core.targetX) > 0.6) { hintT = 0; $('hint').style.opacity = 0; } }
+    if (state === 'play') renderHUD();
+  } else if (state === 'ending') {
+    endT += rdt;
+    if (endT >= ENDING_TIME) showResults();
+  }
+  render(rdt);
+}
+function render(rdt){
+  drawWorld(rdt); placeCamera(rdt); renderer.render(scene, camera); drawOverlay(rdt);
+}
+
+// ---------- Input ----------
+// drag anywhere: the team follows the finger
+app.addEventListener('pointerdown', e => {
+  if (!core || (state !== 'play' && state !== 'count')) return;
+  if (e.target.closest('button, a')) return;
+  drag = {x:e.clientX, target:core.targetX, id:e.pointerId};
+});
+addEventListener('pointermove', e => { if (!drag || !core || e.pointerId !== drag.id) return; core.targetX = drag.target + (e.clientX - drag.x) / Math.max(1, app.clientWidth) * 15; });
+addEventListener('pointerup', e => { if (drag && e.pointerId === drag.id) drag = null; });
+addEventListener('pointercancel', () => { drag = null; });
+const updKeys = () => { keyDir = (keysR.size ? 1 : 0) - (keysL.size ? 1 : 0); };
+addEventListener('keydown', e => {
+  if (e.code === 'ArrowLeft' || e.code === 'KeyA') { keysL.add(e.code); updKeys(); if (state === 'play' || state === 'count') e.preventDefault(); }
+  else if (e.code === 'ArrowRight' || e.code === 'KeyD') { keysR.add(e.code); updKeys(); if (state === 'play' || state === 'count') e.preventDefault(); }
+  else if (e.code === 'Enter' && (state === 'menu' || state === 'results') && !e.target.closest('a, button')) newRun();
+  else if (e.code === 'Escape' && (state === 'play' || state === 'count')) toMenu();
+});
+addEventListener('keyup', e => { keysL.delete(e.code); keysR.delete(e.code); updKeys(); });
+addEventListener('blur', () => { keysL.clear(); keysR.clear(); updKeys(); drag = null; });
+$('mute').addEventListener('click', () => { muted = !muted; try { localStorage.setItem('mudefend.muted', muted ? '1' : '0'); } catch (e) {} setMuteUI(); });
+$('quit').addEventListener('click', toMenu);
+$('startBtn').addEventListener('click', newRun);
+$('againBtn').addEventListener('click', newRun);
+$('changeBtn').addEventListener('click', toMenu);
+
+// ---------- Menu ----------
+function buildMenu(){
+  $('friends').innerHTML = FRIENDS.map(f => `<button class="friend${f.key === pick.friend ? ' sel' : ''}" data-k="${f.key}" aria-pressed="${f.key === pick.friend}">
+    <span class="face" style="border-color:${f.ring}"><img src="${imgSrc(f.key, f.key === pick.friend ? 'happy' : 'idle')}" alt=""></span>
+    <strong>${f.name}</strong><small>${f.move}</small></button>`).join('');
+  $('friends').querySelectorAll('.friend').forEach(b => b.addEventListener('click', () => { pick.friend = b.dataset.k; savePick(); buildMenu(); }));
+  const tables = [2,3,4,5,6,7,8,9,10,11,12,0];
+  $('tables').innerHTML = tables.map(t => `<button class="${t === pick.table ? 'sel' : ''}" data-t="${t}" aria-pressed="${t === pick.table}">${t ? '×' + t : 'Mix'}</button>`).join('');
+  $('tables').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { pick.table = +b.dataset.t; savePick(); buildMenu(); }));
+}
+
+// ---------- Test hook ----------
+// sim(seconds, accuracy): one whole run, headless, fixed 1/30 s steps, with the app's autopilot at the given accuracy.
+function sim(seconds = 300, accuracy = 0.9, seed){
+  const c = new Core(pick.friend, factsFor(pick.table), seed === undefined ? (Math.random() * 4294967296) >>> 0 : seed);
+  const dt = 1 / 30; let t = 0;
+  while (c.finished === null && t < seconds) { c.autopilot(accuracy, dt); c.step(dt); c.events.length = 0; t += dt; }
+  return {won:c.finished === true, gatesRight:c.solved, gatesWrong:c.missed, home:Math.round(c.home), t:Math.round(t * 10) / 10, ko:c.knockouts, step:c.maxLevel, phase:c.phase};
+}
+window.__defend = {
+  get state(){ return state; },
+  get home(){ return core ? Math.round(core.home) : null; },
+  get gate(){ const g = core && core.gate; return g ? {z:Math.round(g.z * 10) / 10, fact:g.fact, sides:g.sides.map(s => ({value:s.value, correct:s.correct, x:s.x})), reward:g.reward} : null; },
+  get team(){ return core ? core.team.slice() : []; },
+  get core(){ return core; },
+  sim,
+  // fast-forward the run on screen with the autopilot (screenshots under a slow renderer); stops early when a gate is in view
+  ff(seconds, accuracy = 0.9, untilGate = false){
+    if (state === 'count') { state = 'play'; $('count').textContent = ''; }
+    if (state !== 'play') return null;
+    const dt = 1 / 30; let t = 0;
+    while (state === 'play' && t < seconds) { core.autopilot(accuracy, dt); core.step(dt); const evs = core.events; core.events = []; for (const e of evs) if (e.t === 'won' || e.t === 'lost' || e.t === 'friendJoined' || e.t === 'friendLeft' || e.t === 'bossArrived' || e.t === 'captainDown') handle(e); t += dt;
+      if (untilGate && core.gate && core.gate.z > -26 && core.gate.z < -10) break; }
+    for (const m of members.values()) m.born = 0; pN = 0; $('hint').style.opacity = 0; hintT = 0;
+    if (state === 'play') renderHUD();
+    render(0.016);
+    return {t:Math.round(core.time * 10) / 10, state, gate:this.gate};
+  },
+  end(won){ if (!core) newRun(); core.finished = !!won; beginEnding(!!won); endT = ENDING_TIME; showResults(); return state; },
+};
+
+const standalone = window.top === window && !/embed=1/.test(location.search);
+// Exit: on its own page it goes to the home page; framed in the home page it asks the page to close the game
+document.querySelectorAll('.exit').forEach(a => a.addEventListener('click', e => {
+  silence();
+  if (!standalone) { e.preventDefault(); try { window.parent.postMessage('race:exit', location.origin); } catch (err) {} }
+}));
+if (!matchMedia('(pointer: coarse)').matches) $('keyCaps').hidden = false;
+else $('hint').textContent = 'Drag to move · stand under the right answer';
+resize(); setMuteUI(); buildMenu();
+loadImages().then(() => {
+  for (const f of FRIENDS) { BADGE[f.key] = {}; for (const m of MOODS) BADGE[f.key][m] = badgeTex(f, m); }
+  requestAnimationFrame(frame);
+});
+})();
+</script>
+
+<!-- Cloudflare Web Analytics: on the race's own page only; inside the home page's frame the home page already counts the visit -->
+<script>
+if (window.top === window) { const b = document.createElement('script'); b.type = 'module'; b.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+  b.dataset.cfBeacon = '{"token": "3be86aab8cf24999be8e5d44456fee80"}'; document.body.appendChild(b); }
+</script>
+<!-- 앱스토어 클릭 계측 — ct= 는 설치를 가르지만 클릭은 못 센다. 둘을 같이 봐야 이탈이 보인다.
+     식별자는 세션마다 새로 만드는 난수다. 쿠키도, IP 저장도, 개인 식별도 없다. -->
+<script>
+(function () {
+  var SITE = "swiftian.com";
+  function sid() {
+    try {
+      var k = "sw_sid", v = sessionStorage.getItem(k);
+      if (!v) { v = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2)); sessionStorage.setItem(k, v); }
+      return v;
+    } catch (_) { return "anon"; }
+  }
+  document.addEventListener("click", function (e) {
+    var a = e.target && e.target.closest && e.target.closest('a[href*="apps.apple.com"]');
+    if (!a) return;
+    var m = a.href.match(/id(\d+)/);
+    try {
+      fetch("https://claude-proxy-web.ilbulyori.workers.dev/events", {
+        method: "POST",
+        keepalive: true,
+        headers: { "content-type": "application/json", "x-device-id": sid() },
+        body: JSON.stringify({
+          meta: { app: SITE, build: "web", os: "web", locale: (navigator.language || "").slice(0, 8) },
+          events: [{
+            name: "appstore_click",
+            ts: Date.now() / 1000,
+            props: { site: SITE, app: m ? m[1] : "", path: location.pathname.slice(0, 64) }
+          }]
+        })
+      }).catch(function () {});
+    } catch (_) {}
+  }, true);
+})();
+</script>
+</body>
+</html>

@@ -59,6 +59,11 @@
     .play{margin-top:6px;height:58px;padding:0 40px;border:0;border-radius:18px;background:var(--accent);color:var(--bg);font:800 24px/1 var(--display);
       box-shadow:0 5px 0 #a8432a;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
     .play:active{transform:translateY(3px);box-shadow:0 2px 0 #a8432a}
+    .plays{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:6px}
+    .plays .play{margin-top:0}
+    .play.defend{background:#8f74ff;color:#fff;box-shadow:0 5px 0 #4b36b0}
+    .play.defend:active{box-shadow:0 2px 0 #4b36b0}
+    @media (max-width:520px){.plays{flex-direction:column;align-items:stretch;width:min(320px,100%)}.plays .play{justify-content:center;padding:0 20px}}
     .keys{font-size:12.5px!important;opacity:.85}
     .arena-bar{display:flex;justify-content:flex-end;margin:8px 0 0;min-height:30px}
     .fs{height:30px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:none;color:var(--muted);font:600 12.5px/1 "Inter",system-ui;cursor:pointer}
@@ -149,9 +154,9 @@
       <div class="poster" id="poster">
         <div class="faces"><span style="border-color:#f07b3a"><img src="/race/img/red_panda_happy.png" alt=""></span><span style="border-color:#f3a6b9"><img src="/race/img/bunny_happy.png" alt=""></span><span style="border-color:#6dbe45"><img src="/race/img/frog_happy.png" alt=""></span><span style="border-color:#8b5a3c"><img src="/race/img/bear_happy.png" alt=""></span><span style="border-color:#f28db2"><img src="/race/img/cat_happy.png" alt=""></span></div>
         <h1>Multiplication <em>&amp;</em> Times&nbsp;Tables</h1>
-        <p>Learn a table with a friend. Then race on it.</p>
-        <a class="play" id="play" href="/race/">Race one lap</a>
-        <p class="keys" id="keys">← → steer, and answer when a question shows · Space uses your item</p>
+        <p>Learn a table with a friend. Then play it.</p>
+        <div class="plays"><a class="play" data-game="race" href="/race/">Race one lap</a><a class="play defend" data-game="defend" href="/defend/">Defend the bridge</a></div>
+        <p class="keys" id="keys">← → to move · steer to the side with the right answer</p>
       </div>
     </section>
     <div class="arena-bar"><button class="fs" id="fs" type="button" hidden>Full screen</button></div>
@@ -228,18 +233,19 @@
   (function () {
     var arena = document.getElementById("arena"), poster = document.getElementById("poster"), fs = document.getElementById("fs");
     var touch = matchMedia("(pointer: coarse)").matches;
-    if (touch) document.getElementById("keys").textContent = "Tap ◀ ▶ to steer, and the side with the right answer";
-    document.getElementById("play").addEventListener("click", function (e) {
-      // phones and narrow windows get the race full screen on its own page; wide screens play it right here
-      if (touch || innerWidth < 760) { SW_EV("race_open", { where: "page" }); return; }
+    if (touch) document.getElementById("keys").textContent = "Steer to the side with the right answer";
+    document.querySelectorAll(".plays .play").forEach(function (b) { b.addEventListener("click", function (e) {
+      var game = b.dataset.game;
+      // phones and narrow windows get the game full screen on its own page; wide screens play it right here
+      if (touch || innerWidth < 760) { SW_EV(game + "_open", { where: "page" }); return; }
       e.preventDefault();
       var f = document.createElement("iframe");
-      f.src = "/race/?embed=1"; f.title = "Race"; f.allow = "fullscreen; autoplay";
+      f.src = "/" + game + "/?embed=1"; f.title = game === "race" ? "Race" : "Defend"; f.allow = "fullscreen; autoplay";
       f.addEventListener("load", function () { try { f.contentWindow.focus(); } catch (_) {} });
       arena.classList.add("playing"); arena.appendChild(f); poster.remove(); fs.hidden = false; f.focus();
       arena.scrollIntoView({ block: "nearest", behavior: "smooth" });
-      SW_EV("race_open", { where: "inline" });
-    });
+      SW_EV(game + "_open", { where: "inline" });
+    }); });
     // the race's Exit button: drop the frame and put the poster back
     addEventListener("message", function (e) {
       if (e.origin !== location.origin || e.data !== "race:exit") return;
