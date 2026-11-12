@@ -225,6 +225,14 @@
       arena.scrollIntoView({ block: "nearest", behavior: "smooth" });
       SW_EV("race_open", { where: "inline" });
     });
+    // the race's Exit button: drop the frame and put the poster back
+    addEventListener("message", function (e) {
+      if (e.origin !== location.origin || e.data !== "race:exit") return;
+      var f = arena.querySelector("iframe"); if (!f) return;
+      if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(function () {});
+      f.remove(); arena.classList.remove("playing"); arena.appendChild(poster); fs.hidden = true;
+      SW_EV("race_exit", {});
+    });
     fs.addEventListener("click", function () {
       var f = arena.querySelector("iframe"); if (!f) return;
       (f.requestFullscreen || f.webkitRequestFullscreen || function () {}).call(f);

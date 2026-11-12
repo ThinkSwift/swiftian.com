@@ -123,7 +123,9 @@ h2{margin:0 0 8px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;c
 #podium span{font-size:20px;font-weight:700}
 #stats{font-size:17px;color:var(--muted)}
 #stats strong{color:var(--cream)}
-.row{display:grid;grid-template-columns:2fr 1fr;gap:10px}
+.row{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px}
+a.ghost{display:flex;align-items:center;justify-content:center;color:inherit;text-decoration:none}
+a.ghost:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 #homeLink{align-self:flex-start;color:var(--muted);font:600 13px/1 "Inter",system-ui,sans-serif;text-decoration:none;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:7px 12px}
 #homeLink:hover{color:var(--cream)}
 #mute{position:absolute;right:calc(10px + env(safe-area-inset-right,0px));bottom:calc(118px + env(safe-area-inset-bottom,0px));
@@ -203,7 +205,7 @@ h2{margin:0 0 8px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;c
 
   <section id="menu" class="sheet">
     <div class="wrap">
-      <a id="homeLink" href="/" hidden>swiftian.com</a>
+      <a id="homeLink" class="exit" href="/">Exit</a>
       <div>
         <h1>Times Tables <em>Race</em></h1>
         <p class="tag">Five friends, one lap. Every × box and every jump asks a times-table question. Right answers win items and boosts. Finish in the top 3 to win a card.</p>
@@ -236,7 +238,7 @@ h2{margin:0 0 8px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;c
         <div class="prize-say"><b id="prizeTitle"></b><span id="prizeLine"></span>
           <a id="storeLink" class="store" href="https://apps.apple.com/app/id6752542327?ct=web-sw-cf-race" hidden>Collect all 160 in the app</a></div>
       </div>
-      <div class="row"><button id="againBtn" class="go">Race again</button><button id="changeBtn" class="ghost">Change</button></div>
+      <div class="row"><button id="againBtn" class="go">Race again</button><button id="changeBtn" class="ghost">Change</button><a id="exitBtn" class="ghost exit" href="/">Exit</a></div>
     </div>
   </section>
 </div>
@@ -931,10 +933,10 @@ function frame(now){
     for (const k of racers) stepRacer(k, dt);
     bumps(); stepProj(dt); stepFx(dt);
     closeQuizIfDone();
-    if (me.finished && (gameTime > endAt || racers.every(k => k.finished))) showResults();
     shake = Math.max(0, shake - rdt * 1.5);
     engineGain(0.035 + Math.min(0.03, me.speed / BASE * 0.02));
     if (eng) eng.frequency.setTargetAtTime(45 + me.speed * 2.3 * Math.max(0.3, timeScale), ac.currentTime, 0.05);
+    if (me.finished && (gameTime > endAt || racers.every(k => k.finished))) showResults();   // last, so its engineOff() is not undone this frame
   }
   if (me) { for (const k of racers) drawRacer(k, dt); cameraFollow(rdt); if (state !== 'menu' && state !== 'results') drawHUD(); }
   else idleCamera(now);
@@ -997,7 +999,11 @@ function buildMenu(){
 // test hook for play-testing in the browser console
 window.__race = {get me(){ return me; }, get racers(){ return racers; }, get proj(){ return proj; }, get q(){ return q; }, get state(){ return state; }, L};
 const standalone = window.top === window && !/embed=1/.test(location.search);
-if (standalone) $('homeLink').hidden = false;
+// Exit: on its own page it goes to the Mu page; framed in the Mu page it asks the page to close the race
+document.querySelectorAll('.exit').forEach(a => a.addEventListener('click', e => {
+  engineOff(); if (ac) ac.suspend();
+  if (!standalone) { e.preventDefault(); try { window.parent.postMessage('race:exit', location.origin); } catch (err) {} }
+}));
 if (LAPS === 1) $('lap').hidden = true;
 resize(); setMuteUI(); buildMenu();
 loadImages().then(() => {
