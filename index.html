@@ -3,65 +3,109 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Chillfriends Race · Swiftian</title>
-  <meta name="description" content="Five friends, one track, three laps. Every × box and every jump asks a times table.">
-  <meta name="theme-color" content="#0b0f1a">
+  <title>Multiplication &amp; Times Tables · Swiftian</title>
+  <meta name="description" content="Learn a times table with a friend who reads it aloud, race on it, then hunt for cards. Five friends, 160 cards. iPhone, iPad, Mac.">
+  <meta name="theme-color" content="#0d0c16">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png?v=20261103">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=20261103">
   <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png?v=20261103">
   <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png?v=20261103">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20261103">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Chillfriends Race · Swiftian">
-  <meta property="og:description" content="Five friends, one track, three laps. Every × box and every jump asks a times table.">
+  <meta property="og:title" content="Multiplication &amp; Times Tables">
+  <meta property="og:description" content="Learn a table with a friend, race on it, hunt for cards.">
   <link rel="canonical" href="https://swiftian.com/">
   <meta property="og:url" content="https://swiftian.com/">
   <meta property="og:image" content="https://swiftian.com/race/img/frog_win.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg:#0b0f1a; --bg-2:#0e1422; --ink:#eef2ff; --muted:#9aa6c4; --line:rgba(255,255,255,.10);
-      --c1:#6ee7f9; --c2:#818cf8;
+      --bg:#0d0c16; --bg-2:#16142a; --ink:#fbf5e6; --muted:#b4afc6; --line:rgba(255,255,255,.10);
+      --accent:#f4734d; --c1:#ffb199; --display:"Baloo 2",ui-rounded,"SF Pro Rounded",system-ui,sans-serif;
     }
     *{box-sizing:border-box}
     html,body{margin:0}
     body{
       font-family:"Inter",-apple-system,system-ui,sans-serif;color:var(--ink);
       background:
-        radial-gradient(1200px 700px at 82% -12%, rgba(129,140,248,.20), transparent 60%),
-        radial-gradient(1000px 640px at 0% 8%, rgba(110,231,249,.14), transparent 55%),
-        linear-gradient(180deg,var(--bg-2),var(--bg));
+        radial-gradient(1100px 620px at 50% -10%, rgba(244,115,77,.16), transparent 60%),
+        linear-gradient(180deg,var(--bg-2),var(--bg) 640px);
+      background-color:var(--bg);
       min-height:100vh;-webkit-font-smoothing:antialiased
     }
-    .wrap{position:relative;z-index:1;width:100%;max-width:880px;margin:0 auto;padding:0 22px}
-    footer{position:relative;z-index:1;text-align:center;font-size:13px;padding:44px 22px 34px;color:var(--muted)}
-    footer a{color:var(--c1);text-decoration:none}
-    footer a:hover{text-decoration:underline;text-underline-offset:3px}
-    footer a.mail{display:inline-flex;vertical-align:-3px}
-    footer a.mail:hover{text-decoration:none;opacity:.75}
-    footer a.mail svg{width:16px;height:16px}
-    footer .sep{margin:0 8px;opacity:.5}
+    .wrap{position:relative;z-index:1;width:100%;max-width:1040px;margin:0 auto;padding:0 22px}
     @media (max-width:640px){.wrap{padding:0 16px}}
-    /* swiftian.com's three pages: top tabs on the header line (RDM-swiftian-three-pages) */
-    nav.tabs-bar{display:flex;align-items:flex-end;justify-content:flex-start;gap:11px;padding:22px 0 0;min-height:0;border-bottom:1px solid rgba(255,255,255,.22)}
-    .tabs{display:flex;gap:8px}
-    .tab{box-sizing:border-box;width:168px;min-height:44px;display:flex;align-items:center;gap:9px;padding:6px 10px 6px 8px;margin-bottom:-1px;
-      color:var(--muted);text-decoration:none;font-size:13.5px;line-height:1.15;background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.16);border-bottom:none;border-radius:10px 10px 0 0}
-    .tab img,.site img{display:block;flex:none;width:32px;height:32px;image-rendering:pixelated}
-    .tab:hover{border-color:rgba(238,242,255,.75);color:var(--ink)}
-    .tab[aria-current]{border-color:var(--ink);border-top-width:3px;padding-top:4px;color:var(--ink)}
-    nav.tabs-bar .lang-toggle{margin:0 0 8px auto}
-    /* other sites: light round-rect buttons */
-    .sites{display:flex;flex-wrap:wrap;gap:8px;margin:46px 0 0;padding-top:22px;border-top:1px solid var(--line)}
-    .site{box-sizing:border-box;width:168px;min-height:42px;display:flex;align-items:center;gap:8px;padding:3px 10px 3px 3px;
-      color:#0b0f1a;text-decoration:none;font-size:13.5px;font-weight:500;background:#eef1f7;border:2px solid #eef1f7;border-radius:10px}
-    .site img{border-radius:6px}
-    .site:hover{border-color:#0b0f1a}
-    /* the page's own app: one App Store link at the bottom */
-    .store-row{display:flex;justify-content:center;margin:40px 0 0}
+    nav.tabs-bar{display:flex;align-items:flex-end;padding:22px 0 0;border-bottom:1px solid rgba(255,255,255,.16)}
+
+    /* hero: the race is the taste */
+    .arena{position:relative;margin:28px 0 0;border:1px solid var(--line);border-radius:24px;overflow:hidden;aspect-ratio:16/9;
+      background:radial-gradient(120% 90% at 50% 0%,#2a2744 0%,#14131f 62%,#0d0c16 100%)}
+    .arena iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+    .arena.playing{aspect-ratio:auto;height:min(740px,calc(100vh - 110px))}
+    .poster{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;font-family:var(--display)}
+    .poster::before{content:"";position:absolute;left:-10%;right:-10%;bottom:-38%;height:70%;border-radius:50%;
+      background:repeating-linear-gradient(90deg,#3a3550 0 46px,#45405e 46px 92px);opacity:.55;transform:perspective(420px) rotateX(58deg)}
+    .poster > *{position:relative}
+    .faces{display:flex;gap:10px}
+    .faces span{width:clamp(48px,8vw,80px);aspect-ratio:1;border-radius:50%;background:#fffaf0;border:4px solid;overflow:hidden;display:grid;place-items:center;animation:bob 2.4s ease-in-out infinite}
+    .faces span:nth-child(2){animation-delay:.2s}.faces span:nth-child(3){animation-delay:.4s}.faces span:nth-child(4){animation-delay:.6s}.faces span:nth-child(5){animation-delay:.8s}
+    .faces img{width:118%;height:118%;object-fit:contain}
+    @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+    h1{margin:2px 0 0;font:800 clamp(34px,5.6vw,60px)/1 var(--display);letter-spacing:-.01em;text-wrap:balance}
+    h1 em{font-style:normal;color:var(--accent)}
+    .poster p{margin:0;max-width:40ch;color:var(--muted);font:400 clamp(15px,1.8vw,18px)/1.4 "Inter",system-ui,sans-serif}
+    .play{margin-top:6px;height:58px;padding:0 40px;border:0;border-radius:18px;background:var(--accent);color:var(--bg);font:800 24px/1 var(--display);
+      box-shadow:0 5px 0 #a8432a;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
+    .play:active{transform:translateY(3px);box-shadow:0 2px 0 #a8432a}
+    .keys{font-size:12.5px!important;opacity:.85}
+    .arena-bar{display:flex;justify-content:flex-end;margin:8px 0 0;min-height:30px}
+    .fs{height:30px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:none;color:var(--muted);font:600 12.5px/1 "Inter",system-ui;cursor:pointer}
+    .fs:hover{color:var(--ink);border-color:rgba(255,255,255,.5)}
+
+    /* LEARN · PLAY · HUNT */
+    .modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin:64px 0 0}
+    .mode{margin:0;text-align:center}
+    .mode .shot{display:block;width:100%;max-width:280px;margin:0 auto;aspect-ratio:987/2124;border-radius:34px;overflow:hidden;
+      background:#1d1b2c;box-shadow:0 0 0 1px rgba(255,255,255,.12),0 24px 60px -24px rgba(0,0,0,.8)}
+    .mode .shot img{display:block;width:100%;height:100%;object-fit:cover;object-position:top}
+    .mode h2{margin:18px 0 2px;font:800 30px/1 var(--display);letter-spacing:.04em}
+    .mode p{margin:0 auto;max-width:28ch;color:var(--muted);font-size:15px;line-height:1.45}
+    .arrow{color:var(--accent)}
+
+    /* five friends, 160 cards */
+    .friends{margin:84px 0 0;text-align:center}
+    .friends h2{margin:0;font:800 clamp(28px,4vw,40px)/1.05 var(--display)}
+    .friends > p{margin:10px auto 0;max-width:46ch;color:var(--muted);font-size:15.5px;line-height:1.45}
+    .deck{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;margin:30px 0 0;perspective:900px}
+    .card{--cw:min(176px,28vw);width:var(--cw);aspect-ratio:63/88;padding:0;border:0;background:none;cursor:pointer;font:inherit;color:#2a2633;
+      container-type:inline-size;transition:transform .2s ease;-webkit-tap-highlight-color:transparent}
+    .card:hover{transform:translateY(-4px)}
+    .card:focus-visible{outline:3px solid #ffd25a;outline-offset:4px;border-radius:12px}
+    .cin{position:relative;display:flex;flex-direction:column;gap:3.5cqw;width:100%;height:100%;padding:7cqw;border-radius:9cqw;overflow:hidden;
+      border:2.2cqw solid transparent;background:linear-gradient(var(--f1),var(--f2)) padding-box,linear-gradient(135deg,var(--fr)) border-box;
+      box-shadow:0 2.5cqw 5cqw rgba(0,0,0,.35);transition:transform .18s ease-in;transform-origin:50% 50%}
+    .card.turn .cin{transform:rotateY(90deg)}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:2px;min-height:9cqw}
+    .top b{font:800 7.5cqw/1 var(--display);letter-spacing:.02em;color:rgba(42,38,51,.55);white-space:nowrap;overflow:hidden}
+    .top i{font:800 5.2cqw/1 var(--display);font-style:normal;color:#fff;background:var(--ac);border-radius:99px;padding:1.4cqw 2.8cqw .8cqw}
+    .top i:empty{display:none}
+    .art{flex:1;min-height:0;display:grid;place-items:center;border-radius:6cqw;background:radial-gradient(circle,var(--gl) 0,transparent 70%);box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+    .art img{width:90%;height:90%;object-fit:contain}
+    .no{text-align:left;font:700 7cqw/1 var(--display);color:rgba(42,38,51,.75);font-variant-numeric:tabular-nums}
+    .no small{font-size:5.8cqw;color:rgba(42,38,51,.4)}
+    .common{--f1:#fff;--f2:#fff7f0;--fr:#dbdbdb,#c7c7c7;--ac:#9e9e9e;--gl:rgba(244,115,77,.13)}
+    .rare{--f1:#fff;--f2:#e0ebf7;--fr:#ebebeb,#a8a8a8,#e0e0e0;--ac:#858585;--gl:rgba(115,140,179,.16)}
+    .epic{--f1:#fffced;--f2:#ffebbd;--fr:#ffdb73,#d99e26,#ffeb99;--ac:#d99e1f;--gl:rgba(242,184,38,.2)}
+    .legend{--f1:#f7f2ff;--f2:#e0d4fc;--fr:#9e61f2,#fac740,#4dc7eb,#9e61f2;--ac:#7347cc;--gl:rgba(148,97,242,.2)}
+    .epic .cin,.legend .cin{border-width:3cqw;box-shadow:0 2.5cqw 7cqw var(--gl),0 2.5cqw 5cqw rgba(0,0,0,.35)}
+    .epic .cin::after,.legend .cin::after{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;
+      background:linear-gradient(135deg,transparent 20%,rgba(255,255,255,.45) 38%,transparent 50%,rgba(255,204,102,.25) 66%,transparent 80%)}
+    .tiers{margin:18px 0 0;color:var(--muted);font-size:13px}
+
+    /* the one way to the app */
+    .store-row{display:flex;flex-direction:column;align-items:center;gap:10px;margin:72px 0 0}
     .store{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:8px 18px 8px 10px;border-radius:14px;
       background:#000;color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.28)}
     .store:hover{border-color:#fff}
@@ -69,50 +113,22 @@
     .store span{display:flex;flex-direction:column;line-height:1.05}
     .store small{font-size:10.5px;letter-spacing:.02em;opacity:.85}
     .store b{font:600 19px/1.1 "Inter",-apple-system,system-ui,sans-serif;letter-spacing:-.01em}
-    @media (max-width:540px){
-      .tabs{flex:1 1 100%;gap:6px}
-      .tab{width:auto;flex:1;flex-direction:column;text-align:center;gap:5px;padding:8px 4px;font-size:12px}
-      .tab[aria-current]{padding-top:6px}
-      nav.tabs-bar{flex-wrap:wrap}
-      nav.tabs-bar .lang-toggle{order:-1;margin:0 0 10px auto}
-      .site{flex:1;width:auto}
-    }
+    .free{margin:0;color:var(--muted);font-size:13px}
+    footer{position:relative;z-index:1;text-align:center;font-size:13px;padding:44px 22px 34px;color:var(--muted)}
+    footer a{color:var(--c1);text-decoration:none}
+    footer a:hover{text-decoration:underline;text-underline-offset:3px}
 
-    .arena{position:relative;margin:28px 0 0;border:1px solid var(--line);border-radius:22px;overflow:hidden;aspect-ratio:16/9;
-      background:radial-gradient(120% 90% at 50% 0%,#2a2744 0%,#14131f 62%,#0d0c16 100%)}
-    .arena iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
-    .arena.playing{aspect-ratio:auto;height:min(740px,calc(100vh - 110px))}
-    .poster{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;
-      font-family:"Baloo 2",ui-rounded,system-ui,sans-serif;color:#fbf5e6}
-    /* a road under the friends */
-    .poster::before{content:"";position:absolute;left:-10%;right:-10%;bottom:-38%;height:70%;border-radius:50%;
-      background:repeating-linear-gradient(90deg,#3a3550 0 46px,#45405e 46px 92px);opacity:.55;transform:perspective(420px) rotateX(58deg)}
-    .poster > *{position:relative}
-    .faces{display:flex;gap:10px}
-    .faces span{width:clamp(48px,9vw,84px);aspect-ratio:1;border-radius:50%;background:#fffaf0;border:4px solid;overflow:hidden;display:grid;place-items:center;
-      animation:bob 2.4s ease-in-out infinite}
-    .faces span:nth-child(2){animation-delay:.2s}.faces span:nth-child(3){animation-delay:.4s}.faces span:nth-child(4){animation-delay:.6s}.faces span:nth-child(5){animation-delay:.8s}
-    .faces img{width:118%;height:118%;object-fit:contain}
-    @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-    .poster h1{margin:4px 0 0;font-size:clamp(34px,6vw,58px);line-height:1;font-weight:800}
-    .poster h1 em{font-style:normal;color:#f4734d}
-    .poster p{margin:0;max-width:44ch;color:#b4afc6;font-size:clamp(14px,1.8vw,17px);line-height:1.4;font-family:"Inter",system-ui,sans-serif}
-    .play{margin-top:6px;height:58px;padding:0 44px;border:0;border-radius:18px;background:#f4734d;color:#0d0c16;font:800 24px/1 "Baloo 2",ui-rounded,system-ui;
-      box-shadow:0 5px 0 #a8432a;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
-    .play:active{transform:translateY(3px);box-shadow:0 2px 0 #a8432a}
-    .keys{font-size:12.5px!important;opacity:.85}
-    .arena-bar{display:flex;justify-content:flex-end;margin:8px 0 0}
-    .fs{height:30px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.22);
-      background:none;color:var(--muted);font:600 12.5px/1 "Inter",system-ui;cursor:pointer}
-    .fs:hover{color:var(--ink);border-color:rgba(255,255,255,.5)}
     @media (max-width:760px){
-      .arena{aspect-ratio:auto;min-height:440px}
+      .arena{aspect-ratio:auto;min-height:420px}
       .faces{gap:6px}
+      .modes{grid-template-columns:1fr;gap:44px;margin-top:52px}
+      .mode .shot{max-width:240px}
+      .friends{margin-top:64px}
+      .deck{gap:12px}
     }
-    @media (prefers-reduced-motion:reduce){.faces span{animation:none}}
-
+    @media (prefers-reduced-motion:reduce){.faces span{animation:none}.cin{transition:none}}
   </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://swiftian.com/#site", "name": "Swiftian", "url": "https://swiftian.com/", "publisher": {"@id": "https://swiftian.com/#org"}}, {"@type": "Organization", "@id": "https://swiftian.com/#org", "name": "Swiftian Inc.", "alternateName": "Swiftian", "url": "https://swiftian.com/", "logo": "https://swiftian.com/apple-touch-icon.png", "sameAs": ["https://apps.apple.com/us/developer/swiftian-inc/id1803794298", "https://pythoneer.io/", "https://spriteer.com/", "https://iflipbook.com/", "https://coordigo.com/", "https://seoulmal.com/"]}, {"@type": "SoftwareApplication", "name": "Chillfriends: Times Tables", "url": "https://apps.apple.com/app/id6752542327", "operatingSystem": "iOS, iPadOS, macOS", "applicationCategory": "EducationalApplication", "author": {"@id": "https://swiftian.com/#org"}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://swiftian.com/#site", "name": "Swiftian", "url": "https://swiftian.com/", "publisher": {"@id": "https://swiftian.com/#org"}}, {"@type": "Organization", "@id": "https://swiftian.com/#org", "name": "Swiftian Inc.", "alternateName": "Swiftian", "url": "https://swiftian.com/", "logo": "https://swiftian.com/apple-touch-icon.png", "sameAs": ["https://apps.apple.com/us/developer/swiftian-inc/id1803794298", "https://pythoneer.io/", "https://spriteer.com/", "https://iflipbook.com/", "https://coordigo.com/", "https://seoulmal.com/"]}, {"@type": "SoftwareApplication", "name": "Multiplication & Times Tables", "url": "https://apps.apple.com/app/id6752542327", "operatingSystem": "iOS, iPadOS, macOS", "applicationCategory": "EducationalApplication", "author": {"@id": "https://swiftian.com/#org"}}]}</script>
 <link rel="stylesheet" href="/assets/app-menu.css?v=6">
 </head>
 <body>
@@ -121,18 +137,62 @@
       <!-- app-menu --><div class="am" role="navigation" aria-label="Swiftian apps"><div class="am-bar"><div class="am-g"><p class="am-h">Languages</p><div class="am-row"><a class="am-i" href="/ea/" data-app="EA" aria-label="English Accents" title="English Accents"><img class="px" src="/assets/tabs/ea-32.png" srcset="/assets/tabs/ea-32.png 1x, /assets/tabs/ea-64.png 2x, /assets/tabs/ea-96.png 3x" width="32" height="32" alt=""></a><a class="am-i" href="/cp/" data-app="CP" aria-label="Chinese Pronunciation" title="Chinese Pronunciation"><img class="px" src="/assets/tabs/cp-32.png" srcset="/assets/tabs/cp-32.png 1x, /assets/tabs/cp-64.png 2x, /assets/tabs/cp-96.png 3x" width="32" height="32" alt=""></a><a class="am-i" href="https://seoulmal.com/?ct=web-sw-menu" data-app="SM" aria-label="SeoulMal" title="SeoulMal"><img src="/assets/menu/sm-32.png" srcset="/assets/menu/sm-32.png 1x, /assets/menu/sm-64.png 2x" width="32" height="32" alt=""></a></div></div><div class="am-g"><p class="am-h">Math</p><div class="am-row"><a class="am-i" href="/" aria-current="page" data-app="MT" aria-label="Times Tables &amp; Multiplication" title="Times Tables &amp; Multiplication"><img class="px" src="/assets/tabs/cf-32.png" srcset="/assets/tabs/cf-32.png 1x, /assets/tabs/cf-64.png 2x, /assets/tabs/cf-96.png 3x" width="32" height="32" alt=""></a></div></div><div class="am-g"><p class="am-h">Art</p><div class="am-row"><a class="am-i" href="https://iflipbook.com/?ct=web-sw-menu" data-app="iF" aria-label="iFlipbook" title="iFlipbook"><img src="/assets/menu/if-32.png" srcset="/assets/menu/if-32.png 1x, /assets/menu/if-64.png 2x" width="32" height="32" alt=""></a><a class="am-i" href="https://spriteer.com/?ct=web-sw-menu" data-app="Sp" aria-label="Spriteer" title="Spriteer"><img class="px" src="/assets/menu/sp-32.png" srcset="/assets/menu/sp-32.png 1x, /assets/menu/sp-64.png 2x" width="32" height="32" alt=""></a><a class="am-i" href="https://coordigo.com/?ct=web-sw-menu" data-app="Co" aria-label="Coordigo" title="Coordigo"><img class="px" src="/assets/tabs/site-coordigo-32.png" srcset="/assets/tabs/site-coordigo-32.png 1x, /assets/tabs/site-coordigo-64.png 2x, /assets/tabs/site-coordigo-96.png 3x" width="32" height="32" alt=""></a></div></div><div class="am-g"><p class="am-h">Games</p><div class="am-row"><a class="am-i" href="https://pythoneer.io/?ct=web-sw-menu" data-app="Py" aria-label="Pythoneer" title="Pythoneer"><img class="px" src="/assets/tabs/site-pythoneer-32.png" srcset="/assets/tabs/site-pythoneer-32.png 1x, /assets/tabs/site-pythoneer-64.png 2x, /assets/tabs/site-pythoneer-96.png 3x" width="32" height="32" alt=""></a></div></div></div></div><!-- /app-menu -->
     </nav>
 
-    <section class="arena" id="arena" aria-label="Chillfriends Race">
+    <section class="arena" id="arena" aria-label="Race">
       <div class="poster" id="poster">
-        <div class="faces"><span style="border-color:#6dbe45"><img src="/race/img/frog_happy.png" alt=""></span><span style="border-color:#f3a6b9"><img src="/race/img/bunny_happy.png" alt=""></span><span style="border-color:#f07b3a"><img src="/race/img/red_panda_happy.png" alt=""></span><span style="border-color:#8b5a3c"><img src="/race/img/bear_happy.png" alt=""></span><span style="border-color:#f28db2"><img src="/race/img/cat_happy.png" alt=""></span></div>
-        <h1>Chillfriends <em>Race</em></h1>
-        <p>Five friends, one track, three laps. Every × box and every jump asks a times table.</p>
-        <a class="play" id="play" href="/race/">Play</a>
+        <div class="faces"><span style="border-color:#f07b3a"><img src="/race/img/red_panda_happy.png" alt=""></span><span style="border-color:#f3a6b9"><img src="/race/img/bunny_happy.png" alt=""></span><span style="border-color:#6dbe45"><img src="/race/img/frog_happy.png" alt=""></span><span style="border-color:#8b5a3c"><img src="/race/img/bear_happy.png" alt=""></span><span style="border-color:#f28db2"><img src="/race/img/cat_happy.png" alt=""></span></div>
+        <h1>Multiplication <em>&amp;</em> Times&nbsp;Tables</h1>
+        <p>Learn a table with a friend. Then race on it.</p>
+        <a class="play" id="play" href="/race/">Race one lap</a>
         <p class="keys" id="keys">← → steer, and answer when a question shows · Space uses your item</p>
       </div>
     </section>
     <div class="arena-bar"><button class="fs" id="fs" type="button" hidden>Full screen</button></div>
 
-    <div class="store-row"><a class="store" href="https://apps.apple.com/app/id6752542327?ct=web-sw-cf"><img src="/assets/tabs/cf-32.png" srcset="/assets/tabs/cf-32.png 1x, /assets/tabs/cf-64.png 2x, /assets/tabs/cf-96.png 3x" width="32" height="32" alt=""><span><small>Download on the</small><b>App Store</b></span></a></div>
+    <section class="modes" aria-label="Modes">
+      <figure class="mode">
+        <span class="shot"><img src="/assets/mu/learn.webp" width="560" height="1159" loading="lazy" alt="LEARN: seven times three is twenty-one, read aloud line by line"></span>
+        <h2>LEARN</h2>
+        <p>Your friend reads each line aloud. Hear it, cover it, say it.</p>
+      </figure>
+      <figure class="mode">
+        <span class="shot"><img src="/assets/mu/race.webp" width="560" height="1205" loading="lazy" alt="PLAY: a kart race where steering left or right picks the answer to 7 × 6"></span>
+        <h2>PLAY</h2>
+        <p>Race four friends. Steer left or right to answer.</p>
+      </figure>
+      <figure class="mode">
+        <span class="shot"><img src="/assets/mu/hunt.webp" width="560" height="1205" loading="lazy" alt="HUNT: a 30-second round asking 7 × 5"></span>
+        <h2>HUNT</h2>
+        <p>Thirty-second rounds. Win a round, win a card.</p>
+      </figure>
+    </section>
+
+    <section class="friends" aria-label="Friends and cards">
+      <h2>Five friends. 160 cards.</h2>
+      <p>Every card is earned, never sold. Tap one.</p>
+      <div class="deck" id="deck">
+        <button class="card common" type="button" data-f="red_panda" data-name="Red Panda" data-n="6,25,30,32" aria-label="Red Panda, No. 06">
+          <span class="cin"><span class="top"><b>RED PANDA</b><i></i></span><span class="art"><img src="/assets/cards/red_panda_06.webp" width="360" height="360" alt="Red Panda"></span><span class="no">No. 06<small> / 32</small></span></span>
+        </button>
+        <button class="card common" type="button" data-f="bunny" data-name="Bunny" data-n="7,25,30,32" aria-label="Bunny, No. 07">
+          <span class="cin"><span class="top"><b>BUNNY</b><i></i></span><span class="art"><img src="/assets/cards/bunny_07.webp" width="360" height="360" alt="Bunny"></span><span class="no">No. 07<small> / 32</small></span></span>
+        </button>
+        <button class="card common" type="button" data-f="frog" data-name="Frog" data-n="10,25,30,32" aria-label="Frog, No. 10">
+          <span class="cin"><span class="top"><b>FROG</b><i></i></span><span class="art"><img src="/assets/cards/frog_10.webp" width="360" height="360" alt="Frog"></span><span class="no">No. 10<small> / 32</small></span></span>
+        </button>
+        <button class="card common" type="button" data-f="bear" data-name="Bear" data-n="6,25,30,32" aria-label="Bear, No. 06">
+          <span class="cin"><span class="top"><b>BEAR</b><i></i></span><span class="art"><img src="/assets/cards/bear_06.webp" width="360" height="360" alt="Bear"></span><span class="no">No. 06<small> / 32</small></span></span>
+        </button>
+        <button class="card common" type="button" data-f="cat" data-name="Cat" data-n="5,25,30,32" aria-label="Cat, No. 05">
+          <span class="cin"><span class="top"><b>CAT</b><i></i></span><span class="art"><img src="/assets/cards/cat_05.webp" width="360" height="360" alt="Cat"></span><span class="no">No. 05<small> / 32</small></span></span>
+        </button>
+      </div>
+      <p class="tiers">Common · Rare · Epic · Legend — 32 cards for each friend</p>
+    </section>
+
+    <div class="store-row">
+      <a class="store" href="https://apps.apple.com/app/id6752542327?ct=web-sw-cf"><img src="/assets/tabs/cf-32.png" srcset="/assets/tabs/cf-32.png 1x, /assets/tabs/cf-64.png 2x, /assets/tabs/cf-96.png 3x" width="32" height="32" alt=""><span><small>Download on the</small><b>App Store</b></span></a>
+      <p class="free">×2 free · one Unlock All for ×3–×12 · iPhone, iPad, Mac</p>
+    </div>
   </div>
 
   <!-- site-footer --><footer class="sf"><span class="sf-c">&copy; 2026 Swiftian Inc.</span><span class="sf-x"><span class="sf-dot" aria-hidden="true">&middot;</span><a href="/privacy/" data-sf="privacy">Privacy</a></span><span class="sf-x"><span class="sf-dot" aria-hidden="true">&middot;</span><a class="mail email" data-u="hello" data-d="swiftian.com" href="#" aria-label="Email us" title="Email us"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg></a></span></footer><!-- /site-footer -->
@@ -159,7 +219,7 @@
       if (touch || innerWidth < 760) { SW_EV("race_open", { where: "page" }); return; }
       e.preventDefault();
       var f = document.createElement("iframe");
-      f.src = "/race/?embed=1"; f.title = "Chillfriends Race"; f.allow = "fullscreen; autoplay";
+      f.src = "/race/?embed=1"; f.title = "Race"; f.allow = "fullscreen; autoplay";
       f.addEventListener("load", function () { try { f.contentWindow.focus(); } catch (_) {} });
       arena.classList.add("playing"); arena.appendChild(f); poster.remove(); fs.hidden = false; f.focus();
       arena.scrollIntoView({ block: "nearest", behavior: "smooth" });
@@ -169,6 +229,31 @@
       var f = arena.querySelector("iframe"); if (!f) return;
       (f.requestFullscreen || f.webkitRequestFullscreen || function () {}).call(f);
       try { f.contentWindow.focus(); } catch (_) {}
+    });
+  })();
+  // cards: a tap turns the card over to the same friend's next rarity (common → rare → epic → legend)
+  (function () {
+    var TIER = function (n) { return n <= 24 ? "common" : n <= 29 ? "rare" : n <= 31 ? "epic" : "legend"; };
+    var BADGE = { common: "", rare: "RARE", epic: "EPIC", legend: "LEGEND" };
+    var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches, seen = 0;
+    document.querySelectorAll("#deck .card").forEach(function (c) {
+      var nums = c.dataset.n.split(",").map(Number), at = 0;
+      nums.forEach(function (n) { var im = new Image(); im.src = "/assets/cards/" + c.dataset.f + "_" + String(n).padStart(2, "0") + ".webp"; });
+      function show() {
+        var n = nums[at], t = TIER(n), nn = String(n).padStart(2, "0");
+        c.className = "card " + t;
+        c.querySelector("i").textContent = BADGE[t];
+        c.querySelector("img").src = "/assets/cards/" + c.dataset.f + "_" + nn + ".webp";
+        c.querySelector(".no").innerHTML = "No. " + nn + "<small> / 32</small>";
+        c.setAttribute("aria-label", c.dataset.name + ", " + (BADGE[t] || "Common").toLowerCase() + ", No. " + nn);
+      }
+      c.addEventListener("click", function () {
+        at = (at + 1) % nums.length;
+        if (++seen === 1) SW_EV("card_flip", { friend: c.dataset.f });
+        if (reduce) { show(); return; }
+        c.classList.add("turn");
+        clearTimeout(c._t); c._t = setTimeout(function () { show(); c.classList.add("turn"); void c.offsetWidth; c.classList.remove("turn"); }, 180);
+      });
     });
   })();
 </script>

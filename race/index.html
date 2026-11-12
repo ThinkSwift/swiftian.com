@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Chillfriends Race · Swiftian</title>
+<title>Race · Multiplication &amp; Times Tables</title>
+<meta name="description" content="Five friends, one lap. Every × box and every jump asks a times table. Finish in the top 3 to win a card.">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png?v=20261103">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=20261103">
   <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png?v=20261103">
@@ -142,9 +143,43 @@ h2{margin:0 0 8px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;c
   #quiz{width:calc(100% - 196px)}
 }
 @media (prefers-reduced-motion:reduce){#itemBtn.ready{animation:none}}
+[hidden]{display:none!important}
+/* the prize card: the app's card face (TradingCard.swift), drawn in CSS around the app's own card art */
+#prize{display:flex;align-items:center;gap:18px;background:var(--panel);border-radius:18px;padding:14px}
+.prize-say{display:flex;flex-direction:column;gap:6px;min-width:0}
+.prize-say b{font-size:24px;line-height:1.1}
+.prize-say span{color:var(--muted);font:400 14.5px/1.4 "Inter",system-ui,sans-serif}
+.store{align-self:flex-start;margin-top:6px;background:#000;color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:12px;padding:10px 14px;
+  font:600 15px/1 "Inter",system-ui,sans-serif;text-decoration:none}
+.store:hover{border-color:#fff}
+.card{--cw:132px;position:relative;flex:none;width:var(--cw);aspect-ratio:63/88;container-type:inline-size;color:#2a2633;perspective:700px}
+.cin,.cback{position:absolute;inset:0;border-radius:9cqw;backface-visibility:hidden;-webkit-backface-visibility:hidden;transition:transform .5s cubic-bezier(.3,1.4,.5,1)}
+.cin{display:flex;flex-direction:column;gap:3.5cqw;padding:7cqw;overflow:hidden;border:2.2cqw solid transparent;
+  background:linear-gradient(var(--f1),var(--f2)) padding-box,linear-gradient(135deg,var(--fr)) border-box;box-shadow:0 2.5cqw 6cqw rgba(0,0,0,.4)}
+.cback{display:grid;place-items:center;background:repeating-linear-gradient(45deg,rgba(255,255,255,.1) 0 1px,transparent 1px 16cqw),repeating-linear-gradient(-45deg,rgba(255,255,255,.1) 0 1px,transparent 1px 16cqw),linear-gradient(135deg,#ed7854,#c75438);
+  box-shadow:inset 0 0 0 5.5cqw transparent,inset 0 0 0 6.7cqw rgba(255,255,255,.55);transform:rotateY(0)}
+.cback span{display:grid;place-items:center;width:34cqw;aspect-ratio:1;transform:rotate(45deg);border:1px solid rgba(255,255,255,.5);border-radius:4cqw;background:rgba(255,255,255,.12);color:rgba(255,255,255,.75);font-size:14cqw}
+.card.back .cin{transform:rotateY(180deg)}
+.card:not(.back) .cback{transform:rotateY(-180deg)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:2px;min-height:9cqw}
+.top b{font:800 7.5cqw/1 var(--display);color:rgba(42,38,51,.55);white-space:nowrap;overflow:hidden}
+.top i{font:800 5.2cqw/1 var(--display);font-style:normal;color:#fff;background:var(--ac);border-radius:99px;padding:1.4cqw 2.8cqw .8cqw}
+.top i:empty{display:none}
+.art{flex:1;min-height:0;display:grid;place-items:center;border-radius:6cqw;background:radial-gradient(circle,var(--gl) 0,transparent 70%)}
+.art img{width:90%;height:90%;object-fit:contain}
+.no{font:700 7cqw/1 var(--display);color:rgba(42,38,51,.75);font-variant-numeric:tabular-nums}
+.no small{font-size:5.8cqw;color:rgba(42,38,51,.4)}
+.common{--f1:#fff;--f2:#fff7f0;--fr:#dbdbdb,#c7c7c7;--ac:#9e9e9e;--gl:rgba(244,115,77,.13)}
+.rare{--f1:#fff;--f2:#e0ebf7;--fr:#ebebeb,#a8a8a8,#e0e0e0;--ac:#858585;--gl:rgba(115,140,179,.16)}
+.epic{--f1:#fffced;--f2:#ffebbd;--fr:#ffdb73,#d99e26,#ffeb99;--ac:#d99e1f;--gl:rgba(242,184,38,.2)}
+.legend{--f1:#f7f2ff;--f2:#e0d4fc;--fr:#9e61f2,#fac740,#4dc7eb,#9e61f2;--ac:#7347cc;--gl:rgba(148,97,242,.2)}
+.epic .cin,.legend .cin{border-width:3cqw}
+@media (max-width:560px){#prize{gap:12px;padding:10px}.card{--cw:104px}.prize-say b{font-size:20px}}
+@media (prefers-reduced-motion:reduce){.cin,.cback{transition:none}}
+
 </style>
 
-<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://swiftian.com/#site", "name": "Swiftian", "url": "https://swiftian.com/", "publisher": {"@id": "https://swiftian.com/#org"}}, {"@type": "Organization", "@id": "https://swiftian.com/#org", "name": "Swiftian Inc.", "alternateName": "Swiftian", "url": "https://swiftian.com/", "logo": "https://swiftian.com/apple-touch-icon.png", "sameAs": ["https://apps.apple.com/us/developer/swiftian-inc/id1803794298", "https://pythoneer.io/", "https://spriteer.com/", "https://iflipbook.com/", "https://coordigo.com/", "https://seoulmal.com/"]}, {"@type": "SoftwareApplication", "name": "Chillfriends: Times Tables", "url": "https://apps.apple.com/app/id6752542327", "operatingSystem": "iOS, iPadOS, macOS", "applicationCategory": "EducationalApplication", "author": {"@id": "https://swiftian.com/#org"}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://swiftian.com/#site", "name": "Swiftian", "url": "https://swiftian.com/", "publisher": {"@id": "https://swiftian.com/#org"}}, {"@type": "Organization", "@id": "https://swiftian.com/#org", "name": "Swiftian Inc.", "alternateName": "Swiftian", "url": "https://swiftian.com/", "logo": "https://swiftian.com/apple-touch-icon.png", "sameAs": ["https://apps.apple.com/us/developer/swiftian-inc/id1803794298", "https://pythoneer.io/", "https://spriteer.com/", "https://iflipbook.com/", "https://coordigo.com/", "https://seoulmal.com/"]}, {"@type": "SoftwareApplication", "name": "Multiplication & Times Tables", "url": "https://apps.apple.com/app/id6752542327", "operatingSystem": "iOS, iPadOS, macOS", "applicationCategory": "EducationalApplication", "author": {"@id": "https://swiftian.com/#org"}}]}</script>
 </head>
 <body>
 <div id="app">
@@ -170,8 +205,8 @@ h2{margin:0 0 8px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;c
     <div class="wrap">
       <a id="homeLink" href="/" hidden>swiftian.com</a>
       <div>
-        <h1>Chillfriends <em>Race</em></h1>
-        <p class="tag">Five friends, one track, three laps. Every × box and every jump asks a times-table question. Right answers win items and boosts.</p>
+        <h1>Times Tables <em>Race</em></h1>
+        <p class="tag">Five friends, one lap. Every × box and every jump asks a times-table question. Right answers win items and boosts. Finish in the top 3 to win a card.</p>
       </div>
       <div>
         <h2>Your friend</h2>
@@ -196,6 +231,11 @@ h2{margin:0 0 8px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;c
       <h1 id="resTitle">Finished</h1>
       <div id="podium"></div>
       <p id="stats"></p>
+      <div id="prize" hidden>
+        <div class="card back" id="prizeCard" aria-live="polite"><span class="cin"><span class="top"><b></b><i></i></span><span class="art"><img alt=""></span><span class="no"></span></span><span class="cback" aria-hidden="true"><span>★</span></span></div>
+        <div class="prize-say"><b id="prizeTitle"></b><span id="prizeLine"></span>
+          <a id="storeLink" class="store" href="https://apps.apple.com/app/id6752542327?ct=web-sw-cf-race" hidden>Collect all 160 in the app</a></div>
+      </div>
       <div class="row"><button id="againBtn" class="go">Race again</button><button id="changeBtn" class="ghost">Change</button></div>
     </div>
   </section>
@@ -266,7 +306,7 @@ function canvasTex(w, h, draw, repeat){
 }
 
 // ---------- Track ----------
-const W = 8, LAPS = 3, BASE = 44;
+const W = 8, LAPS = 1, BASE = 44;   // the web race is a taste: one lap (founder 2026-11-12, RDM-mu-web-page-redesign); the app races three
 const CTRL = [[0,0],[130,0],[210,-50],[215,-150],[150,-215],[60,-205],[0,-255],[-110,-245],[-175,-170],[-140,-95],[-175,-20],[-130,70],[-50,75]];
 const curve = new THREE.CatmullRomCurve3(CTRL.map(([x,z]) => new THREE.Vector3(x,0,z)), true, 'centripetal');
 const L = curve.getLength(), N = 1600;
@@ -814,6 +854,35 @@ function showResults(){
   $('stats').innerHTML = `Right answers <strong>${stats.right}/${stats.asked}</strong>${fast} · table <strong>${pick.table ? '×' + pick.table : 'mix'}</strong>`;
   $('hud').hidden = true; $('quiz').hidden = true; $('results').hidden = false; $('bubbles').innerHTML = '';
   engineOff();
+  showPrize(place);
+}
+// one card per rarity for each friend, the same art the home page shows (assets/cards, from the app)
+const CARD_NUMS = {bear:[6,25,30,32], bunny:[7,25,30,32], cat:[5,25,30,32], frog:[10,25,30,32], red_panda:[6,25,30,32]};
+const TIERS = [['common',80,''], ['rare',14,'RARE'], ['epic',5,'EPIC'], ['legend',1,'LEGEND']];   // CardRarity.drawWeight
+let prizeTimer = 0;
+function showPrize(place){
+  const box = $('prize'), card = $('prizeCard'), f = FRIENDS[pick.friend];
+  clearTimeout(prizeTimer);
+  $('storeLink').hidden = !standalone;
+  if (place > 3) {
+    card.hidden = true; box.hidden = false;
+    $('prizeTitle').textContent = 'No card this time';
+    $('prizeLine').textContent = 'Finish in the top 3 to win a card.';
+    return;
+  }
+  let r = Math.random() * 100, t = 0;
+  while (r >= TIERS[t][1]) { r -= TIERS[t][1]; t++; }
+  const n = CARD_NUMS[f.key][t], nn = String(n).padStart(2, '0');
+  card.className = 'card back ' + TIERS[t][0]; card.hidden = false;
+  card.querySelector('b').textContent = f.name.toUpperCase();
+  card.querySelector('i').textContent = TIERS[t][2];
+  card.querySelector('.no').innerHTML = `No. ${nn}<small> / 32</small>`;
+  const img = card.querySelector('img'); img.src = `/assets/cards/${f.key}_${nn}.webp`; img.alt = f.name;
+  $('prizeTitle').textContent = TIERS[t][2] ? `${TIERS[t][2][0] + TIERS[t][2].slice(1).toLowerCase()} card!` : 'You won a card!';
+  $('prizeLine').textContent = `${f.name} No. ${nn} — one of 160 cards in the app, five friends with 32 each.`;
+  box.hidden = false;
+  prizeTimer = setTimeout(() => { card.classList.remove('back'); sfx([784, 988, 1319], 0.08, 'triangle'); }, 650);
+  try { const ev = window.SW_EV || (window.parent !== window && window.parent.SW_EV); if (ev) ev('race_card', { tier: TIERS[t][0], place }); } catch (e) {}   // the home page's event sender when framed
 }
 
 // ---------- Sound ----------
@@ -927,7 +996,9 @@ function buildMenu(){
 
 // test hook for play-testing in the browser console
 window.__race = {get me(){ return me; }, get racers(){ return racers; }, get proj(){ return proj; }, get q(){ return q; }, get state(){ return state; }, L};
-if (window.top === window && !/embed=1/.test(location.search)) $('homeLink').hidden = false;
+const standalone = window.top === window && !/embed=1/.test(location.search);
+if (standalone) $('homeLink').hidden = false;
+if (LAPS === 1) $('lap').hidden = true;
 resize(); setMuteUI(); buildMenu();
 loadImages().then(() => {
   for (const f of FRIENDS) { BADGE[f.key] = {}; for (const m of MOODS) BADGE[f.key][m] = badgeTex(f, m); }
@@ -936,4 +1007,43 @@ loadImages().then(() => {
 })();
 </script>
 
+<!-- Cloudflare Web Analytics: on the race's own page only; inside the home page's frame the home page already counts the visit -->
+<script>
+if (window.top === window) { const b = document.createElement('script'); b.type = 'module'; b.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+  b.dataset.cfBeacon = '{"token": "3be86aab8cf24999be8e5d44456fee80"}'; document.body.appendChild(b); }
+</script>
+<!-- 앱스토어 클릭 계측 — ct= 는 설치를 가르지만 클릭은 못 센다. 둘을 같이 봐야 이탈이 보인다.
+     식별자는 세션마다 새로 만드는 난수다. 쿠키도, IP 저장도, 개인 식별도 없다. -->
+<script>
+(function () {
+  var SITE = "swiftian.com";
+  function sid() {
+    try {
+      var k = "sw_sid", v = sessionStorage.getItem(k);
+      if (!v) { v = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2)); sessionStorage.setItem(k, v); }
+      return v;
+    } catch (_) { return "anon"; }
+  }
+  document.addEventListener("click", function (e) {
+    var a = e.target && e.target.closest && e.target.closest('a[href*="apps.apple.com"]');
+    if (!a) return;
+    var m = a.href.match(/id(\d+)/);
+    try {
+      fetch("https://claude-proxy-web.ilbulyori.workers.dev/events", {
+        method: "POST",
+        keepalive: true,
+        headers: { "content-type": "application/json", "x-device-id": sid() },
+        body: JSON.stringify({
+          meta: { app: SITE, build: "web", os: "web", locale: (navigator.language || "").slice(0, 8) },
+          events: [{
+            name: "appstore_click",
+            ts: Date.now() / 1000,
+            props: { site: SITE, app: m ? m[1] : "", path: location.pathname.slice(0, 64) }
+          }]
+        })
+      }).catch(function () {});
+    } catch (_) {}
+  }, true);
+})();
+</script>
 </body></html>
