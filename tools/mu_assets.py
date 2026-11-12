@@ -5,7 +5,6 @@
 - assets/cards/<friend>_<nn>.webp : card art, the app's 720 px stickers at 360 px
 
 Usage: python3 tools/mu_assets.py [path to MultiplicationTimesTables]
-DEFEND (2.4) is added to SHOTS once 2.4 is live in App Store Connect.
 """
 import os, sys
 from PIL import Image
@@ -15,11 +14,12 @@ SITE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STORE = os.path.join(APP, "fastlane/screenshots/en-US/iphone")
 ART = os.path.join(APP, "MultiplicationTimesTables/ComicAssets/Characters/720px")
 
-# store image -> (screen box). The phone sits lower under a two-line caption (learn).
+# store image -> (screen box): inside the screen edge (x 120..1085, bottom 2551), so no orange backdrop shows. The phone sits lower under a two-line caption (learn).
 SHOTS = {
-    "learn": ("4_iphone_learn.png", (109, 580, 1096, 2622)),
-    "race":  ("1_iphone_race.png",  (109, 453, 1096, 2577)),
-    "hunt":  ("5_iphone_hunt.png",  (109, 453, 1096, 2577)),
+    "learn": ("4_iphone_learn.png", (122, 580, 1084, 2622)),
+    "race":  ("1_iphone_race.png",  (122, 453, 1084, 2550)),
+    "defend": ("2_iphone_defend.png", (122, 453, 1084, 2550)),
+    "hunt":  ("5_iphone_hunt.png",  (122, 453, 1084, 2550)),
 }
 # one card per rarity for each friend: common, rare (25-29), epic (30-31), legend (32)
 CARDS = {"bear": [6, 25, 30, 32], "bunny": [7, 25, 30, 32], "cat": [5, 25, 30, 32],

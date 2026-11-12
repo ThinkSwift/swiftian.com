@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Multiplication &amp; Times Tables · Swiftian</title>
-  <meta name="description" content="Learn a times table with a friend who reads it aloud, race on it, then hunt for cards. Five friends, 160 cards. iPhone, iPad, Mac.">
+  <meta name="description" content="Learn a times table with a friend who reads it aloud, race or defend with it, then hunt for cards. Five friends, 160 cards. iPhone, iPad, Mac, Apple Watch.">
   <meta name="theme-color" content="#0d0c16">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png?v=20261103">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=20261103">
@@ -67,12 +67,20 @@
     /* LEARN · PLAY · HUNT */
     .modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin:64px 0 0}
     .mode{margin:0;text-align:center}
-    .mode .shot{display:block;width:100%;max-width:280px;margin:0 auto;aspect-ratio:987/2124;border-radius:34px;overflow:hidden;
+    .mode .shot{display:block;width:100%;max-width:280px;margin:0 auto;aspect-ratio:962/2097;border-radius:34px;overflow:hidden;
       background:#1d1b2c;box-shadow:0 0 0 1px rgba(255,255,255,.12),0 24px 60px -24px rgba(0,0,0,.8)}
     .mode .shot img{display:block;width:100%;height:100%;object-fit:cover;object-position:top}
     .mode h2{margin:18px 0 2px;font:800 30px/1 var(--display);letter-spacing:.04em}
     .mode p{margin:0 auto;max-width:28ch;color:var(--muted);font-size:15px;line-height:1.45}
     .arrow{color:var(--accent)}
+    .shot.duo{position:relative}
+    .shot.duo img{position:absolute;inset:0;opacity:0;transition:opacity .45s ease}
+    .shot.duo img.on{opacity:1}
+    .games{display:inline-flex;gap:4px;margin:10px 0 10px;padding:3px;border-radius:999px;background:rgba(255,255,255,.07)}
+    .games button{border:0;border-radius:999px;padding:6px 13px;background:none;color:var(--muted);font:800 13px/1 var(--display);letter-spacing:.06em;cursor:pointer}
+    .games button[aria-selected="true"]{background:var(--accent);color:#1a1020}
+    .games button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+    @media (prefers-reduced-motion: reduce){.shot.duo img{transition:none}}
 
     /* five friends, 160 cards */
     .friends{margin:84px 0 0;text-align:center}
@@ -128,7 +136,7 @@
     }
     @media (prefers-reduced-motion:reduce){.faces span{animation:none}.cin{transition:none}}
   </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://swiftian.com/#site", "name": "Swiftian", "url": "https://swiftian.com/", "publisher": {"@id": "https://swiftian.com/#org"}}, {"@type": "Organization", "@id": "https://swiftian.com/#org", "name": "Swiftian Inc.", "alternateName": "Swiftian", "url": "https://swiftian.com/", "logo": "https://swiftian.com/apple-touch-icon.png", "sameAs": ["https://apps.apple.com/us/developer/swiftian-inc/id1803794298", "https://pythoneer.io/", "https://spriteer.com/", "https://iflipbook.com/", "https://coordigo.com/", "https://seoulmal.com/"]}, {"@type": "SoftwareApplication", "name": "Multiplication & Times Tables", "url": "https://apps.apple.com/app/id6752542327", "operatingSystem": "iOS, iPadOS, macOS", "applicationCategory": "EducationalApplication", "author": {"@id": "https://swiftian.com/#org"}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://swiftian.com/#site", "name": "Swiftian", "url": "https://swiftian.com/", "publisher": {"@id": "https://swiftian.com/#org"}}, {"@type": "Organization", "@id": "https://swiftian.com/#org", "name": "Swiftian Inc.", "alternateName": "Swiftian", "url": "https://swiftian.com/", "logo": "https://swiftian.com/apple-touch-icon.png", "sameAs": ["https://apps.apple.com/us/developer/swiftian-inc/id1803794298", "https://pythoneer.io/", "https://spriteer.com/", "https://iflipbook.com/", "https://coordigo.com/", "https://seoulmal.com/"]}, {"@type": "SoftwareApplication", "name": "Multiplication & Times Tables", "url": "https://apps.apple.com/app/id6752542327", "operatingSystem": "iOS, iPadOS, macOS, watchOS", "applicationCategory": "EducationalApplication", "author": {"@id": "https://swiftian.com/#org"}}]}</script>
 <link rel="stylesheet" href="/assets/app-menu.css?v=6">
 </head>
 <body>
@@ -150,17 +158,24 @@
 
     <section class="modes" aria-label="Modes">
       <figure class="mode">
-        <span class="shot"><img src="/assets/mu/learn.webp" width="560" height="1159" loading="lazy" alt="LEARN: seven times three is twenty-one, read aloud line by line"></span>
+        <span class="shot"><img src="/assets/mu/learn.webp" width="560" height="1189" loading="lazy" alt="LEARN: seven times three is twenty-one, read aloud line by line"></span>
         <h2>LEARN</h2>
         <p>Your friend reads each line aloud. Hear it, cover it, say it.</p>
       </figure>
-      <figure class="mode">
-        <span class="shot"><img src="/assets/mu/race.webp" width="560" height="1205" loading="lazy" alt="PLAY: a kart race where steering left or right picks the answer to 7 × 6"></span>
+      <figure class="mode" id="playMode">
+        <span class="shot duo">
+          <img class="on" data-g="race" src="/assets/mu/race.webp" width="560" height="1221" loading="lazy" alt="RACE: a kart race where steering left or right picks the answer to 7 × 6">
+          <img data-g="defend" src="/assets/mu/defend.webp" width="560" height="1221" loading="lazy" alt="DEFEND: crows charge down a bridge while a gate asks 6 × 7">
+        </span>
         <h2>PLAY</h2>
-        <p>Race four friends. Steer left or right to answer.</p>
+        <div class="games" role="tablist" aria-label="PLAY games">
+          <button type="button" role="tab" data-g="race" aria-selected="true">RACE</button><button type="button" role="tab" data-g="defend" aria-selected="false">DEFEND</button>
+        </div>
+        <p data-g="race">Race four friends. Steer left or right to answer.</p>
+        <p data-g="defend" hidden>Hold the bridge against the crows. Every solved gate grows your team.</p>
       </figure>
       <figure class="mode">
-        <span class="shot"><img src="/assets/mu/hunt.webp" width="560" height="1205" loading="lazy" alt="HUNT: a 30-second round asking 7 × 5"></span>
+        <span class="shot"><img src="/assets/mu/hunt.webp" width="560" height="1221" loading="lazy" alt="HUNT: a 30-second round asking 7 × 5"></span>
         <h2>HUNT</h2>
         <p>Thirty-second rounds. Win a round, win a card.</p>
       </figure>
@@ -191,7 +206,7 @@
 
     <div class="store-row">
       <a class="store" href="https://apps.apple.com/app/id6752542327?ct=web-sw-cf"><img src="/assets/tabs/cf-32.png" srcset="/assets/tabs/cf-32.png 1x, /assets/tabs/cf-64.png 2x, /assets/tabs/cf-96.png 3x" width="32" height="32" alt=""><span><small>Download on the</small><b>App Store</b></span></a>
-      <p class="free">×2 free · one Unlock All for ×3–×12 · iPhone, iPad, Mac</p>
+      <p class="free">×2 free · one Unlock All for ×3–×12 · iPhone, iPad, Mac, Apple Watch</p>
     </div>
   </div>
 
@@ -238,6 +253,21 @@
       (f.requestFullscreen || f.webkitRequestFullscreen || function () {}).call(f);
       try { f.contentWindow.focus(); } catch (_) {}
     });
+  })();
+  // PLAY: RACE and DEFEND take turns until a tap picks one (no turns with reduced motion)
+  (function () {
+    var fig = document.getElementById("playMode"); if (!fig) return;
+    var order = ["race", "defend"], at = 0, timer = 0;
+    function show(g) {
+      fig.querySelectorAll("img[data-g]").forEach(function (i) { i.classList.toggle("on", i.dataset.g === g); });
+      fig.querySelectorAll("p[data-g]").forEach(function (p) { p.hidden = p.dataset.g !== g; });
+      fig.querySelectorAll(".games button").forEach(function (b) { b.setAttribute("aria-selected", String(b.dataset.g === g)); });
+      at = order.indexOf(g);
+    }
+    fig.querySelectorAll(".games button").forEach(function (b) {
+      b.addEventListener("click", function () { clearInterval(timer); show(b.dataset.g); SW_EV("play_game", { game: b.dataset.g }); });
+    });
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) timer = setInterval(function () { show(order[(at + 1) % order.length]); }, 3800);
   })();
   // cards: a tap turns the card over to the same friend's next rarity (common → rare → epic → legend)
   (function () {
