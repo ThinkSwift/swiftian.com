@@ -3,103 +3,28 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pythoneer</title>
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png?v=20261103">
+  <title>Not here · Swiftian</title>
+  <meta name="robots" content="noindex">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=20261103">
-  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png?v=20261103">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20261103">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Inter+Tight:wght@600&display=swap" rel="stylesheet">
   <style>
-    html,body{margin:0;height:100%}
-    body{
-      font-family:"Inter",-apple-system,system-ui,sans-serif;color:#eef2ff;
-      background:radial-gradient(900px 600px at 70% -10%,rgba(129,140,248,.22),transparent 60%),linear-gradient(180deg,#0e1422,#0b0f1a);
-      display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px
-    }
-    .glyph{width:72px;height:72px;border-radius:18px;display:grid;place-items:center;overflow:hidden;margin:0 auto 18px;
-      background:linear-gradient(160deg,#bfe9ff,#a3d8ff);box-shadow:0 10px 30px rgba(110,231,249,.35),inset 0 0 0 1px rgba(255,255,255,.35)}
-    .glyph img{width:62px;height:62px;image-rendering:pixelated;display:block}
-    h1{font-family:"Space Grotesk";margin:0 0 6px}
-    .big{font-size:clamp(56px,16vw,120px);line-height:1;
-      background:linear-gradient(100deg,#6ee7f9,#818cf8 55%,#f0abfc);-webkit-background-clip:text;background-clip:text;color:transparent}
-    p{color:#9aa6c4;font-size:16px;line-height:1.5;margin:10px 0 24px;max-width:340px}
-    a.btn,span.soon{display:inline-block;font-weight:600;padding:12px 22px;border-radius:999px;text-decoration:none}
-    a.btn{color:#0b0f1a;background:linear-gradient(135deg,#6ee7f9,#818cf8)}
-    span.soon{color:#9aa6c4;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04)}
-    a.home{display:inline-block;color:#eef2ff;text-decoration:none;font-weight:600;padding:11px 20px;border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04)}
-    a.home:hover{background:rgba(255,255,255,.09)}
+    html,body{margin:0}
+    body{min-height:100vh;display:flex;flex-direction:column;background:#141821;color:#fff;font-family:"Inter",-apple-system,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+    main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px 16px}
+    img{width:42px;height:42px;image-rendering:pixelated;margin:0 0 32px}
+    h1{margin:0;font:600 clamp(40px,7vw,64px)/1 "Inter Tight",system-ui;letter-spacing:-.04em}
+    p{margin:16px 0 0;color:#9aa1b2;font-size:17px;line-height:1.5}
+    a{color:#fff}
   </style>
+<link rel="stylesheet" href="/assets/bar.css?v=1">
+<script src="/assets/bar.js?v=1" defer></script>
 </head>
 <body>
-  <!-- Default = generic 404. If the path is /w/<id>, the script below swaps in the
-       Pythoneer share-link funnel (GitHub Pages has no path routing, so every
-       /w/<id> falls through to this 404 page). -->
-  <main id="view">
-    <h1 class="big">404</h1>
-    <p>This page wandered off the grid.</p>
-    <a class="home" href="/">&larr; Back home</a>
+<!-- app-menu --><div class="sb" role="navigation" aria-label="Swiftian"><div class="sb-in"><a class="sb-i sb-home" href="/" aria-current="page" data-app="SW" aria-label="Swiftian" title="Swiftian"><img class="px" src="/assets/bar/sw-32.png" srcset="/assets/bar/sw-32.png 1x, /assets/bar/sw-64.png 2x, /assets/bar/sw-96.png 3x" width="32" height="32" alt=""></a><span class="sb-sp"></span><div class="sb-g"><a class="sb-i" href="https://kawafriends.com/" data-app="KF" aria-label="Kawa Friends" title="Kawa Friends"><img src="/assets/bar/kf-32.png" srcset="/assets/bar/kf-32.png 1x, /assets/bar/kf-64.png 2x" width="32" height="32" alt=""></a></div><i class="sb-d" aria-hidden="true"></i><div class="sb-g"><a class="sb-i" href="https://pythoneer.io/" data-app="Py" aria-label="Pythoneer" title="Pythoneer"><img class="px" src="/assets/tabs/site-pythoneer-32.png" srcset="/assets/tabs/site-pythoneer-32.png 1x, /assets/tabs/site-pythoneer-64.png 2x, /assets/tabs/site-pythoneer-96.png 3x" width="32" height="32" alt=""></a><a class="sb-i" href="https://spriteer.com/" data-app="Sp" aria-label="Spriteer" title="Spriteer"><img class="px" src="/assets/menu/sp-32.png" srcset="/assets/menu/sp-32.png 1x, /assets/menu/sp-64.png 2x" width="32" height="32" alt=""></a></div><i class="sb-d" aria-hidden="true"></i><div class="sb-g"><a class="sb-i" href="https://iflipbook.com/" data-app="iF" aria-label="iFlipbook" title="iFlipbook"><img src="/assets/menu/if-32.png" srcset="/assets/menu/if-32.png 1x, /assets/menu/if-64.png 2x" width="32" height="32" alt=""></a><a class="sb-i" href="https://coordigo.com/" data-app="Co" aria-label="Coordigo" title="Coordigo"><img class="px" src="/assets/tabs/site-coordigo-32.png" srcset="/assets/tabs/site-coordigo-32.png 1x, /assets/tabs/site-coordigo-64.png 2x, /assets/tabs/site-coordigo-96.png 3x" width="32" height="32" alt=""></a></div></div></div><!-- /app-menu -->
+  <main>
+    <img src="/assets/bar/eagle-140.png" width="42" height="42" alt="">
+    <h1>Nothing here yet.</h1>
+    <p><a href="/">Back to Swiftian</a></p>
   </main>
-
-  <script>
-    // The deploy step substitutes the real App Store product URL for this token.
-    // Until it's a real https:// URL we show a safe "coming soon" state instead of
-    // a dead button. See web/check-deploy.sh + LAUNCH.md in the Pythoneer repo.
-    var APP_STORE_URL = 'https://apps.apple.com/app/id6754533772?ct=web-swiftian';
-
-    var parts = location.pathname.split('/').filter(Boolean);
-    if (parts[0] === 'w' && parts[1]) {
-      var id = parts[1];
-      var cta = /^https:\/\//i.test(APP_STORE_URL)
-        ? '<a class="btn" href="' + APP_STORE_URL + '">Download Pythoneer</a>'
-        : '<span class="soon">Coming soon to the App Store</span>';
-      document.getElementById('view').innerHTML =
-        '<div class="glyph"><img src="/assets/pythoneer-icon.png" alt="Pythoneer"></div>' +
-        '<h1>Shared worlds are gone</h1>' +
-        '<p>Links to shared worlds don&rsquo;t open anymore. Your own world is waiting in Pythoneer &mdash; with 38 little games buried in it.</p>' +
-        cta;
-      // If the app is installed the universal link already opened it and this page
-      // never loaded. As a fallback (scheme registered but link not validated),
-      // try the custom scheme so an installed app still receives the world.
-      location.href = 'pythoneer://w/' + id;
-    }
-  </script>
-<!-- Cloudflare Web Analytics — 프록시 없이 도는 비콘. 쿠키도, 개인 식별도 없다. --><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "3be86aab8cf24999be8e5d44456fee80"}'></script>
-<!-- 앱스토어 클릭 계측 — ct= 는 설치를 가르지만 클릭은 못 센다. 둘을 같이 봐야 이탈이 보인다.
-     식별자는 세션마다 새로 만드는 난수다. 쿠키도, IP 저장도, 개인 식별도 없다. -->
-<script>
-(function () {
-  var SITE = "swiftian.com";
-  function sid() {
-    try {
-      var k = "sw_sid", v = sessionStorage.getItem(k);
-      if (!v) { v = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2)); sessionStorage.setItem(k, v); }
-      return v;
-    } catch (_) { return "anon"; }
-  }
-  document.addEventListener("click", function (e) {
-    var a = e.target && e.target.closest && e.target.closest('a[href*="apps.apple.com"]');
-    if (!a) return;
-    var m = a.href.match(/id(\d+)/);
-    try {
-      fetch("https://claude-proxy-web.ilbulyori.workers.dev/events", {
-        method: "POST",
-        keepalive: true,
-        headers: { "content-type": "application/json", "x-device-id": sid() },
-        body: JSON.stringify({
-          meta: { app: SITE, build: "web", os: "web", locale: (navigator.language || "").slice(0, 8) },
-          events: [{
-            name: "appstore_click",
-            ts: Date.now() / 1000,
-            props: { site: SITE, app: m ? m[1] : "", path: location.pathname.slice(0, 64) }
-          }]
-        })
-      }).catch(function () {});
-    } catch (_) {}
-  }, true);
-})();
-</script>
 </body>
 </html>
