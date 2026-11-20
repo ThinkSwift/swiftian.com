@@ -7,7 +7,7 @@ Left: the eagle alone (swiftian.com, the Swiftian app); no wordmark and no "/ <a
 body already names itself (founder 2026-11-20).
 Right: the apps, under the category labels people read at a glance (founder 2026-11-20: "languages,
 art, math 이런식 분류"):
-    [ Kawa Friends:  LANGUAGES  EA CP SM  ·  MATH  Mu ]   ART  iF Sp   GAMES  Py Co
+    [ Kawa Friends:  LANGUAGES  EA CP SM  ·  MATH  Mu ]   ART  iF Co Sp   GAMES  Py
 The Kawa Friends apps sit together in one family pill that starts with the Kawa Friends icon (a family
 of apps); iFlipbook, Spriteer, Pythoneer and Coordigo stand alone (one app, one site). Icons only
 (name = aria-label + tooltip), same tab, every app one click from every page. Labels hide on narrow
@@ -56,8 +56,8 @@ APPS = {
 }
 # the Kawa Friends family: its head, then its categories
 FAMILY = ("KF", [("Languages", ["EA", "CP", "SM"]), ("Math", ["Mu"])])
-# the apps that stand alone, by category (Co and Sp traded places, founder 2026-11-20)
-SINGLES = [("Art", ["iF", "Sp"]), ("Games", ["Py", "Co"])]
+# the apps that stand alone, by category (Co back in Art next to iF, founder 2026-11-20)
+SINGLES = [("Art", ["iF", "Co", "Sp"]), ("Games", ["Py"])]
 SITE_APP = {"swiftian.com": "SW", "kawafriends.com": "KF", "seoulmal.com": "SM", "pythoneer.io": "Py",
             "spriteer.com": "Sp", "iflipbook.com": "iF", "coordigo.com": "Co"}
 SW_DIRS = {"mu": "Mu", "race": "Mu", "defend": "Mu", "ea": "EA", "cp": "CP"}   # swiftian.com's app pages
