@@ -35,14 +35,16 @@ APPS = {
     "EA": ("English Accents", "swiftian.com", "/ea/", "/assets/tabs/ea", True, True),
     "CP": ("Chinese Pronunciation", "swiftian.com", "/cp/", "/assets/tabs/cp", True, True),
     "SM": ("SeoulMal", "seoulmal.com", "/", "/assets/menu/sm", False, False),
-    "MT": ("Times Tables & Multiplication", "swiftian.com", "/", "/assets/tabs/cf", True, True),
+    "MT": ("Times Tables & Multiplication", "swiftian.com", "/", "/assets/tabs/cf", True, False),
+    # MT's cf-32/64/96 = the red panda's face from the founder's crop, a smooth drawing, not pixel art
+    # (founder 2026-11-20). Art order iF, Co, Sp: Co and Sp swapped the same day.
     "iF": ("iFlipbook", "iflipbook.com", "/", "/assets/menu/if", False, False),
     "Sp": ("Spriteer", "spriteer.com", "/", "/assets/menu/sp", False, True),
     "Co": ("Coordigo", "coordigo.com", "/", "/assets/tabs/site-coordigo", True, True),
     "Py": ("Pythoneer", "pythoneer.io", "/", "/assets/tabs/site-pythoneer", True, True),
 }
 GROUPS = [("Languages", ["EA", "CP", "SM"]), ("Math", ["MT"]),
-          ("Art", ["iF", "Sp", "Co"]), ("Games", ["Py"])]
+          ("Art", ["iF", "Co", "Sp"]), ("Games", ["Py"])]
 
 BEGIN, END = "<!-- app-menu -->", "<!-- /app-menu -->"
 
