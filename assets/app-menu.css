@@ -1,0 +1,49 @@
+/* One app menu on all six sites (founder 2026-11-06..08: RDM-web-app-menu-all-sites, -same-tab, -icons-only).
+   Four category labels, the app icons under them, nothing else on screen; every app opens in the same tab.
+   The app's name is the icon's aria-label and hover tooltip.
+   Loaded by all six sites from https://swiftian.com/assets/app-menu.css; markup from tools/app_menu.py.
+   Colours default to a dark page; a light page sets these on .am:
+     --am-muted (labels)  --am-line (divider)  --am-hover (hover ring)  --am-cur-bg  --am-cur-line (current app) */
+.am{--am-muted:var(--muted,#9aa6c4);--am-line:rgba(255,255,255,.14);--am-hover:rgba(238,242,255,.30);
+  --am-cur-bg:rgba(255,255,255,.08);--am-cur-line:rgba(238,242,255,.85)}
+.am{display:block;margin:0;position:relative;left:50%;transform:translateX(-50%);width:min(1180px,calc(100vw - 32px));box-sizing:border-box;
+  padding:14px 0 12px;border-bottom:1px solid var(--am-line);text-align:left;font-family:"Inter",-apple-system,system-ui,sans-serif}
+.am *{box-sizing:border-box}
+/* right-to-left pages (Arabic): centre from the right; the row itself stays left-to-right */
+[dir="rtl"] .am{left:auto;right:50%;transform:translateX(50%)}
+.am-bar{direction:ltr;display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:10px 32px}
+.am-g{display:flex;flex-direction:column;gap:7px;min-width:0}
+.am-h{margin:0;padding-left:4px;font:600 10.5px/1 "Inter",-apple-system,system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--am-muted);white-space:nowrap}
+.am-row{display:flex;gap:6px}
+.am-i{display:block;padding:3px;border:1.5px solid transparent;border-radius:12px;line-height:0;text-decoration:none;transition:border-color .15s ease,transform .15s ease}
+.am-i img{display:block;width:32px;height:32px;border-radius:8px}
+.am-i img.px{image-rendering:pixelated}
+.am-i:hover{border-color:var(--am-hover);transform:translateY(-1px)}
+.am-i:focus-visible{outline:2px solid var(--am-cur-line);outline-offset:2px}
+.am-i[aria-current]{border-color:var(--am-cur-line);background:var(--am-cur-bg)}
+/* phones: icons stay 32 px (drawn for that size); only the room around them shrinks, so the four
+   groups keep one row down to ~340 px (narrower screens wrap to two rows of two) */
+@media (max-width:560px){
+  .am-bar{gap:10px 10px}
+  .am-row{gap:0}
+  .am-i{padding:1px;border-radius:10px}
+  .am-h{font-size:10px;letter-spacing:.1em;padding-left:2px}
+}
+
+/* swiftian.com's header line holds the menu (its language toggle sits above it, on the right) */
+nav.am-host{display:flex;flex-direction:column;align-items:stretch;gap:0;padding:18px 0 0;border-bottom:0}
+nav.am-host .lang-toggle{align-self:flex-end;order:-1;margin:0 0 6px}
+nav.am-host .am{padding-top:0}
+
+/* One footer on all six sites (founder 2026-11-08, RDM-web-one-footer): © line · links · email icon,
+   dots between, centred. Each site keeps its own footer text and link colours. */
+footer.sf{display:block;margin:0;border:0;padding:40px 16px 32px;text-align:center;font-size:13px;line-height:1.9}
+footer.sf a{text-decoration:none}
+footer.sf a:hover{text-decoration:underline;text-underline-offset:3px}
+footer.sf .sf-c{direction:ltr;unicode-bidi:isolate;white-space:nowrap}   /* the © line reads left to right on Arabic pages too */
+footer.sf .sf-x{white-space:nowrap}
+footer.sf .sf-dot{margin:0 8px;opacity:.4}
+footer.sf a.mail{display:inline-flex;vertical-align:-3px}
+footer.sf a.mail:hover{text-decoration:none;opacity:.75}
+footer.sf a.mail svg{width:15px;height:15px}
+.sf-langs{margin-top:32px}

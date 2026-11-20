@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://swiftian.com/</loc><priority>1.0</priority></url>
-  <url><loc>https://swiftian.com/privacy/</loc></url>
+  <url><loc>https://swiftian.com/ea/</loc></url>
+  <url><loc>https://swiftian.com/cp/</loc></url>
+  <url><loc>https://swiftian.com/race/</loc></url>
+  <url><loc>https://swiftian.com/defend/</loc></url>
+  <url><loc>https://swiftian.com/ko/</loc></url>
+  <url><loc>https://swiftian.com/ja/</loc></url>
+  <url><loc>https://swiftian.com/zh-hans/</loc></url>
+  <url><loc>https://swiftian.com/zh-hant/</loc></url>
+  <url><loc>https://swiftian.com/es/</loc></url>
+  <url><loc>https://swiftian.com/fr/</loc></url>
+  <url><loc>https://swiftian.com/de/</loc></url>
+  <url><loc>https://swiftian.com/it/</loc></url>
+  <url><loc>https://swiftian.com/pt-br/</loc></url>
+  <url><loc>https://swiftian.com/ru/</loc></url>
+  <url><loc>https://swiftian.com/tr/</loc></url>
+  <url><loc>https://swiftian.com/id/</loc></url>
+  <url><loc>https://swiftian.com/vi/</loc></url>
+  <url><loc>https://swiftian.com/th/</loc></url>
+  <url><loc>https://swiftian.com/hi/</loc></url>
+  <url><loc>https://swiftian.com/ar/</loc></url>
 </urlset>
