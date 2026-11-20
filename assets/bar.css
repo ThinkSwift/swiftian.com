@@ -1,0 +1,67 @@
+/* The Swiftian bar, the Kawa Friends tabs and the one footer, on every site
+   (founder 2026-11-15, RDM-web-swiftian-app-kawafriends-family; replaces app-menu.css).
+
+   Bar: one ink strip across the top of every site, the company's frame. The eagle (swiftian.com,
+   the Swiftian app) on the left; the houses on the right — Kawa Friends · Pythoneer, Spriteer ·
+   iFlipbook, Coordigo. Icons only; the name is the aria-label and tooltip. Same tab, always.
+   Tabs: inside the Kawa Friends house (kawafriends.com, seoulmal.com) — Kawa Friends, Times Tables,
+   English Accents, Chinese, Seoul Mal.
+   Markup from tools/app_menu.py; every site loads this file from https://swiftian.com/assets/. */
+
+/* ── bar ─────────────────────────────────────────────────────────────── */
+.sb{--sb-ink:#141821;--sb-line:rgba(255,255,255,.09);--sb-sep:rgba(255,255,255,.16);
+  --sb-hover:rgba(255,255,255,.34);--sb-cur:#fff;
+  display:block;position:relative;z-index:40;margin:0;padding:0;border:0;
+  background:var(--sb-ink);border-bottom:1px solid var(--sb-line);
+  font-family:"Inter",-apple-system,system-ui,sans-serif;line-height:0;text-align:left}
+.sb *{box-sizing:border-box}
+.sb-in{direction:ltr;display:flex;align-items:center;gap:4px;max-width:1180px;height:54px;margin:0 auto;padding:0 16px}
+.sb-sp{flex:1}
+.sb-g{display:flex;align-items:center;gap:2px}
+.sb-d{width:1px;height:18px;margin:0 9px;background:var(--sb-sep)}
+.sb-i{display:block;padding:3px;border:1.5px solid transparent;border-radius:12px;text-decoration:none;
+  transition:border-color .16s ease,transform .16s ease}
+.sb-i img{display:block;width:32px;height:32px;border-radius:8px}
+.sb-i img.px{image-rendering:pixelated}
+.sb-i:hover{border-color:var(--sb-hover);transform:translateY(-1px)}
+.sb-i:focus-visible{outline:2px solid var(--sb-cur);outline-offset:2px}
+.sb-i[aria-current]{border-color:var(--sb-cur)}
+.sb-home img{box-shadow:0 0 0 1px rgba(255,255,255,.14)}
+@media (max-width:420px){
+  .sb-in{padding:0 10px;gap:0}
+  .sb-d{margin:0 5px}
+  .sb-i{padding:2px;border-radius:11px}
+}
+@media (prefers-reduced-motion:reduce){.sb-i{transition:none}.sb-i:hover{transform:none}}
+
+/* ── Kawa Friends tabs ───────────────────────────────────────────────── */
+.kt{--kt-ink:#2B2A27;--kt-soft:#7a7468;--kt-card:#fffdf8;--kt-line:rgba(43,42,39,.09);--kt-cur:#f3ead8;
+  direction:ltr;display:flex;justify-content:center;margin:0 auto;padding:0;font-family:"Inter",-apple-system,system-ui,sans-serif}
+.kt-row{display:flex;gap:2px;padding:5px;border-radius:20px;background:var(--kt-card);
+  box-shadow:0 0 0 1px var(--kt-line),0 10px 30px -18px rgba(60,40,10,.45)}
+.kt-t{display:flex;align-items:center;gap:9px;padding:6px 14px 6px 6px;border-radius:15px;text-decoration:none;
+  color:var(--kt-soft);font:600 14px/1 "Inter",-apple-system,system-ui,sans-serif;letter-spacing:-.005em;white-space:nowrap;
+  transition:background .16s ease,color .16s ease}
+.kt-t img{display:block;width:32px;height:32px;border-radius:8px;flex:none}
+.kt-t img.px{image-rendering:pixelated}
+.kt-t:hover{color:var(--kt-ink);background:rgba(43,42,39,.04)}
+.kt-t[aria-current]{color:var(--kt-ink);background:var(--kt-cur)}
+.kt-t:focus-visible{outline:2px solid var(--kt-ink);outline-offset:2px}
+.kt-s{display:none}
+@media (max-width:760px){
+  .kt-row{width:100%;max-width:440px;justify-content:space-between;padding:4px}
+  .kt-t{flex:1 1 0;min-width:0;flex-direction:column;gap:5px;padding:6px 2px 7px;font-size:11px;letter-spacing:0}
+  .kt-l{display:none}.kt-s{display:block}
+}
+
+/* ── one footer ──────────────────────────────────────────────────────── */
+footer.sf{display:block;margin:0;border:0;padding:40px 16px 32px;text-align:center;font-size:13px;line-height:1.9}
+footer.sf a{text-decoration:none}
+footer.sf a:hover{text-decoration:underline;text-underline-offset:3px}
+footer.sf .sf-c{direction:ltr;unicode-bidi:isolate;white-space:nowrap}
+footer.sf .sf-x{white-space:nowrap}
+footer.sf .sf-dot{margin:0 8px;opacity:.4}
+footer.sf a.mail{display:inline-flex;vertical-align:-3px}
+footer.sf a.mail:hover{text-decoration:none;opacity:.75}
+footer.sf a.mail svg{width:15px;height:15px}
+.sf-langs{margin-top:32px}
