@@ -1,4 +1,4 @@
-// App menu clicks: which app a visitor went to from here (no cookies, a per-session random id).
+// Swiftian bar clicks: where a visitor went from here (no cookies, a per-session random id).
 // Shared footer: the email link, and its labels in the page's language (also after a language toggle).
 (function () {
   // footer labels (tools/app_menu.py)
@@ -32,7 +32,7 @@
     } catch (_) { return "anon"; }
   }
   document.addEventListener("click", function (e) {
-    var a = e.target && e.target.closest && e.target.closest(".am a[data-app]");
+    var a = e.target && e.target.closest && e.target.closest(".sb a[data-app]");
     if (!a || a.hasAttribute("aria-current")) return;
     try {
       fetch("https://claude-proxy-web.ilbulyori.workers.dev/events", {

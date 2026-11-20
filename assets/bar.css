@@ -1,0 +1,74 @@
+/* The Swiftian bar and the one footer, on every site (founder 2026-11-20, RDM-web-bar-families).
+
+   Bar: one ink strip across the top of every site. Left: the eagle and "Swiftian" (swiftian.com,
+   the Swiftian app), then "/ <app>" — where you are. Right: the apps under category labels; the Kawa
+   Friends apps sit in one family pill headed by the Kawa Friends icon, the other apps stand alone.
+   Icons only (the name is the aria-label and tooltip). Same tab, always.
+   Markup from tools/app_menu.py; every site loads this file from https://swiftian.com/assets/. */
+
+/* ── bar ─────────────────────────────────────────────────────────────── */
+.sb{--sb-ink:#141821;--sb-line:rgba(255,255,255,.09);--sb-sep:rgba(255,255,255,.16);
+  --sb-hover:rgba(255,255,255,.34);--sb-cur:#fff;--sb-text:rgba(255,255,255,.92);--sb-soft:rgba(255,255,255,.46);
+  --sb-fam:rgba(255,255,255,.065);--sb-fam-line:rgba(255,255,255,.1);
+  display:block;position:relative;z-index:40;margin:0;padding:0;border:0;
+  background:var(--sb-ink);border-bottom:1px solid var(--sb-line);
+  font-family:"Inter",-apple-system,system-ui,sans-serif;line-height:0;text-align:left}
+.sb *{box-sizing:border-box}
+.sb-in{direction:ltr;display:flex;align-items:center;gap:6px;max-width:1180px;height:56px;margin:0 auto;padding:0 16px}
+.sb-sp{flex:1;min-width:8px}
+
+/* where you are */
+.sb-home{display:flex;align-items:center;gap:9px;padding:3px 8px 3px 3px;border-radius:12px;text-decoration:none;
+  color:var(--sb-text);font:650 15px/1 "Inter",-apple-system,system-ui,sans-serif;letter-spacing:-.01em;white-space:nowrap}
+.sb-home img{display:block;width:32px;height:32px;border-radius:8px;box-shadow:0 0 0 1px rgba(255,255,255,.14)}
+.sb-home img.px{image-rendering:pixelated}
+.sb-home:hover{background:rgba(255,255,255,.06)}
+.sb-home:focus-visible{outline:2px solid var(--sb-cur);outline-offset:2px}
+.sb-here{display:flex;align-items:center;min-width:0;color:var(--sb-text);
+  font:500 15px/1 "Inter",-apple-system,system-ui,sans-serif;letter-spacing:-.01em;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.sb-sl{margin:0 10px 0 2px;color:var(--sb-sep);font-weight:300}
+
+/* the apps */
+.sb-apps{display:flex;align-items:center;flex:none}
+.sb-c{display:flex;align-items:center;gap:2px}
+.sb-l{margin:0 6px 0 10px;color:var(--sb-soft);font:700 10px/1 "Inter",-apple-system,system-ui,sans-serif;
+  letter-spacing:.09em;text-transform:uppercase;white-space:nowrap}
+.sb-d{width:1px;height:20px;margin:0 8px;background:var(--sb-sep)}
+.sb-f{display:flex;align-items:center;gap:2px;padding:2px 4px 2px 2px;border-radius:15px;
+  background:var(--sb-fam);box-shadow:inset 0 0 0 1px var(--sb-fam-line)}
+.sb-fd{width:1px;height:20px;margin:0 2px 0 4px;background:var(--sb-sep)}
+.sb-i{display:block;padding:2px;border:1.5px solid transparent;border-radius:12px;text-decoration:none;
+  transition:border-color .16s ease,transform .16s ease}
+.sb-i img{display:block;width:32px;height:32px;border-radius:8px}
+.sb-i img.px{image-rendering:pixelated}
+.sb-i:hover{border-color:var(--sb-hover);transform:translateY(-1px)}
+.sb-i:focus-visible{outline:2px solid var(--sb-cur);outline-offset:2px}
+.sb-i[aria-current],.sb-home[aria-current] img{border-color:var(--sb-cur)}
+.sb-home[aria-current] img{box-shadow:0 0 0 1.5px var(--sb-cur)}
+
+@media (max-width:1100px){.sb-here{display:none}}
+@media (max-width:880px){.sb-l{display:none}.sb-c{gap:1px}.sb-c+.sb-c{margin-left:6px}}
+@media (max-width:640px){.sb-name{display:none}.sb-home{padding:3px}}
+@media (max-width:440px){
+  .sb-in{padding:0 8px;gap:0}
+  .sb-i{padding:1px;border-radius:10px}
+  .sb-i img,.sb-home img{width:26px;height:26px;border-radius:7px}
+  .sb-d{margin:0 4px}
+  .sb-f{padding:2px 3px 2px 2px;border-radius:12px}
+  .sb-fd{margin:0 1px 0 2px}
+  .sb-c+.sb-c{margin-left:3px}
+}
+@media (prefers-reduced-motion:reduce){.sb-i{transition:none}.sb-i:hover{transform:none}}
+
+/* ── one footer ──────────────────────────────────────────────────────── */
+footer.sf{display:block;margin:0;border:0;padding:40px 16px 32px;text-align:center;font-size:13px;line-height:1.9}
+footer.sf a{text-decoration:none}
+footer.sf a:hover{text-decoration:underline;text-underline-offset:3px}
+footer.sf .sf-c{direction:ltr;unicode-bidi:isolate;white-space:nowrap}
+footer.sf .sf-x{white-space:nowrap}
+footer.sf .sf-dot{margin:0 8px;opacity:.4}
+footer.sf a.mail{display:inline-flex;vertical-align:-3px}
+footer.sf a.mail:hover{text-decoration:none;opacity:.75}
+footer.sf a.mail svg{width:15px;height:15px}
+.sf-langs{margin-top:32px}
