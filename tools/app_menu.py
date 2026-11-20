@@ -3,7 +3,8 @@
 (bar: founder 2026-11-20, RDM-web-bar-families; footer RDM-web-one-footer).
 
 Bar: one ink strip at the very top of every page on every site, right after <body>.
-Left: the eagle and "Swiftian" (swiftian.com, the Swiftian app), then where you are: "/ <app name>".
+Left: the eagle alone (swiftian.com, the Swiftian app); no wordmark and no "/ <app>" crumb, the page
+body already names itself (founder 2026-11-20).
 Right: the apps, under the category labels people read at a glance (founder 2026-11-20: "languages,
 art, math 이런식 분류"):
     [ Kawa Friends:  LANGUAGES  EA CP SM  ·  MATH  Mu ]   ART  iF Sp   GAMES  Py Co
@@ -62,7 +63,7 @@ SITE_APP = {"swiftian.com": "SW", "kawafriends.com": "KF", "seoulmal.com": "SM",
 SW_DIRS = {"mu": "Mu", "race": "Mu", "defend": "Mu", "ea": "EA", "cp": "CP"}   # swiftian.com's app pages
 
 BEGIN, END = "<!-- app-menu -->", "<!-- /app-menu -->"
-CSS_V, JS_V = 2, 2   # bump when bar.css / bar.js change; every page on every site follows
+CSS_V, JS_V = 3, 2   # bump when bar.css / bar.js change; every page on every site follows
 
 
 def asset(path):
@@ -120,11 +121,9 @@ def bar(rel="index.html"):
     singles = "".join('<i class="sb-d" aria-hidden="true"></i>' + cat(l, c) for l, c in SINGLES)
     home_h = here if cur == "SW" else href("SW")
     home_cur = ' aria-current="page"' if cur == "SW" else ""
-    crumb = ("" if cur == "SW" else
-             f'<span class="sb-here"><span class="sb-sl" aria-hidden="true">/</span>{html.escape(APPS[cur][0])}</span>')
     return (f'{BEGIN}<div class="sb" role="navigation" aria-label="Swiftian"><div class="sb-in">'
             f'<a class="sb-home" href="{home_h}"{home_cur} data-app="SW" aria-label="Swiftian" title="Swiftian">'
-            f'{icon("SW")}<span class="sb-name">Swiftian</span></a>{crumb}'
+            f'{icon("SW")}</a>'
             f'<span class="sb-sp"></span><div class="sb-apps">{family}{singles}</div></div></div>{END}')
 
 

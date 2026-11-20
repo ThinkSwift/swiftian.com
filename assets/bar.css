@@ -1,7 +1,7 @@
 /* The Swiftian bar and the one footer, on every site (founder 2026-11-20, RDM-web-bar-families).
 
-   Bar: one ink strip across the top of every site. Left: the eagle and "Swiftian" (swiftian.com,
-   the Swiftian app), then "/ <app>" — where you are. Right: the apps under category labels; the Kawa
+   Bar: one ink strip across the top of every site. Left: the eagle alone (swiftian.com,
+   the Swiftian app); the page body names itself, so no wordmark or crumb. Right: the apps under category labels; the Kawa
    Friends apps sit in one family pill headed by the Kawa Friends icon, the other apps stand alone.
    Icons only (the name is the aria-label and tooltip). Same tab, always.
    Markup from tools/app_menu.py; every site loads this file from https://swiftian.com/assets/. */
@@ -17,17 +17,12 @@
 .sb-in{direction:ltr;display:flex;align-items:center;gap:6px;max-width:1180px;height:56px;margin:0 auto;padding:0 16px}
 .sb-sp{flex:1;min-width:8px}
 
-/* where you are */
-.sb-home{display:flex;align-items:center;gap:9px;padding:3px 8px 3px 3px;border-radius:12px;text-decoration:none;
-  color:var(--sb-text);font:650 15px/1 "Inter",-apple-system,system-ui,sans-serif;letter-spacing:-.01em;white-space:nowrap}
+/* home: the eagle */
+.sb-home{display:block;padding:2px;border:1.5px solid transparent;border-radius:12px;text-decoration:none}
 .sb-home img{display:block;width:32px;height:32px;border-radius:8px;box-shadow:0 0 0 1px rgba(255,255,255,.14)}
 .sb-home img.px{image-rendering:pixelated}
-.sb-home:hover{background:rgba(255,255,255,.06)}
+.sb-home:hover{border-color:var(--sb-hover)}
 .sb-home:focus-visible{outline:2px solid var(--sb-cur);outline-offset:2px}
-.sb-here{display:flex;align-items:center;min-width:0;color:var(--sb-text);
-  font:500 15px/1 "Inter",-apple-system,system-ui,sans-serif;letter-spacing:-.01em;white-space:nowrap;
-  overflow:hidden;text-overflow:ellipsis}
-.sb-sl{margin:0 10px 0 2px;color:var(--sb-sep);font-weight:300}
 
 /* the apps */
 .sb-apps{display:flex;align-items:center;flex:none}
@@ -44,15 +39,12 @@
 .sb-i img.px{image-rendering:pixelated}
 .sb-i:hover{border-color:var(--sb-hover);transform:translateY(-1px)}
 .sb-i:focus-visible{outline:2px solid var(--sb-cur);outline-offset:2px}
-.sb-i[aria-current],.sb-home[aria-current] img{border-color:var(--sb-cur)}
-.sb-home[aria-current] img{box-shadow:0 0 0 1.5px var(--sb-cur)}
+.sb-i[aria-current],.sb-home[aria-current]{border-color:var(--sb-cur)}
 
-@media (max-width:1100px){.sb-here{display:none}}
-@media (max-width:880px){.sb-l{display:none}.sb-c{gap:1px}.sb-c+.sb-c{margin-left:6px}}
-@media (max-width:640px){.sb-name{display:none}.sb-home{padding:3px}}
+@media (max-width:860px){.sb-l{display:none}.sb-c{gap:1px}.sb-c+.sb-c{margin-left:6px}}
 @media (max-width:440px){
   .sb-in{padding:0 8px;gap:0}
-  .sb-i{padding:1px;border-radius:10px}
+  .sb-i,.sb-home{padding:1px;border-radius:10px}
   .sb-i img,.sb-home img{width:26px;height:26px;border-radius:7px}
   .sb-d{margin:0 4px}
   .sb-f{padding:2px 3px 2px 2px;border-radius:12px}
