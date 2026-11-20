@@ -5,7 +5,7 @@ RDM-web-app-menu-all-sites; footer RDM-web-one-footer).
 
 Bar: one ink strip at the very top of every page on every site, right after <body>: the eagle
 (swiftian.com — the Swiftian app) on the left, the houses on the right: Kawa Friends · Pythoneer,
-Spriteer · iFlipbook, Coordigo. Icons only (name = aria-label + tooltip), same tab, each icon the
+Coordigo · iFlipbook, Spriteer. Icons only (name = aria-label + tooltip), same tab, each icon the
 app's own per-size file. seoulmal.com belongs to the Kawa Friends house, so its bar marks KF.
 Tabs: the Kawa Friends house — Kawa Friends, Times Tables (Mu), English Accents, Chinese
 Pronunciation, Seoul Mal — on kawafriends.com and seoulmal.com, between <!-- kf-tabs --> markers.
@@ -51,7 +51,7 @@ APPS = {
     "CP": ("Chinese Pronunciation", "https://kawafriends.com/cp/", "/assets/tabs/cp", (32, 64, 96), True),
     "SM": ("Seoul Mal", "https://seoulmal.com/", "/assets/menu/sm", (32, 64), False),
 }
-BAR_GROUPS = [["KF"], ["Py", "Sp"], ["iF", "Co"]]
+BAR_GROUPS = [["KF"], ["Py", "Co"], ["iF", "Sp"]]   # Sp and Co swapped (founder 2026-11-20)
 # the Kawa Friends tabs: code, label on wide screens, label on phones
 TABS = [("KF", "Kawa Friends", "Friends"), ("Mu", "Times Tables", "Math"),
         ("EA", "English Accents", "English"), ("CP", "Chinese Pronunciation", "Chinese"),
