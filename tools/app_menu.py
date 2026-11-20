@@ -45,7 +45,8 @@ APPS = {
     "Co": ("Coordigo", "https://coordigo.com/", "/assets/tabs/site-coordigo", (32, 64, 96), True),
     # the Kawa Friends house
     "Mu": ("Multiplication & Times Tables", "https://kawafriends.com/mu/", "/assets/tabs/mu", (32, 64, 128), False),
-    # Mu = the app's own icon files, byte for byte (founder 2026-11-20: the pixel panda left the web)
+    # Mu = the red panda's face, close up, from the founder's crop (2026-11-20: the pixel panda left the
+    # web, and the whole app icon was too small to read here). A smooth drawing, not pixel art: px False.
     "EA": ("English Accents", "https://kawafriends.com/ea/", "/assets/tabs/ea", (32, 64, 96), True),
     "CP": ("Chinese Pronunciation", "https://kawafriends.com/cp/", "/assets/tabs/cp", (32, 64, 96), True),
     "SM": ("Seoul Mal", "https://seoulmal.com/", "/assets/menu/sm", (32, 64), False),
