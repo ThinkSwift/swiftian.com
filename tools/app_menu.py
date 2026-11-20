@@ -44,14 +44,14 @@ APPS = {
     "KF": ("Kawa Friends", "https://kawafriends.com/", "/assets/bar/kf", (32, 64), False),
     "EA": ("English Accents", "https://swiftian.com/ea/", "/assets/tabs/ea", (32, 64, 96), True),
     "CP": ("Chinese Pronunciation", "https://swiftian.com/cp/", "/assets/tabs/cp", (32, 64, 96), True),
-    "SM": ("Seoul Mal", "https://seoulmal.com/", "/assets/menu/sm", (32, 64, 96), True),
+    "SM": ("SeoulMal", "https://seoulmal.com/", "/assets/menu/sm", (32, 64, 96), True),
     # Mu = the red panda's face, close up, from the founder's crop (2026-11-20). A smooth drawing,
     # not pixel art: px False. Files keep the old cf- names.
     "Mu": ("Multiplication & Times Tables", "https://swiftian.com/mu/", "/assets/tabs/cf", (32, 64, 96), False),
     "iF": ("iFlipbook", "https://iflipbook.com/", "/assets/menu/if", (32, 64), False),
     "Sp": ("Spriteer", "https://spriteer.com/", "/assets/menu/sp", (32, 64), True),
     "Py": ("Pythoneer", "https://pythoneer.io/", "/assets/tabs/site-pythoneer", (32, 64, 96), True),
-    "Co": ("Coordigo", "https://coordigo.com/", "/assets/tabs/site-coordigo", (32, 64, 96), True),
+    "Co": ("CoordiGo", "https://coordigo.com/", "/assets/tabs/site-coordigo", (32, 64, 96), True),
 }
 # the Kawa Friends family: its head, then its categories
 FAMILY = ("KF", [("Languages", ["EA", "CP", "SM"]), ("Math", ["Mu"])])
@@ -157,9 +157,9 @@ LABELS = {
 FOOT_SITE = {
     "swiftian.com": ("Swiftian Inc.", [], False, False),
     "kawafriends.com": ("Kawa Friends", [], False, True),
-    "seoulmal.com": ("Seoul Mal", [], False, True),
+    "seoulmal.com": ("SeoulMal", [], False, True),
     "iflipbook.com": ("iFlipbook", [], False, True),
-    "coordigo.com": ("Coordigo", [], False, True),
+    "coordigo.com": ("CoordiGo", [], False, True),
     "pythoneer.io": ("Pythoneer", [("https://www.youtube.com/@PythoneerIO", "YouTube")], True, False),
     "spriteer.com": ("Spriteer", [], False, True),
 }
